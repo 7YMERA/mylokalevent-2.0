@@ -63,6 +63,11 @@ Before opening a pull request, run the same checks CI runs:
 npm run lint && npm run format:check && npm run typecheck && npm test
 ```
 
+## v1 vs v2
+
+See [docs/v1-vs-v2.md](docs/v1-vs-v2.md) for side-by-side screenshots and a log of every
+improvement over the original project.
+
 ## How it's being built
 
 Development is a joint effort between the author, working in Kiro, and Claude, working
