@@ -1,0 +1,28 @@
+# Secrets: never commit real keys. Copy .env.example to .env instead.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+supabase/.temp/
+
+# Dependencies and build output
+node_modules/
+.next/
+out/
+dist/
+build/
+coverage/
+__pycache__/
+*.py[cod]
+.venv/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
