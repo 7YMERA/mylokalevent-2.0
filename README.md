@@ -84,6 +84,17 @@ redirect URI `https://<your-project-ref>.supabase.co/auth/v1/callback`, and its 
 ID and secret entered under Authentication → Sign In / Providers → Google in Supabase.
 The secret never goes in this repo.
 
+## Demo accounts
+
+There are no seeded accounts with known passwords (v1 had them in the repo). To get
+a member, an organiser and an admin to click around with, add `SUPABASE_SECRET_KEY`
+to `.env.local` and run:
+
+```bash
+npm run demo:users              # create or reset; prints fresh passwords once
+npm run demo:users -- --remove  # delete them again, e.g. before launch
+```
+
 ## v1 vs v2
 
 See [docs/v1-vs-v2.md](docs/v1-vs-v2.md) for side-by-side screenshots and a log of every
