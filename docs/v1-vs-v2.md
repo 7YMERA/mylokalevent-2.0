@@ -43,15 +43,35 @@ v2 has a living style guide at `/design` showing every token and component in bo
 
 ![v2 design system](screenshots/v2/design-system.png)
 
+### Sign-in
+
+v1 had one-click demo logins with shared passwords on the login page. v2 has none, checks
+input on the server, keeps what you typed after an error, and never echoes the password.
+
+| v1 login                                      | v2 sign in                                      | v2 sign-up errors, dark                                      |
+| --------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------ |
+| ![v1 login](screenshots/v1/login-desktop.png) | ![v2 sign in](screenshots/v2/sign-in-light.png) | ![v2 sign-up errors](screenshots/v2/sign-up-errors-dark.png) |
+
 ### Other v1 pages, for reference
 
-| v1 events                                       | v1 login                                      |
-| ----------------------------------------------- | --------------------------------------------- |
-| ![v1 events](screenshots/v1/events-desktop.png) | ![v1 login](screenshots/v1/login-desktop.png) |
+| v1 events                                       |
+| ----------------------------------------------- |
+| ![v1 events](screenshots/v1/events-desktop.png) |
 
 ## Improvement log
 
 Newest first. Link the pull request for each entry.
+
+### 2026-10-25: Sign-in with Supabase Auth ([PR #6](https://github.com/7YMERA/mylokalevent-2.0/pull/6))
+
+- **Before:** a hand-rolled JWT stored in `localStorage` (readable by any injected script),
+  60-minute tokens that kept working after a ban, demo accounts with public passwords, and
+  a lockout that let anyone lock another user out by guessing their email.
+- **After:** Supabase Auth with the session in an httpOnly cookie that JavaScript cannot
+  read, refreshed by a proxy on every navigation and verified with `getClaims()` on the
+  server. Email confirmation is required, passwords need 10+ characters with mixed case
+  and a number, privacy consent is recorded at sign-up, and error messages don't reveal
+  whether an email is registered. Rate limiting is handled by Supabase Auth.
 
 ### 2026-10-25: Design system and new landing page ([PR #5](https://github.com/7YMERA/mylokalevent-2.0/pull/5))
 
