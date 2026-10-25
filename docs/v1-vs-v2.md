@@ -6,19 +6,20 @@ adds an entry to the log at the bottom.
 
 ## At a glance
 
-|                  | v1 (university project, 2026)                                               | v2 (this repo)                                                                                  |
-| ---------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| Frontend         | Static Bootstrap 5 pages, vanilla JS SPA                                    | Next.js 16, React, TypeScript (strict), Tailwind CSS                                            |
-| Rendering        | Client-side only; search engines and WhatsApp previews see an empty page    | Server-rendered and statically generated pages                                                  |
-| Styling          | Bootstrap defaults, one blue hue for almost everything                      | Design tokens: ocean teal, sunset coral and a distinct colour per event category                |
-| Dark mode        | None                                                                        | Light, dark and "match device", switchable, no flash on load                                    |
-| Accessibility    | Not checked                                                                 | 60 automated WCAG AA contrast checks across both themes                                         |
-| Auth             | Custom JWT stored in `localStorage`, 60-minute tokens, no revocation        | Supabase Auth with httpOnly cookies (in progress); suspension signs users out immediately       |
-| Data access      | Backend uses the all-powerful service key; no row-level rules               | Row Level Security on every table, tested with pgTAP                                            |
-| Secrets          | Default `change-me` JWT secret; admin and demo passwords in the public repo | App refuses to start with missing or placeholder secrets; no seeded accounts                    |
-| Security headers | None                                                                        | CSP, HSTS, `nosniff`, frame blocking, referrer and permissions policies                         |
-| Quality gates    | Manual testing, one smoke test script                                       | CI on every PR: lint, formatting, typecheck, unit tests, database tests, build, secret scanning |
-| Planning         | Course report                                                               | Kiro specs: requirements in EARS format, design, task list                                      |
+|                  | v1 (university project, 2026)                                               | v2 (this repo)                                                                                       |
+| ---------------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Frontend         | Static Bootstrap 5 pages, vanilla JS SPA                                    | Next.js 16, React, TypeScript (strict), Tailwind CSS                                                 |
+| Rendering        | Client-side only; search engines and WhatsApp previews see an empty page    | Server-rendered and statically generated pages                                                       |
+| Styling          | Bootstrap defaults, one blue hue for almost everything                      | Design tokens: ocean teal, sunset coral and a distinct colour per event category                     |
+| Dark mode        | None                                                                        | Light, dark and "match device", switchable, no flash on load                                         |
+| Language         | English only                                                                | Bahasa Melayu and English on every page, with a switcher; language in the URL for search and sharing |
+| Accessibility    | Not checked                                                                 | 60 automated WCAG AA contrast checks across both themes                                              |
+| Auth             | Custom JWT stored in `localStorage`, 60-minute tokens, no revocation        | Supabase Auth with httpOnly cookies; suspension signs users out immediately                          |
+| Data access      | Backend uses the all-powerful service key; no row-level rules               | Row Level Security on every table, tested with pgTAP                                                 |
+| Secrets          | Default `change-me` JWT secret; admin and demo passwords in the public repo | App refuses to start with missing or placeholder secrets; no seeded accounts                         |
+| Security headers | None                                                                        | CSP, HSTS, `nosniff`, frame blocking, referrer and permissions policies                              |
+| Quality gates    | Manual testing, one smoke test script                                       | CI on every PR: lint, formatting, typecheck, unit tests, database tests, build, secret scanning      |
+| Planning         | Course report                                                               | Kiro specs: requirements in EARS format, design, task list                                           |
 
 ## Screenshots
 
@@ -52,6 +53,20 @@ input on the server, keeps what you typed after an error, and never echoes the p
 | --------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------ |
 | ![v1 login](screenshots/v1/login-desktop.png) | ![v2 sign in](screenshots/v2/sign-in-light.png) | ![v2 sign-up errors](screenshots/v2/sign-up-errors-dark.png) |
 
+### Bahasa Melayu and English
+
+v1 was English only. v2 opens in the visitor's language (BM unless their browser prefers
+English), every page has a BM/EN switcher, and dates show in Malaysian time in either
+language.
+
+| v2 home, BM                                                | v2 sign-up errors, BM                                            |
+| ---------------------------------------------------------- | ---------------------------------------------------------------- |
+| ![v2 home in BM](screenshots/v2/home-ms-light-desktop.png) | ![v2 sign-up errors in BM](screenshots/v2/sign-up-errors-ms.png) |
+
+| v2 mobile, BM                                                    | v2 mobile, English, dark                                             |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------- |
+| ![v2 mobile home in BM](screenshots/v2/home-ms-light-mobile.png) | ![v2 mobile home in English](screenshots/v2/home-en-dark-mobile.png) |
+
 ### Other v1 pages, for reference
 
 | v1 events                                       |
@@ -61,6 +76,16 @@ input on the server, keeps what you typed after an error, and never echoes the p
 ## Improvement log
 
 Newest first. Link the pull request for each entry.
+
+### 2026-10-25: Bahasa Melayu and English
+
+- **Before:** English only, so much of the audience (fishing communities on the east
+  coast and in Sabah) read the site in their second language.
+- **After:** every page in BM and English. The language is part of the URL (`/ms/...`,
+  `/en/...`), so search engines index both and a link shared on WhatsApp opens in the
+  sender's language. First visits follow the browser's language, falling back to BM, and
+  the choice is remembered. Form errors, page titles and dates are translated too, and a
+  test fails the build if a translation is missing or loses a placeholder.
 
 ### 2026-10-25: Sign-in with Supabase Auth ([PR #6](https://github.com/7YMERA/mylokalevent-2.0/pull/6))
 
