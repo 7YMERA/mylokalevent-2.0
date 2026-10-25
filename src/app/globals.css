@@ -1,26 +1,180 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+ * Design tokens. Components use only these semantic names, never raw colours,
+ * so every surface works in both themes. Each theme is defined in full below;
+ * src/styles/contrast.test.ts checks every text/background pair in both.
+ *
+ * Theme selection: the OS preference by default, overridden by
+ * data-theme="light" | "dark" on <html> (set by the theme switcher).
+ * The attribute also works on any element, e.g. side-by-side previews.
+ */
+
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+
+  /* Surfaces: warm sand neutrals */
+  --background: #fbf9f4;
+  --surface: #ffffff;
+  --surface-muted: #f2eee4;
+  --foreground: #0e1c26;
+  --muted-foreground: #4a5a66;
+  --border: #e3ddd0;
+  --ring: #0b6e79;
+
+  /* Brand: deep sea teal with a sunset coral accent */
+  --primary: #0b6e79;
+  --primary-hover: #095a63;
+  --primary-foreground: #ffffff;
+  --accent: #c2410c;
+  --accent-foreground: #ffffff;
+  --hero-from: #0b4f6c;
+  --hero-to: #0b6e79;
+  --hero-foreground: #ffffff;
+
+  /* Status */
+  --success: #166534;
+  --success-soft: #dcfce7;
+  --warning: #92400e;
+  --warning-soft: #fef3c7;
+  --danger: #b91c1c;
+  --danger-soft: #fee2e2;
+
+  /* Event categories: distinct hues so lists never look monotone */
+  --cat-competition: #b4361b;
+  --cat-competition-soft: #fde8e1;
+  --cat-market: #8a5300;
+  --cat-market-soft: #fdf0d5;
+  --cat-pond: #0f6b52;
+  --cat-pond-soft: #d9f4ea;
+  --cat-community: #5b3fb5;
+  --cat-community-soft: #ece7fb;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --background: #0a131a;
+    --surface: #101d27;
+    --surface-muted: #172a37;
+    --foreground: #e8eef2;
+    --muted-foreground: #9db0bd;
+    --border: #233a4a;
+    --ring: #4fd1c5;
+
+    --primary: #4fd1c5;
+    --primary-hover: #7ee0d7;
+    --primary-foreground: #04262a;
+    --accent: #ff9a76;
+    --accent-foreground: #2a0e05;
+    --hero-from: #0b2a3c;
+    --hero-to: #0d4650;
+    --hero-foreground: #f2f7f9;
+
+    --success: #6ee7a0;
+    --success-soft: #0f2e1f;
+    --warning: #fbbf5c;
+    --warning-soft: #33240b;
+    --danger: #fca5a5;
+    --danger-soft: #3a1414;
+
+    --cat-competition: #ffab91;
+    --cat-competition-soft: #3a1a12;
+    --cat-market: #f6c56b;
+    --cat-market-soft: #33260c;
+    --cat-pond: #6ee0bd;
+    --cat-pond-soft: #0e2f26;
+    --cat-community: #c4b5fd;
+    --cat-community-soft: #241c44;
+  }
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --background: #0a131a;
+  --surface: #101d27;
+  --surface-muted: #172a37;
+  --foreground: #e8eef2;
+  --muted-foreground: #9db0bd;
+  --border: #233a4a;
+  --ring: #4fd1c5;
+
+  --primary: #4fd1c5;
+  --primary-hover: #7ee0d7;
+  --primary-foreground: #04262a;
+  --accent: #ff9a76;
+  --accent-foreground: #2a0e05;
+  --hero-from: #0b2a3c;
+  --hero-to: #0d4650;
+  --hero-foreground: #f2f7f9;
+
+  --success: #6ee7a0;
+  --success-soft: #0f2e1f;
+  --warning: #fbbf5c;
+  --warning-soft: #33240b;
+  --danger: #fca5a5;
+  --danger-soft: #3a1414;
+
+  --cat-competition: #ffab91;
+  --cat-competition-soft: #3a1a12;
+  --cat-market: #f6c56b;
+  --cat-market-soft: #33260c;
+  --cat-pond: #6ee0bd;
+  --cat-pond-soft: #0e2f26;
+  --cat-community: #c4b5fd;
+  --cat-community-soft: #241c44;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-hero-from: var(--hero-from);
+  --color-hero-to: var(--hero-to);
+  --color-hero-foreground: var(--hero-foreground);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-cat-competition: var(--cat-competition);
+  --color-cat-competition-soft: var(--cat-competition-soft);
+  --color-cat-market: var(--cat-market);
+  --color-cat-market-soft: var(--cat-market-soft);
+  --color-cat-pond: var(--cat-pond);
+  --color-cat-pond-soft: var(--cat-pond-soft);
+  --color-cat-community: var(--cat-community);
+  --color-cat-community-soft: var(--cat-community-soft);
+
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+[data-theme] {
+  background: var(--background);
+  color: var(--foreground);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
 }
