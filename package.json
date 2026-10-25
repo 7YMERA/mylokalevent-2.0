@@ -10,7 +10,8 @@
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "demo:users": "node --env-file=.env.local scripts/demo-users.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
