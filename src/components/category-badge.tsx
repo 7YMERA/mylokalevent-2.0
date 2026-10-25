@@ -1,11 +1,6 @@
-export type Category = "competition" | "market" | "pond" | "community";
+import { getMessages } from "@/i18n/messages";
 
-export const categoryLabels: Record<Category, string> = {
-  competition: "Fishing competition",
-  market: "Coastal market",
-  pond: "Kolam pancing",
-  community: "Community",
-};
+export type Category = "competition" | "market" | "pond" | "community";
 
 // Full class names so Tailwind can see them at build time.
 const styles: Record<Category, string> = {
@@ -15,12 +10,13 @@ const styles: Record<Category, string> = {
   community: "bg-cat-community-soft text-cat-community",
 };
 
-export function CategoryBadge({ category }: { category: Category }) {
+export async function CategoryBadge({ category }: { category: Category }) {
+  const t = await getMessages();
   return (
     <span
       className={`inline-flex w-fit items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${styles[category]}`}
     >
-      {categoryLabels[category]}
+      {t.categories[category]}
     </span>
   );
 }

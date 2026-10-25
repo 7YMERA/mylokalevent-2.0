@@ -2,6 +2,8 @@ import "server-only";
 
 import { redirect } from "next/navigation";
 
+import { localePath } from "@/i18n/config";
+import { getLocale } from "@/i18n/messages";
 import { createClient } from "@/lib/supabase/server";
 
 export type CurrentUser = {
@@ -41,6 +43,6 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
 
 export async function requireUser(): Promise<CurrentUser> {
   const user = await getCurrentUser();
-  if (!user) redirect("/sign-in");
+  if (!user) redirect(localePath(await getLocale(), "/sign-in"));
   return user;
 }
