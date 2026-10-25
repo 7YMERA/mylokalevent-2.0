@@ -53,6 +53,12 @@ input on the server, keeps what you typed after an error, and never echoes the p
 | --------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------ |
 | ![v1 login](screenshots/v1/login-desktop.png) | ![v2 sign in](screenshots/v2/sign-in-light.png) | ![v2 sign-up errors](screenshots/v2/sign-up-errors-dark.png) |
 
+### Google sign-in
+
+| v2 sign in with Google, BM                                             | v2 sign-up with Google, dark                                          |
+| ---------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| ![v2 Google sign-in in BM](screenshots/v2/sign-in-google-ms-light.png) | ![v2 Google sign-up, dark](screenshots/v2/sign-up-google-en-dark.png) |
+
 ### Bahasa Melayu and English
 
 v1 was English only. v2 opens in the visitor's language (BM unless their browser prefers
@@ -76,6 +82,16 @@ language.
 ## Improvement log
 
 Newest first. Link the pull request for each entry.
+
+### 2026-10-25: Google sign-in
+
+- **Before:** email and password only, with every new user typing a password they then
+  had to remember.
+- **After:** "Continue with Google" on the sign-in and sign-up pages, using Supabase's
+  PKCE flow (the code verifier sits in an httpOnly cookie). Google can't carry our
+  privacy-notice tick, so a first-time Google user goes to a "one last step" page and
+  can't reach their account until they accept it. Consent is recorded by a database
+  function so the timestamp always comes from the server, and pgTAP tests cover it.
 
 ### 2026-10-25: Bahasa Melayu and English
 
