@@ -71,6 +71,11 @@ npx supabase start      # local Supabase stack
 npx supabase test db    # run the database tests
 ```
 
+## v1 vs v2
+
+See [docs/v1-vs-v2.md](docs/v1-vs-v2.md) for side-by-side screenshots and a log of every
+improvement over the original project.
+
 ## How it's being built
 
 Development is a joint effort between the author, working in Kiro, and Claude, working
