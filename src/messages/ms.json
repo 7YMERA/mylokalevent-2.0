@@ -1,6 +1,6 @@
 {
   "meta": {
-    "description": "Temui pertandingan memancing, pasar pesisir dan acara tempatan di seluruh Malaysia."
+    "description": "Temui pertandingan memancing, pasar basah dan acara tempatan di seluruh Malaysia."
   },
   "header": {
     "home": "Laman utama MyLokalEvent",
@@ -21,14 +21,14 @@
   },
   "categories": {
     "competition": "Pertandingan memancing",
-    "market": "Pasar pesisir",
+    "market": "Pasar basah",
     "pond": "Kolam pancing",
     "community": "Komuniti"
   },
   "home": {
     "eyebrow": "Acara tempatan, dekat dengan anda",
-    "title": "Cari pertandingan memancing, pasar pesisir dan acara tempatan di seluruh Malaysia.",
-    "lead": "Bermula di Terengganu, Kelantan dan Sabah. Satu tempat untuk mengetahui acara terkini, dan untuk penganjur sampai kepada orang yang betul-betul akan hadir.",
+    "title": "Cari pertandingan memancing, pasar basah dan acara tempatan di seluruh Malaysia.",
+    "lead": "Bermula di Terengganu, Kelantan dan Sabah. Satu tempat untuk mengetahui acara terkini.",
     "comingSoon": "Akan datang",
     "browse": "Layari mengikut kategori",
     "upcoming": "Acara akan datang",
@@ -46,11 +46,11 @@
         "body": "Penganjur boleh disahkan dengan pendaftaran SSM mereka, jadi anda tahu siapa di sebalik setiap acara."
       },
       "payments": {
-        "title": "Bayar cara Malaysia",
+        "title": "Bayar cara Lokal",
         "body": "Bayaran penyenaraian melalui perbankan dalam talian FPX, kad atau GrabPay, dengan resit serta-merta."
       },
       "sharing": {
-        "title": "Mudah dikongsi",
+        "title": "Senang nak dikongsi",
         "body": "Setiap halaman acara dipaparkan dengan kemas di WhatsApp, lengkap dengan arah ke lokasi dan tambah ke kalendar."
       }
     }
