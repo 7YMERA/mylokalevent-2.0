@@ -4,12 +4,12 @@ Draft task list. Kiro can regenerate or refine this from `design.md`. Mark tasks
 they merge, and note who is taking a task (Kiro or Claude) to avoid overlap.
 
 - [ ] 1. Foundation
-  - [ ] 1.1 Scaffold Next.js (TypeScript strict, ESLint, Prettier, Tailwind, shadcn/ui)
-  - [ ] 1.2 Add `.env.example` and a startup check that rejects missing or placeholder secrets
+  - [x] 1.1 Scaffold Next.js (TypeScript strict, ESLint, Prettier, Tailwind; shadcn/ui added with the first real UI)
+  - [x] 1.2 Add `.env.example` and a startup check that rejects missing or placeholder secrets
   - [ ] 1.3 Set up Supabase locally with the CLI; first migration with `profiles` and RLS
   - [ ] 1.4 Supabase Auth with httpOnly cookie sessions, email verification, Google sign-in
   - [ ] 1.5 i18n with `ms` and `en`, locale switcher
-  - [ ] 1.6 CI: typecheck, lint, tests, secret scanning; security headers and CSP
+  - [x] 1.6 CI: typecheck, lint, tests, secret scanning; security headers and CSP (baseline CSP; tighten later)
   - _Requirements: 1, 8, 9_
 - [ ] 2. Organisers
   - [ ] 2.1 `organisers` table, RLS, apply-to-organise form

@@ -17,7 +17,7 @@ MyLokalEvent 2.0 is a passion project with room to grow. For now the aim is to:
   fees, ticketing or promotion, so it can sustain itself and grow.
 
 The launch niche is **fishing and coastal community events**: fishing competitions,
-coastal markets, fresh-catch listings and *kolam pancing* spots, starting with states
+coastal markets, fresh-catch listings and _kolam pancing_ spots, starting with states
 like Terengganu, Kelantan and Sabah. The platform is designed so any other kind of
 local event can be added later.
 
@@ -46,6 +46,22 @@ fresh rebuild that keeps the idea and leaves the shortcuts behind.
 Ideas further out: QR ticket check-in, map and "near me" discovery, an installable
 mobile web app, WhatsApp sharing and reminders, organiser reviews, and expanding
 beyond fishing to all kinds of local events.
+
+## Running it locally
+
+Requires Node.js 22 or newer.
+
+```bash
+npm install
+cp .env.example .env.local   # then fill in real values
+npm run dev                  # http://localhost:3000
+```
+
+Before opening a pull request, run the same checks CI runs:
+
+```bash
+npm run lint && npm run format:check && npm run typecheck && npm test
+```
 
 ## How it's being built
 

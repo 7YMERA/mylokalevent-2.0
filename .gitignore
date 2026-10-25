@@ -26,3 +26,8 @@ npm-debug.log*
 Thumbs.db
 .vscode/
 .idea/
+
+# Next.js / Vercel
+next-env.d.ts
+*.tsbuildinfo
+.vercel/
