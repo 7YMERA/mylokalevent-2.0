@@ -8,7 +8,7 @@
 - **Payments:** Stripe Checkout in MYR (cards, FPX, GrabPay), confirmed by signed webhooks.
 - **Email:** a transactional provider (Resend or Brevo).
 - **Hosting:** Vercel for the web app, Supabase cloud (Singapore region) for data.
-- **i18n:** next-intl with `ms` and `en` locales.
+- **i18n:** built-in Next.js pattern, no library: `[locale]` route segment (`ms`, `en`), JSON messages in `src/messages/`, locale read with `next/root-params`. Server Actions get the locale from a hidden `locale` form field.
 
 ## Security rules (non-negotiable)
 - The repo is public. Never commit secrets; real values go in `.env` (gitignored) and

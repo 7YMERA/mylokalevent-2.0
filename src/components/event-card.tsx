@@ -1,3 +1,5 @@
+import { getMessages } from "@/i18n/messages";
+
 import { CategoryBadge, type Category } from "./category-badge";
 
 export type EventPreview = {
@@ -17,7 +19,8 @@ const banner: Record<Category, string> = {
   community: "from-cat-community/25 to-cat-community/5",
 };
 
-export function EventCard({ event }: { event: EventPreview }) {
+export async function EventCard({ event }: { event: EventPreview }) {
+  const t = await getMessages();
   return (
     <article className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-sm transition-shadow hover:shadow-md">
       <div
@@ -31,11 +34,11 @@ export function EventCard({ event }: { event: EventPreview }) {
         </h3>
         <dl className="grid gap-1 text-sm text-muted-foreground">
           <div>
-            <dt className="sr-only">Date</dt>
+            <dt className="sr-only">{t.common.date}</dt>
             <dd>{event.date}</dd>
           </div>
           <div>
-            <dt className="sr-only">Place</dt>
+            <dt className="sr-only">{t.common.place}</dt>
             <dd>{event.place}</dd>
           </div>
         </dl>
@@ -44,7 +47,7 @@ export function EventCard({ event }: { event: EventPreview }) {
             {event.organiser}
             {event.verified && (
               <span className="block font-semibold text-primary">
-                ✓ Verified
+                ✓ {t.common.verified}
               </span>
             )}
           </span>

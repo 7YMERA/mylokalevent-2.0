@@ -43,9 +43,11 @@ export function FormField({ label, name, error, hint, ...input }: Props) {
 
 export function SubmitButton({
   pending,
+  pendingLabel,
   children,
 }: {
   pending: boolean;
+  pendingLabel: string;
   children: React.ReactNode;
 }) {
   return (
@@ -54,7 +56,7 @@ export function SubmitButton({
       disabled={pending}
       className="rounded-full bg-primary px-5 py-3 font-semibold text-primary-foreground transition-colors hover:bg-primary-hover disabled:opacity-60"
     >
-      {pending ? "Please wait…" : children}
+      {pending ? pendingLabel : children}
     </button>
   );
 }

@@ -2,9 +2,11 @@
 
 import { redirect } from "next/navigation";
 
+import { localePath } from "@/i18n/config";
 import {
   echoValues,
   fieldErrors,
+  formLocale,
   signInSchema,
   signUpSchema,
   type FormState,
@@ -32,7 +34,7 @@ export async function signUp(
       // Read by the handle_new_user trigger to create the profile.
       data: {
         display_name: displayName,
-        locale: "en",
+        locale: formLocale(formData),
         privacy_consent: "true",
       },
     },
@@ -40,25 +42,17 @@ export async function signUp(
 
   if (error) {
     if (error.code === "weak_password") {
-      return { fieldErrors: { password: error.message }, values };
+      return { fieldErrors: { password: "passwordWeak" }, values };
     }
     if (error.status === 429) {
-      return {
-        error: "Too many attempts. Please wait a minute and try again.",
-        values,
-      };
+      return { error: "tooManyAttempts", values };
     }
-    return {
-      error: "We couldn't create your account. Please try again.",
-      values,
-    };
+    return { error: "signUpFailed", values };
   }
 
   // Same message whether or not the email was already registered, so the
   // form can't be used to find out who has an account.
-  return {
-    message: `Check ${email} for a link to confirm your account.`,
-  };
+  return { message: "checkEmail", values: { email } };
 }
 
 export async function signIn(
@@ -76,25 +70,19 @@ export async function signIn(
 
   if (error) {
     if (error.code === "email_not_confirmed") {
-      return {
-        error: "Please confirm your email first. Check your inbox.",
-        values,
-      };
+      return { error: "emailNotConfirmed", values };
     }
     if (error.status === 429) {
-      return {
-        error: "Too many attempts. Please wait a minute and try again.",
-        values,
-      };
+      return { error: "tooManyAttempts", values };
     }
-    return { error: "That email and password don't match.", values };
+    return { error: "wrongCredentials", values };
   }
 
-  redirect("/account");
+  redirect(localePath(formLocale(formData), "/account"));
 }
 
-export async function signOut() {
+export async function signOut(formData: FormData) {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  redirect("/");
+  redirect(localePath(formLocale(formData)));
 }

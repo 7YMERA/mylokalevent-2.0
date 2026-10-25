@@ -1,10 +1,12 @@
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { NextResponse, type NextRequest } from "next/server";
 
+import { localeCookie, localePath, pickLocale } from "@/i18n/config";
 import { createClient } from "@/lib/supabase/server";
 
 // Landing point for the link in the confirmation email. Handles both the
 // PKCE `code` link (Supabase's default template) and the `token_hash` link.
+// Lives outside [locale] so the URL configured in Supabase never changes.
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = request.nextUrl;
   const code = searchParams.get("code");
@@ -21,8 +23,12 @@ export async function GET(request: NextRequest) {
       .error;
   }
 
+  const locale = pickLocale(
+    request.cookies.get(localeCookie)?.value,
+    request.headers.get("accept-language"),
+  );
   // Fixed destinations only: never redirect to a URL taken from the query.
   return NextResponse.redirect(
-    new URL(ok ? "/account" : "/confirm-failed", origin),
+    new URL(localePath(locale, ok ? "/account" : "/confirm-failed"), origin),
   );
 }

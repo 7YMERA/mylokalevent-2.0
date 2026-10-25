@@ -4,50 +4,70 @@ import Link from "next/link";
 import { useActionState } from "react";
 
 import { FormAlert, FormField, SubmitButton } from "@/components/form-field";
+import { format, localePath, type Locale } from "@/i18n/config";
+import type { Messages } from "@/i18n/messages";
+import { translateMessage } from "@/i18n/translate";
 import type { FormState } from "@/lib/auth-schemas";
 
 import { signUp } from "../actions";
 
-export function SignUpForm() {
+type Props = {
+  locale: Locale;
+  t: Pick<Messages, "fields" | "messages" | "signUp"> & {
+    pleaseWait: string;
+  };
+};
+
+export function SignUpForm({ locale, t }: Props) {
   const [state, action, pending] = useActionState<FormState, FormData>(
     signUp,
     {},
   );
+  const message = (key?: string) => translateMessage(t.messages, key);
 
   if (state.message) {
-    return <FormAlert tone="success">{state.message}</FormAlert>;
+    return (
+      <FormAlert tone="success">
+        {format(message(state.message) ?? "", {
+          email: state.values?.email ?? "",
+        })}
+      </FormAlert>
+    );
   }
 
   const errors = state.fieldErrors ?? {};
   return (
     <form action={action} className="flex flex-col gap-5" noValidate>
-      {state.error && <FormAlert tone="danger">{state.error}</FormAlert>}
+      <input type="hidden" name="locale" value={locale} />
+      {state.error && (
+        <FormAlert tone="danger">{message(state.error)}</FormAlert>
+      )}
       <FormField
-        label="Name"
+        label={t.fields.name}
         name="displayName"
         autoComplete="name"
         defaultValue={state.values?.displayName}
         required
-        error={errors.displayName}
+        error={message(errors.displayName)}
       />
       <FormField
-        label="Email"
+        label={t.fields.email}
         name="email"
         type="email"
         autoComplete="email"
         defaultValue={state.values?.email}
         required
-        error={errors.email}
+        error={message(errors.email)}
       />
       <FormField
-        label="Password"
+        label={t.fields.password}
         name="password"
         type="password"
         autoComplete="new-password"
         required
         minLength={10}
-        hint="At least 10 characters, with upper and lowercase letters and a number."
-        error={errors.password}
+        hint={t.signUp.passwordHint}
+        error={message(errors.password)}
       />
       <div className="flex flex-col gap-1.5">
         <label className="flex items-start gap-3 text-sm">
@@ -59,21 +79,23 @@ export function SignUpForm() {
             className="mt-0.5 size-4 accent-primary"
           />
           <span>
-            I have read and agree to the{" "}
+            {t.signUp.consentBefore}{" "}
             <Link
-              href="/privacy"
+              href={localePath(locale, "/privacy")}
               className="font-semibold text-primary underline"
             >
-              privacy notice
+              {t.signUp.consentLink}
             </Link>
-            .
+            {t.signUp.consentAfter}
           </span>
         </label>
         {errors.consent && (
-          <p className="text-sm text-danger">{errors.consent}</p>
+          <p className="text-sm text-danger">{message(errors.consent)}</p>
         )}
       </div>
-      <SubmitButton pending={pending}>Create account</SubmitButton>
+      <SubmitButton pending={pending} pendingLabel={t.pleaseWait}>
+        {t.signUp.submit}
+      </SubmitButton>
     </form>
   );
 }

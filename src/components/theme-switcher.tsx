@@ -20,11 +20,11 @@ const icons: Record<Theme, React.ReactNode> = {
   dark: <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" />,
 };
 
-const options: { value: Theme; label: string }[] = [
-  { value: "system", label: "Match device" },
-  { value: "light", label: "Light" },
-  { value: "dark", label: "Dark" },
-];
+const themes: Theme[] = ["system", "light", "dark"];
+
+export type ThemeLabels = {
+  group: string;
+} & Record<Theme, string>;
 
 const listeners = new Set<() => void>();
 
@@ -50,47 +50,70 @@ function subscribe(notify: () => void) {
   return () => listeners.delete(notify);
 }
 
-export function ThemeSwitcher() {
-  const current = useSyncExternalStore(subscribe, readTheme, () => "system");
+function ThemeIcon({ theme }: { theme: Theme }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="size-4"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {icons[theme]}
+    </svg>
+  );
+}
+
+export function ThemeSwitcher({ labels }: { labels: ThemeLabels }) {
+  const current = useSyncExternalStore(
+    subscribe,
+    readTheme,
+    (): Theme => "system",
+  );
+  const next = themes[(themes.indexOf(current) + 1) % themes.length];
 
   return (
-    <div
-      role="radiogroup"
-      aria-label="Colour theme"
-      className="inline-flex rounded-full border border-border bg-surface p-0.5"
-    >
-      {options.map((option) => {
-        const selected = current === option.value;
-        return (
-          <button
-            key={option.value}
-            type="button"
-            role="radio"
-            aria-checked={selected}
-            aria-label={option.label}
-            title={option.label}
-            onClick={() => setTheme(option.value)}
-            className={`grid size-8 place-items-center rounded-full transition-colors ${
-              selected
-                ? "bg-primary text-primary-foreground"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 24 24"
-              className="size-4"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+    <>
+      {/* Phones: one button that cycles, to leave room in the header. */}
+      <button
+        type="button"
+        onClick={() => setTheme(next)}
+        aria-label={`${labels.group}: ${labels[current]}`}
+        title={`${labels.group}: ${labels[current]}`}
+        className="grid size-9 place-items-center rounded-full border border-border bg-surface text-foreground sm:hidden"
+      >
+        <ThemeIcon theme={current} />
+      </button>
+      <div
+        role="radiogroup"
+        aria-label={labels.group}
+        className="hidden rounded-full border border-border bg-surface p-0.5 sm:inline-flex"
+      >
+        {themes.map((theme) => {
+          const selected = current === theme;
+          return (
+            <button
+              key={theme}
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              aria-label={labels[theme]}
+              title={labels[theme]}
+              onClick={() => setTheme(theme)}
+              className={`grid size-8 place-items-center rounded-full transition-colors ${
+                selected
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
             >
-              {icons[option.value]}
-            </svg>
-          </button>
-        );
-      })}
-    </div>
+              <ThemeIcon theme={theme} />
+            </button>
+          );
+        })}
+      </div>
+    </>
   );
 }
