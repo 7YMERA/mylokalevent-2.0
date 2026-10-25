@@ -63,6 +63,14 @@ Before opening a pull request, run the same checks CI runs:
 npm run lint && npm run format:check && npm run typecheck && npm test
 ```
 
+Database migrations live in `supabase/migrations/` and their access-rule tests in
+`supabase/tests/`. With Docker running:
+
+```bash
+npx supabase start      # local Supabase stack
+npx supabase test db    # run the database tests
+```
+
 ## v1 vs v2
 
 See [docs/v1-vs-v2.md](docs/v1-vs-v2.md) for side-by-side screenshots and a log of every
