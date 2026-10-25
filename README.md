@@ -71,6 +71,14 @@ npx supabase start      # local Supabase stack
 npx supabase test db    # run the database tests
 ```
 
+To apply migrations to the hosted project (one-time `login` and `link`):
+
+```bash
+npx supabase login
+npx supabase link --project-ref <your-project-ref>
+npx supabase db push --linked
+```
+
 ## v1 vs v2
 
 See [docs/v1-vs-v2.md](docs/v1-vs-v2.md) for side-by-side screenshots and a log of every
