@@ -1,0 +1,134 @@
+{
+  "meta": {
+    "description": "Temui pertandingan memancing, pasar basah dan acara tempatan di seluruh Malaysia."
+  },
+  "header": {
+    "home": "Laman utama MyLokalEvent",
+    "signIn": "Log masuk",
+    "language": "Bahasa",
+    "theme": "Tema warna",
+    "themeSystem": "Ikut peranti",
+    "themeLight": "Cerah",
+    "themeDark": "Gelap"
+  },
+  "common": {
+    "free": "Percuma",
+    "verified": "Disahkan",
+    "date": "Tarikh",
+    "place": "Lokasi",
+    "pleaseWait": "Sila tunggu…",
+    "footer": "© 2026 MyLokalEvent. Buatan Malaysia."
+  },
+  "categories": {
+    "competition": "Pertandingan memancing",
+    "market": "Pasar basah",
+    "pond": "Kolam pancing",
+    "community": "Komuniti"
+  },
+  "home": {
+    "eyebrow": "Acara tempatan, dekat dengan anda",
+    "title": "Cari pertandingan memancing, pasar basah dan acara tempatan di seluruh Malaysia.",
+    "lead": "Bermula di Terengganu, Kelantan dan Sabah. Satu tempat untuk mengetahui acara terkini.",
+    "comingSoon": "Akan datang",
+    "browse": "Layari mengikut kategori",
+    "upcoming": "Acara akan datang",
+    "sampleListings": "Contoh senarai",
+    "everySunday": "Setiap Ahad, {time}",
+    "blurbs": {
+      "competition": "Kejohanan dari pantai, bot dan kayak dengan hadiah menarik.",
+      "market": "Hasil laut segar terus dari jeti.",
+      "pond": "Kolam dan sesi memancing untuk hari yang santai.",
+      "community": "Gotong-royong, pesta dan perhimpunan."
+    },
+    "features": {
+      "verified": {
+        "title": "Penganjur disahkan",
+        "body": "Penganjur boleh disahkan dengan pendaftaran SSM mereka, jadi anda tahu siapa di sebalik setiap acara."
+      },
+      "payments": {
+        "title": "Bayar cara Lokal",
+        "body": "Bayaran penyenaraian melalui perbankan dalam talian FPX, kad atau GrabPay, dengan resit serta-merta."
+      },
+      "sharing": {
+        "title": "Senang nak dikongsi",
+        "body": "Setiap halaman acara dipaparkan dengan kemas di WhatsApp, lengkap dengan arah ke lokasi dan tambah ke kalendar."
+      }
+    }
+  },
+  "fields": {
+    "name": "Nama",
+    "email": "E-mel",
+    "password": "Kata laluan"
+  },
+  "signIn": {
+    "title": "Log masuk",
+    "heading": "Selamat kembali",
+    "lead": "Log masuk untuk melihat acara yang anda simpan.",
+    "submit": "Log masuk",
+    "newHere": "Baru di sini?",
+    "createAccount": "Daftar akaun"
+  },
+  "signUp": {
+    "title": "Daftar akaun",
+    "heading": "Daftar akaun anda",
+    "lead": "Simpan acara, ikuti penganjur dan terima peringatan.",
+    "submit": "Daftar akaun",
+    "passwordHint": "Sekurang-kurangnya 10 aksara, dengan huruf besar, huruf kecil dan nombor.",
+    "consentBefore": "Saya telah membaca dan bersetuju dengan",
+    "consentLink": "notis privasi",
+    "consentAfter": ".",
+    "haveAccount": "Sudah ada akaun?",
+    "signIn": "Log masuk"
+  },
+  "confirmFailed": {
+    "title": "Pautan tamat tempoh",
+    "heading": "Pautan itu tidak berfungsi",
+    "body": "Pautan pengesahan akan tamat tempoh dan hanya boleh digunakan sekali. Jika anda sudah mengesahkan akaun, log masuk sahaja. Jika belum, daftar semula untuk mendapatkan pautan baharu.",
+    "signIn": "Log masuk",
+    "signUp": "Daftar"
+  },
+  "messages": {
+    "displayNameRequired": "Beritahu kami nama panggilan anda.",
+    "displayNameTooLong": "Maksimum 80 aksara.",
+    "emailInvalid": "Masukkan alamat e-mel yang sah.",
+    "passwordRequired": "Masukkan kata laluan anda.",
+    "passwordTooShort": "Gunakan sekurang-kurangnya 10 aksara.",
+    "passwordTooLong": "Gunakan 72 aksara atau kurang.",
+    "passwordLowercase": "Tambah huruf kecil.",
+    "passwordUppercase": "Tambah huruf besar.",
+    "passwordNumber": "Tambah nombor.",
+    "passwordWeak": "Kata laluan ini terlalu mudah diteka. Cuba yang lebih panjang.",
+    "consentRequired": "Anda perlu bersetuju dengan notis privasi untuk mendaftar akaun.",
+    "tooManyAttempts": "Terlalu banyak cubaan. Sila tunggu seminit dan cuba lagi.",
+    "signUpFailed": "Kami tidak dapat mendaftarkan akaun anda. Sila cuba lagi.",
+    "emailNotConfirmed": "Sila sahkan e-mel anda dahulu. Semak peti masuk anda.",
+    "wrongCredentials": "E-mel dan kata laluan tidak sepadan.",
+    "checkEmail": "Semak {email} untuk pautan pengesahan akaun anda.",
+    "generic": "Ada masalah. Sila cuba lagi."
+  },
+  "account": {
+    "title": "Akaun anda",
+    "greeting": "Hai, {name}",
+    "email": "E-mel",
+    "accountType": "Jenis akaun",
+    "roles": {
+      "member": "Ahli",
+      "organiser": "Penganjur",
+      "admin": "Pentadbir"
+    },
+    "signOut": "Log keluar",
+    "loading": "Memuatkan akaun anda…"
+  },
+  "privacy": {
+    "title": "Notis privasi",
+    "draft": "Draf, akan disemak sebelum pelancaran",
+    "collectHeading": "Apa yang kami kumpul",
+    "collectBody": "Nama, alamat e-mel dan kata laluan anda (disimpan hanya sebagai hash yang selamat) semasa anda mendaftar akaun, serta acara yang anda simpan dan penganjur yang anda ikuti. Penganjur juga memberikan nombor telefon dan, jika mahu, nombor pendaftaran SSM.",
+    "whyHeading": "Mengapa",
+    "whyBody": "Untuk menguruskan akaun anda, memaparkan acara dan mengingatkan anda mengenainya, mengesahkan penganjur dan memproses bayaran. Kami tidak menjual data anda.",
+    "whereHeading": "Di mana ia disimpan",
+    "whereBody": "Di pelayan Supabase di Singapura. Akses dihadkan supaya setiap pengguna hanya boleh melihat data peribadi mereka sendiri.",
+    "rightsHeading": "Hak anda",
+    "rightsBody": "Di bawah Akta Perlindungan Data Peribadi 2010, anda boleh meminta untuk melihat, membetulkan atau memadam data anda, dan menarik balik persetujuan pada bila-bila masa dengan menutup akaun anda."
+  }
+}

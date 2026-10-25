@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Bricolage_Grotesque } from "next/font/google";
 
 import { ThemeScript } from "@/components/theme-script";
-import "./globals.css";
+import { locales } from "@/i18n/config";
+import { getLocale, getMessages } from "@/i18n/messages";
+import { env } from "@/lib/env";
+import "../globals.css";
 
 const body = Geist({
   variable: "--font-body",
@@ -20,16 +23,25 @@ const mono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "MyLokalEvent",
-  description:
-    "Discover fishing competitions, coastal markets and local events across Malaysia.",
-};
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getMessages();
+  return {
+    metadataBase: new URL(env().NEXT_PUBLIC_SITE_URL),
+    title: { default: "MyLokalEvent", template: "%s · MyLokalEvent" },
+    description: t.meta.description,
+  };
+}
+
+export default async function RootLayout({
+  children,
+}: LayoutProps<"/[locale]">) {
   return (
     <html
-      lang="en"
+      lang={await getLocale()}
       className={`${body.variable} ${display.variable} ${mono.variable} h-full antialiased`}
       suppressHydrationWarning
     >

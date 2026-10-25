@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   echoValues,
   fieldErrors,
+  formLocale,
   passwordSchema,
   signUpSchema,
 } from "./auth-schemas";
@@ -27,7 +28,7 @@ describe("signUpSchema", () => {
     const result = signUpSchema.safeParse({ ...valid, consent: undefined });
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(fieldErrors(result.error)?.consent).toMatch(/privacy notice/);
+      expect(fieldErrors(result.error)?.consent).toBe("consentRequired");
     }
   });
 
@@ -63,5 +64,15 @@ describe("echoValues", () => {
       displayName: "Ali",
       email: "ali@example.my",
     });
+  });
+});
+
+describe("formLocale", () => {
+  it("accepts a supported locale and falls back otherwise", () => {
+    const form = new FormData();
+    form.set("locale", "en");
+    expect(formLocale(form)).toBe("en");
+    form.set("locale", "fr");
+    expect(formLocale(form)).toBe("ms");
   });
 });

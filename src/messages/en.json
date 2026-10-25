@@ -1,0 +1,134 @@
+{
+  "meta": {
+    "description": "Discover fishing competitions, coastal markets and local events across Malaysia."
+  },
+  "header": {
+    "home": "MyLokalEvent home",
+    "signIn": "Sign in",
+    "language": "Language",
+    "theme": "Colour theme",
+    "themeSystem": "Match device",
+    "themeLight": "Light",
+    "themeDark": "Dark"
+  },
+  "common": {
+    "free": "Free",
+    "verified": "Verified",
+    "date": "Date",
+    "place": "Place",
+    "pleaseWait": "Please wait…",
+    "footer": "© 2026 MyLokalEvent. Made in Malaysia."
+  },
+  "categories": {
+    "competition": "Fishing competition",
+    "market": "Coastal market",
+    "pond": "Fishing pond",
+    "community": "Community"
+  },
+  "home": {
+    "eyebrow": "Local events, close to you",
+    "title": "Find fishing competitions, coastal markets and local events across Malaysia.",
+    "lead": "Starting with Terengganu, Kelantan and Sabah. One place to discover what's on.",
+    "comingSoon": "Coming soon",
+    "browse": "Browse by category",
+    "upcoming": "Upcoming events",
+    "sampleListings": "Sample listings",
+    "everySunday": "Every Sunday, {time}",
+    "blurbs": {
+      "competition": "Shore, boat and kayak tournaments with prizes.",
+      "market": "Fresh catch straight from the jetty.",
+      "pond": "Ponds and sessions for a relaxed day out.",
+      "community": "Clean-ups, festivals and gatherings."
+    },
+    "features": {
+      "verified": {
+        "title": "Verified organisers",
+        "body": "Organisers can verify with their SSM registration, so you know who is behind each event."
+      },
+      "payments": {
+        "title": "Pay the Malaysian way",
+        "body": "Listings paid by FPX online banking, cards or GrabPay, with instant receipts."
+      },
+      "sharing": {
+        "title": "Built for sharing",
+        "body": "Every event page previews nicely on WhatsApp, with directions and add-to-calendar."
+      }
+    }
+  },
+  "fields": {
+    "name": "Name",
+    "email": "Email",
+    "password": "Password"
+  },
+  "signIn": {
+    "title": "Sign in",
+    "heading": "Welcome back",
+    "lead": "Sign in to see your saved events.",
+    "submit": "Sign in",
+    "newHere": "New here?",
+    "createAccount": "Create an account"
+  },
+  "signUp": {
+    "title": "Create an account",
+    "heading": "Create your account",
+    "lead": "Save events, follow organisers and get reminders.",
+    "submit": "Create account",
+    "passwordHint": "At least 10 characters, with upper and lowercase letters and a number.",
+    "consentBefore": "I have read and agree to the",
+    "consentLink": "privacy notice",
+    "consentAfter": ".",
+    "haveAccount": "Already have an account?",
+    "signIn": "Sign in"
+  },
+  "confirmFailed": {
+    "title": "Link expired",
+    "heading": "That link didn't work",
+    "body": "Confirmation links expire and can only be used once. If you already confirmed, just sign in. Otherwise, sign up again for a fresh link.",
+    "signIn": "Sign in",
+    "signUp": "Sign up"
+  },
+  "messages": {
+    "displayNameRequired": "Tell us what to call you.",
+    "displayNameTooLong": "Keep it under 80 characters.",
+    "emailInvalid": "Enter a valid email address.",
+    "passwordRequired": "Enter your password.",
+    "passwordTooShort": "Use at least 10 characters.",
+    "passwordTooLong": "Use 72 characters or fewer.",
+    "passwordLowercase": "Add a lowercase letter.",
+    "passwordUppercase": "Add an uppercase letter.",
+    "passwordNumber": "Add a number.",
+    "passwordWeak": "That password is too easy to guess. Try a longer one.",
+    "consentRequired": "You need to agree to the privacy notice to create an account.",
+    "tooManyAttempts": "Too many attempts. Please wait a minute and try again.",
+    "signUpFailed": "We couldn't create your account. Please try again.",
+    "emailNotConfirmed": "Please confirm your email first. Check your inbox.",
+    "wrongCredentials": "That email and password don't match.",
+    "checkEmail": "Check {email} for a link to confirm your account.",
+    "generic": "Something went wrong. Please try again."
+  },
+  "account": {
+    "title": "Your account",
+    "greeting": "Hi, {name}",
+    "email": "Email",
+    "accountType": "Account type",
+    "roles": {
+      "member": "Member",
+      "organiser": "Organiser",
+      "admin": "Admin"
+    },
+    "signOut": "Sign out",
+    "loading": "Loading your account…"
+  },
+  "privacy": {
+    "title": "Privacy notice",
+    "draft": "Draft, to be reviewed before launch",
+    "collectHeading": "What we collect",
+    "collectBody": "Your name, email address and password (stored only as a secure hash) when you create an account, plus the events you save and the organisers you follow. Organisers also give a contact number and, optionally, an SSM registration number.",
+    "whyHeading": "Why",
+    "whyBody": "To run your account, show and remind you about events, verify organisers, and process payments. We do not sell your data.",
+    "whereHeading": "Where it's kept",
+    "whereBody": "On Supabase servers in Singapore. Access is restricted so each user can only see their own personal data.",
+    "rightsHeading": "Your rights",
+    "rightsBody": "Under Malaysia's Personal Data Protection Act 2010 you can ask to see, correct or delete your data, and withdraw consent at any time by closing your account."
+  }
+}

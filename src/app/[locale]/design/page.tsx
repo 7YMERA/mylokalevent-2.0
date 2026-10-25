@@ -4,8 +4,9 @@ import { CategoryBadge, type Category } from "@/components/category-badge";
 import { EventCard } from "@/components/event-card";
 import { SiteHeader } from "@/components/site-header";
 
+// Internal reference page, so its own text stays in English.
 export const metadata: Metadata = {
-  title: "Design system · MyLokalEvent",
+  title: "Design system",
   robots: { index: false },
 };
 
