@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 // Values copied from .env.example that must never reach a running server.
-const PLACEHOLDER = /^(|change-me|changeme|replace-me|your-.*|xxx+|todo)$/i;
+const PLACEHOLDER = /^$|^(change-?me|replace-me|xxx+|todo)$|your-/i;
 
 const required = z
   .string()
@@ -16,6 +16,9 @@ const serverSchema = z.object({
     .enum(["development", "test", "production"])
     .default("development"),
   NEXT_PUBLIC_SITE_URL: required.pipe(z.url()),
+  NEXT_PUBLIC_SUPABASE_URL: required.pipe(z.url()),
+  // Publishable (anon-level) key: safe in the browser, limited by RLS.
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: required,
 });
 
 export type Env = z.infer<typeof serverSchema>;
@@ -31,4 +34,13 @@ export function parseEnv(source: Record<string, string | undefined>): Env {
     );
   }
   return result.data;
+}
+
+let cached: Env | undefined;
+
+// Validated environment for server code. instrumentation.ts already checked
+// it at startup, so this only parses once per process.
+export function env(): Env {
+  cached ??= parseEnv(process.env);
+  return cached;
 }
