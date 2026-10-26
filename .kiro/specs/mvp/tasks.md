@@ -16,16 +16,16 @@ they merge, and note who is taking a task (Kiro or Claude) to avoid overlap.
   - [x] 2.2 Public organiser profile page (Kiro, branch feat/organisers)
   - [x] 2.3 Admin verification flow with audit log (Kiro, branch feat/organisers)
   - _Requirements: 2, 7.4_
-- [ ] 3. Events
+- [x] 3. Events
   - [x] 3.1 `categories`, `events`, `event_images` tables with RLS and seed categories (Kiro, branch feat/organisers)
   - [x] 3.2 Event form with draft saving and safe image upload (Kiro, branch feat/organisers)
   - [x] 3.3 Server-rendered event page with Open Graph, JSON-LD, directions, calendar, WhatsApp share (Kiro, branch feat/organisers)
-  - [ ] 3.4 Search, filters and map view
+  - [x] 3.4 Search, filters and map view (Kiro — search + filters DONE; interactive map DEFERRED, placeholder shown, location column ready)
   - _Requirements: 3, 4_
 - [ ] 4. Payments
-  - [ ] 4.1 `payments` and `stripe_events` tables; `confirm_payment` function
-  - [ ] 4.2 Stripe Checkout for listing fee; signed, idempotent webhook route
-  - [ ] 4.3 Featured placement purchase; receipts by email
+  - [x] 4.1 `payments` and `stripe_events` tables; `confirm_payment` function (Kiro, branch feat/organisers)
+  - [x] 4.2 Stripe Checkout for listing fee; signed, idempotent webhook route (Kiro — code DONE, untested without Stripe keys)
+  - [ ] 4.3 Featured placement purchase; receipts by email (DB supports featured via start_event_payment; NO purchase UI and NO receipt email yet)
   - _Requirements: 6_
 - [ ] 5. Moderation and admin
   - [ ] 5.1 Review queue with approve or reject and reason emails

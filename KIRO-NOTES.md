@@ -33,18 +33,25 @@ Last updated: 2026-10-26.
   - 2.1 DB layer — DONE. 2.2 public organiser page — DONE. 2.3 admin verify — DONE.
   - 2.1 apply-to-organise FORM — DONE (`/[locale]/organiser/apply`). A member
     applies; the row is created at `none`; the admin review page (2.3) verifies it.
-- **Task 3 (Events): 3.1 + 3.2 + 3.3 DONE on branch `feat/organisers`.**
-  - 3.1 `categories`/`events`/`event_images` tables, RLS, seed, status function — DONE.
-  - 3.2 event form + safe image upload — DONE (`/[locale]/organiser/events/new`).
-    Uploads are re-encoded server-side with `sharp` (strips EXIF/GPS), byte-type
-    checked, size-capped (5 MB), stored in a PRIVATE `event-images` bucket under
-    a random name; read back via short-lived signed URLs.
-  - 3.3 public event page — DONE (`/[locale]/events/[slug]`). Server-rendered,
-    Open Graph, JSON-LD `Event`, Google Maps directions, add-to-Google-Calendar,
-    WhatsApp share.
-  - 3.4 search, filters, map view — NOT STARTED. `events.location` is a PostGIS
-    `geography(point)` ready for the map.
-- **Tasks 4–7: NOT STARTED** (payments, moderation/admin, engagement, launch).
+- **Task 3 (Events): 3.1 + 3.2 + 3.3 + 3.4 DONE on branch `feat/organisers`.**
+  - 3.1 tables/RLS/seed/status function — DONE.
+  - 3.2 event form + safe image upload (`sharp`, EXIF strip, private bucket) — DONE.
+  - 3.3 public event page (OG, JSON-LD, directions, calendar, WhatsApp) — DONE.
+  - 3.4 search + filters (`/[locale]/events`, plain GET form) — DONE. Interactive
+    **map is DEFERRED** (placeholder shown) — needs a tile provider + client map
+    lib; `events.location` (PostGIS point) is ready for it.
+- **Organiser dashboard** (`/[locale]/organiser`) — DONE. Lists my events with
+  status, create link, submit-&-pay button, rejection reasons.
+- **Task 4 (Payments): 4.1 + 4.2 DONE (code), 4.3 PARTIAL — branch `feat/organisers`.**
+  - 4.1 `payments` + `stripe_events` tables, `start_event_payment` +
+    `confirm_payment` (atomic, idempotent, service-role-only) — DONE.
+  - 4.2 Stripe Checkout for the listing fee + signed idempotent webhook at
+    `/api/stripe/webhook` — CODE DONE, but **never run** (needs Stripe keys).
+  - 4.3 featured placement — DB supports it (`start_event_payment` purpose
+    'featured'); **no purchase UI, no receipt email yet**.
+- **Tasks 5–7: NOT STARTED** (moderation/admin dashboard, engagement, launch).
+  Admin verify (2.3) and event approve/reject function (3.1) exist; the broader
+  admin dashboard, reports, revenue, reminders cron, and PDPA export/delete do not.
 
 ## Product decisions locked (confirm before building payments)
 
@@ -214,32 +221,54 @@ I could not verify something myself, I say so — don't assume it's proven.
 
 ### What is PROVEN vs what is only WRITTEN
 
-| Thing                                               | Status                                                                                                                                                                      |
-| --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Task 2.1 migration + 17 pgTAP tests                 | **Proven** — CI `database` job green on PR #11                                                                                                                              |
-| Tasks 2.2 / 2.3 TypeScript                          | **Proven locally** — typecheck + eslint + translations test all green                                                                                                       |
-| Task 2.1 apply form, 3.2 event form, 3.3 event page | **Proven locally** — typecheck + eslint + full vitest (226 pass) green. NOT yet exercised in a browser / against a live Supabase.                                           |
-| Task 3.1 + 3.2 migrations (events + storage)        | **Written, NOT yet CI-run** — committed locally, not pushed. Mirror the proven 2.1 pattern. **Verify in CI after the next push.** No pgTAP test for the storage bucket yet. |
-| Image upload pipeline (`sharp`)                     | **Written, NOT run** — the re-encode/EXIF-strip path has never executed (no Docker/local Supabase to upload against). Verify it with a real image + GPS EXIF once running.  |
-| Full production build (`npm run build`)             | **Not run locally** (was RAM-limited earlier). CI covers it.                                                                                                                |
+| Thing                                          | Status                                                                                                                                                                   |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Task 2.1 migration + 17 pgTAP tests            | **Proven** — CI `database` job green on PR #11                                                                                                                           |
+| All TypeScript / React (tasks 2, 3, 4 UI)      | **Proven locally** — typecheck + eslint + `npm run build` (full production build) + full vitest (263 pass) all green                                                     |
+| Migrations 3.1 / 3.2 / 4.1 + their pgTAP tests | **Written, NOT yet CI-run** — committed locally, not pushed. Mirror the proven 2.1 pattern. **Verify in CI after the next push.** No pgTAP test for the storage bucket.  |
+| Image upload pipeline (`sharp`)                | **Written, NOT run** — never executed (no live Supabase to upload against). Verify with a real GPS-EXIF image once running.                                              |
+| Stripe Checkout + webhook (task 4)             | **Written, NOT run** — no Stripe keys. App boots without them; flow returns `paymentsUnavailable` until `STRIPE_*` env vars set. Test with `stripe listen` + test cards. |
+| Full production build (`npm run build`)        | **PROVEN this session** — passes (exit 0). It also caught a latent prerender bug in the 2.2 organiser page that typecheck/lint missed.                                   |
 
-**New dependency this session:** `sharp@0.34.4` (pinned, exact) for server-side
-image re-encoding. It has native binaries — `npm ci` on a new OS/arch pulls the
-right ones, but if an install ever fails, that's why.
+**New dependencies this session:** `sharp@0.34.4` (image re-encode) and
+`stripe@19.1.0`, both pinned exact, both with native/platform bits — `npm ci` on a
+fresh OS pulls the right ones.
+
+**New env vars (optional, in `.env.example`):** `SUPABASE_SECRET_KEY` (service role,
+webhook/cron only), `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`,
+`NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`. App boots without them; payments refuse until
+all three Stripe vars are set.
 
 ### Known test/tooling quirks (not real bugs)
 
+- **Cache Components is ON** (`next.config.ts`: `cacheComponents: true`). This Next
+  16 mode makes data dynamic by default and validates that every route can
+  prerender a static shell. Two traps it causes, both of which the production
+  build (NOT typecheck, NOT lint) is the only thing that catches:
+  1. A page that reads runtime data (cookies, `params`, `searchParams`, a DB
+     call) in its **body** must put that read inside `<Suspense>`. Pattern:
+     `export default` renders `<SiteHeader/>` + `<Suspense><Body/></Suspense>`,
+     and `<Body>` does the `await`s. See `/account`, `/organiser`, `/o/[slug]`.
+  2. A page whose **`generateMetadata` reads runtime data** (e.g. a per-slug DB
+     lookup for the title) can't wrap metadata in Suspense — instead mark the
+     whole route dynamic with **`export const instant = false`**. Used on
+     `/o/[slug]`, `/events/[slug]`, `/events`, and `/organiser/events/[slug]/paid`
+     (the last because it renders the locale-aware header, which uses
+     `usePathname()`). This is the documented fix — see
+     `node_modules/next/dist/docs/01-app/02-guides/migrating-to-cache-components.md`.
+     **Always run `npm run build` after adding or changing a page**, because tsc and
+     eslint pass happily while the prerender still fails.
 - `src/styles/contrast.test.ts` **fails locally on Windows** (`selector not
 found`) but **passes in CI on Linux** — an environment/CSS-parse quirk. Do NOT
-  "fix" it by editing design tokens. Confirmed by stashing my changes and seeing
-  it still fail on a clean tree.
+  "fix" it by editing design tokens. Confirmed by stashing changes: still fails clean.
 - `next lint` is removed in this Next version — the lint script is just `eslint`.
 - Typecheck needs Next's generated route types: run `next typegen` first (the
   `typecheck` script already chains it) or you'll see bogus `Cannot find name
 'LayoutProps'` errors in `layout.tsx` — those are NOT from new code.
-- Hand-written `database.types.ts`: I maintain it by hand to match migrations.
-  Once local Supabase runs, regenerate it (`supabase gen types typescript
---local`) and delete the drift risk.
+- Hand-written `database.types.ts`: maintained by hand to match migrations, and it
+  does NOT model embedded relationships, so a query with a join (`categories(slug)`)
+  needs a local cast (see `src/lib/events.ts`). Regenerate with
+  `supabase gen types typescript --local` once Supabase runs locally.
 
 ### Workflow constraints I operated under
 
@@ -261,13 +290,19 @@ is up to double-check the two migrations I could only CI-verify. After that, the
 ## Next steps (suggested order)
 
 1. **Push `feat/organisers` and confirm CI** — especially the `database` job for
-   the new events + storage migrations, not yet CI-run.
-2. **Smoke-test the new flows against a live/local Supabase:** apply → admin
-   verify → create event with a photo (check EXIF is gone) → approve → event page.
-   None of this has run end-to-end yet.
-3. **Organiser dashboard** (`/[locale]/organiser`): list my events + link to the
-   create form and public pages. There's no landing page tying 2.1/3.2 together yet.
-4. **Task 3.4:** search, filters and the PostGIS map view (home + `/events`).
-5. **Task 4 (Payments):** the event form currently saves a draft only — there is
-   NO submit-for-review + Stripe flow yet. `events.status` stays `draft` until the
-   payment flow (design.md "Publishing an event") moves it to `in_review`.
+   the events + storage + payments migrations, not yet CI-run.
+2. **Configure Stripe + smoke-test the money path.** Set the `STRIPE_*` env vars,
+   run `stripe listen --forward-to localhost:3000/api/stripe/webhook`, then:
+   apply → admin verify → create event w/ photo (confirm EXIF gone) → submit &
+   pay with a Stripe test card → confirm the webhook moved it to `in_review` →
+   admin approve → it appears in `/events` search and on its page. NONE of the
+   payment path has executed yet.
+3. **Task 4.3 + receipts:** featured-placement purchase UI (DB already supports
+   it) and the receipt email (needs the transactional email provider — Resend or
+   Brevo — which is not wired up at all yet).
+4. **Task 3.4 map:** drop a client map (MapLibre/Leaflet + a tile provider) into
+   the `/events` map placeholder; `events.location` is ready.
+5. **Task 5 (Moderation/admin):** events-in-review queue (the `set_event_status`
+   function exists; no review UI for events yet), reports, revenue dashboard.
+6. **Task 7 PDPA:** data export + account deletion are required for launch and
+   don't exist.

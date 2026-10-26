@@ -21,6 +21,7 @@ export async function proxy(request: NextRequest) {
   // such as /robots.txt are not pages, so they never get a locale prefix.
   const isPage =
     !pathname.startsWith("/auth/") &&
+    !pathname.startsWith("/api/") &&
     !pathname.startsWith("/_") &&
     !/\.\w+$/.test(pathname);
 

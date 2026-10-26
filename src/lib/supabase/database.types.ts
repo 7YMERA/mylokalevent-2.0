@@ -148,6 +148,29 @@ export type Database = {
         Update: never;
         Relationships: [];
       };
+      payments: {
+        Row: {
+          id: string;
+          user_id: string;
+          event_id: string;
+          purpose: "listing" | "featured";
+          amount_myr: number;
+          featured_days: number;
+          stripe_session_id: string;
+          status: "pending" | "paid" | "refunded" | "failed";
+          paid_at: string | null;
+          created_at: string;
+        };
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
+      stripe_events: {
+        Row: { id: string; received_at: string };
+        Insert: { id: string };
+        Update: never;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -173,6 +196,20 @@ export type Database = {
         };
         Returns: undefined;
       };
+      start_event_payment: {
+        Args: {
+          target_event: string;
+          session_id: string;
+          amount: number;
+          purpose: "listing" | "featured";
+          featured_days?: number;
+        };
+        Returns: undefined;
+      };
+      confirm_payment: {
+        Args: { session_id: string };
+        Returns: undefined;
+      };
     };
     Enums: {
       user_role: "member" | "organiser" | "admin";
@@ -185,6 +222,8 @@ export type Database = {
         | "approved"
         | "rejected"
         | "unpublished";
+      payment_purpose: "listing" | "featured";
+      payment_status: "pending" | "paid" | "refunded" | "failed";
     };
     CompositeTypes: Record<string, never>;
   };

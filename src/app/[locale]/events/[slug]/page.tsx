@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import { CategoryBadge } from "@/components/category-badge";
 import { SiteHeader } from "@/components/site-header";
@@ -11,6 +12,9 @@ import { env } from "@/lib/env";
 import { getApprovedEvent, signedImageUrl } from "@/lib/events";
 
 type Params = { params: Promise<{ slug: string }> };
+
+// DB-backed per-slug page (metadata + signed image URLs read runtime data).
+export const instant = false;
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
@@ -59,8 +63,7 @@ function calendarUrl(
   return `https://calendar.google.com/calendar/render?${params.toString()}`;
 }
 
-export default async function EventPage({ params }: Params) {
-  const { slug } = await params;
+async function EventBody({ slug }: { slug: string }) {
   const [event, locale, t] = await Promise.all([
     getApprovedEvent(slug),
     getLocale(),
@@ -98,99 +101,104 @@ export default async function EventPage({ params }: Params) {
   };
 
   return (
+    <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      {heroUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={heroUrl}
+          alt=""
+          className="mb-8 aspect-[16/9] w-full rounded-3xl border border-border object-cover"
+        />
+      ) : null}
+
+      <CategoryBadge category={event.categorySlug} />
+      <h1 className="mt-3 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
+        {event.title}
+      </h1>
+
+      {event.organiser ? (
+        <p className="mt-2 text-muted-foreground">
+          {t.eventPage.by}{" "}
+          <Link
+            href={localePath(locale, `/o/${event.organiser.slug}`)}
+            className="font-semibold text-primary underline"
+          >
+            {event.organiser.name}
+          </Link>
+        </p>
+      ) : null}
+
+      <dl className="mt-8 grid gap-4 rounded-3xl border border-border bg-surface p-6 sm:grid-cols-3">
+        <div>
+          <dt className="text-sm text-muted-foreground">{t.eventPage.when}</dt>
+          <dd className="mt-1 font-semibold">
+            {formatEventDate(event.startsAt, locale)}
+          </dd>
+        </div>
+        <div>
+          <dt className="text-sm text-muted-foreground">{t.eventPage.where}</dt>
+          <dd className="mt-1 font-semibold">
+            {event.venue}, {event.district}, {event.state}
+          </dd>
+        </div>
+        <div>
+          <dt className="text-sm text-muted-foreground">{t.eventPage.fee}</dt>
+          <dd className="mt-1 font-semibold">{feeLabel}</dd>
+        </div>
+      </dl>
+
+      <div className="mt-6 flex flex-wrap gap-3">
+        <a
+          href={directionsUrl(event.venue, event.district, event.state)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-full border border-border bg-surface px-4 py-2 text-sm font-semibold hover:bg-surface-muted"
+        >
+          {t.eventPage.directions}
+        </a>
+        <a
+          href={calendarUrl(
+            event.title,
+            event.startsAt,
+            event.endsAt,
+            event.venue,
+          )}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-full border border-border bg-surface px-4 py-2 text-sm font-semibold hover:bg-surface-muted"
+        >
+          {t.eventPage.addToCalendar}
+        </a>
+        <a
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
+        >
+          {t.eventPage.share}
+        </a>
+      </div>
+
+      <div className="mt-10 whitespace-pre-line leading-relaxed">
+        {event.description}
+      </div>
+    </main>
+  );
+}
+
+export default async function EventPage({ params }: Params) {
+  const { slug } = await params;
+  return (
     <>
       <SiteHeader />
-      <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-10">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-
-        {heroUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={heroUrl}
-            alt=""
-            className="mb-8 aspect-[16/9] w-full rounded-3xl border border-border object-cover"
-          />
-        ) : null}
-
-        <CategoryBadge category={event.categorySlug} />
-        <h1 className="mt-3 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
-          {event.title}
-        </h1>
-
-        {event.organiser ? (
-          <p className="mt-2 text-muted-foreground">
-            {t.eventPage.by}{" "}
-            <Link
-              href={localePath(locale, `/o/${event.organiser.slug}`)}
-              className="font-semibold text-primary underline"
-            >
-              {event.organiser.name}
-            </Link>
-          </p>
-        ) : null}
-
-        <dl className="mt-8 grid gap-4 rounded-3xl border border-border bg-surface p-6 sm:grid-cols-3">
-          <div>
-            <dt className="text-sm text-muted-foreground">
-              {t.eventPage.when}
-            </dt>
-            <dd className="mt-1 font-semibold">
-              {formatEventDate(event.startsAt, locale)}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-sm text-muted-foreground">
-              {t.eventPage.where}
-            </dt>
-            <dd className="mt-1 font-semibold">
-              {event.venue}, {event.district}, {event.state}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-sm text-muted-foreground">{t.eventPage.fee}</dt>
-            <dd className="mt-1 font-semibold">{feeLabel}</dd>
-          </div>
-        </dl>
-
-        <div className="mt-6 flex flex-wrap gap-3">
-          <a
-            href={directionsUrl(event.venue, event.district, event.state)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-full border border-border bg-surface px-4 py-2 text-sm font-semibold hover:bg-surface-muted"
-          >
-            {t.eventPage.directions}
-          </a>
-          <a
-            href={calendarUrl(
-              event.title,
-              event.startsAt,
-              event.endsAt,
-              event.venue,
-            )}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-full border border-border bg-surface px-4 py-2 text-sm font-semibold hover:bg-surface-muted"
-          >
-            {t.eventPage.addToCalendar}
-          </a>
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
-          >
-            {t.eventPage.share}
-          </a>
-        </div>
-
-        <div className="mt-10 whitespace-pre-line leading-relaxed">
-          {event.description}
-        </div>
-      </main>
+      <Suspense fallback={<div className="flex-1" />}>
+        <EventBody slug={slug} />
+      </Suspense>
     </>
   );
 }
