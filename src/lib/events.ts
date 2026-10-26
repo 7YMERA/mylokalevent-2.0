@@ -157,6 +157,8 @@ export type EventSearchResult = {
   district: string;
   venue: string;
   feeMyr: number;
+  lat: number | null;
+  lng: number | null;
 };
 
 export type EventSearchFilters = {
@@ -175,7 +177,7 @@ export async function searchApprovedEvents(
   let query = supabase
     .from("events")
     .select(
-      "slug, title, starts_at, state, district, venue, fee_myr, status, category_id, categories(slug)",
+      "slug, title, starts_at, state, district, venue, fee_myr, lat, lng, status, category_id, categories(slug)",
     )
     .eq("status", "approved")
     .order("starts_at", { ascending: true })
@@ -198,6 +200,8 @@ export async function searchApprovedEvents(
     district: string;
     venue: string;
     fee_myr: number;
+    lat: number | null;
+    lng: number | null;
     categories: { slug: string } | { slug: string }[] | null;
   }>;
 
@@ -217,6 +221,8 @@ export async function searchApprovedEvents(
     district: row.district,
     venue: row.venue,
     feeMyr: row.fee_myr,
+    lat: row.lat,
+    lng: row.lng,
   }));
 }
 

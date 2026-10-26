@@ -90,6 +90,8 @@ export type Database = {
           district: string;
           venue: string;
           location: string | null;
+          lat: number | null;
+          lng: number | null;
           fee_myr: number;
           status:
             | "draft"

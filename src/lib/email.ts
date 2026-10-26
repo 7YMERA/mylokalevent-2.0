@@ -66,3 +66,34 @@ export function paymentReceiptEmail(args: {
   </div>`;
   return { subject, html, text };
 }
+
+// Email an organiser the outcome of an admin review of their event.
+export function eventDecisionEmail(args: {
+  decision: "approved" | "rejected";
+  eventTitle: string;
+  reason?: string | null;
+  eventUrl?: string;
+}): { subject: string; html: string; text: string } {
+  if (args.decision === "approved") {
+    const subject = `Your event is live: ${args.eventTitle}`;
+    const link = args.eventUrl ? `\n\nView it: ${args.eventUrl}` : "";
+    const text = `Good news — your event "${args.eventTitle}" has been approved and is now live on MyLokalEvent.${link}`;
+    const html = `<div style="font-family:system-ui,sans-serif;max-width:480px">
+      <h2>Your event is live</h2>
+      <p>Your event <strong>${args.eventTitle}</strong> has been approved and is now live on MyLokalEvent.</p>
+      ${args.eventUrl ? `<p><a href="${args.eventUrl}">View your event</a></p>` : ""}
+    </div>`;
+    return { subject, html, text };
+  }
+
+  const reason = args.reason?.trim() || "No reason was provided.";
+  const subject = `Your event needs changes: ${args.eventTitle}`;
+  const text = `Your event "${args.eventTitle}" was not approved.\n\nReason: ${reason}\n\nYou can edit it and submit it again from your organiser dashboard.`;
+  const html = `<div style="font-family:system-ui,sans-serif;max-width:480px">
+    <h2>Your event needs changes</h2>
+    <p>Your event <strong>${args.eventTitle}</strong> was not approved.</p>
+    <p><strong>Reason:</strong> ${reason}</p>
+    <p style="color:#666">You can edit it and submit it again from your organiser dashboard.</p>
+  </div>`;
+  return { subject, html, text };
+}
