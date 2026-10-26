@@ -250,25 +250,37 @@ type 'string'` on the embedded `event_images`/`categories` joins — the
 
 ### Deferred / incomplete (features NOT fully built, and why)
 
-- **Interactive per-event pin map (task 3.4).** Shipped a no-dependency
-  OpenStreetMap `<iframe>` centred on the selected state instead. A real pinned
-  map needs a client map lib (MapLibre/Leaflet) + a tile provider + parsing
-  `events.location` (PostGIS) to lat/lng. Deferred because installing + building a
-  heavy map dep was unsafe under the critical-memory host and unverifiable here.
-- **Reject-reason email to organisers (task 5.1).** The admin event review queue
-  stores + audits the rejection reason, but does NOT email it to the organiser.
-  Not wired.
+- **Full multi-pin interactive map (task 3.4) — SHELVED FOR RAM.** The search page
+  now has REAL coordinates: migration `20261026080000_event_coordinates.sql` adds
+  generated `events.lat`/`events.lng` from the PostGIS point, the search DAL
+  selects them, and the OSM embed frames to the pinned events' bounds + drops a
+  marker for a single result + lists precise per-event "pin" links. BUT a true
+  pan/zoom map with all pins at once needs a client map lib (Leaflet or MapLibre)
+  — an npm install + build I could NOT do because host memory was CRITICAL
+  (1.9 GB) this turn and the build was unverifiable. **To finish:** `npm i
+leaflet react-leaflet` (or maplibre-gl), add a client `<Map>` component, add the
+  tile host to the CSP `img-src`/`connect-src` in `next.config.ts`, and feed it
+  `results` (each has `lat`/`lng`). The data layer is ready; only the client map
+  component remains.
+- **Reject-reason email to organisers (task 5.1) — DONE (code), unrun.** The admin
+  decision action (`src/app/[locale]/admin/events/actions.ts`) now emails the
+  organiser on approve AND reject (reason included) via the service client +
+  `eventDecisionEmail` in `src/lib/email.ts`. Never executed (no `RESEND_API_KEY`).
 - **Stripe payment path (task 4) — never executed.** No Stripe keys on this host;
   code written to spec but unrun. Needs `stripe listen` + test cards.
-- **Receipt email (task 4.3) — never executed.** Resend integration written;
-  no `RESEND_API_KEY`/`EMAIL_FROM`, so it no-ops. Unrun.
+- **Receipt + decision emails (Resend) — never executed.** No `RESEND_API_KEY`/
+  `EMAIL_FROM`, so `sendEmail` no-ops (logs a warning). All email code is written
+  to fail-safe: a missing email never fails the payment or the admin decision.
 - **Image upload pipeline (`sharp`) — never executed.** No live Supabase to upload
   against. Verify EXIF/GPS is actually stripped with a real geotagged photo.
 - **PDPA data export + account deletion (task 7.1), reminders cron (6.2), reports
   / revenue dashboard (5.2/5.3), save/follow (6.1)** — NOT STARTED.
-- **`npm run build` not run on the final payments-fix commit** (`87213c9`) — host
-  memory was critical. The fix is DB-only (SQL), so build is unaffected, but the
-  full suite wasn't re-run locally after it.
+- **`npm run build` + full pgTAP NOT run on commits after `87213c9`** — host memory
+  was critical/tight. This turn (reject email + coords map, + the
+  `20261026080000_event_coordinates.sql` migration) was verified with typecheck +
+  eslint ONLY. **RUN `npm run build` and `supabase test db` before trusting it** —
+  especially the new generated-column migration (the `::geometry` cast + `st_x/st_y`
+  under the `extensions` schema have not been executed anywhere).
 
 ### Host constraints during this work
 

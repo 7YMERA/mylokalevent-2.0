@@ -53,8 +53,31 @@ async function SearchBody({ searchParams }: Search) {
   });
   const s = t.search;
 
-  const mapBbox =
-    state && isMalaysianState(state) ? STATE_BBOX[state] : MALAYSIA_BBOX;
+  // Events that have real coordinates (from events.lat/lng).
+  const pinned = results.filter(
+    (e): e is typeof e & { lat: number; lng: number } =>
+      e.lat != null && e.lng != null,
+  );
+
+  // Centre the overview map on the pinned events when we have any; otherwise
+  // fall back to the selected state's bbox (or all of Malaysia).
+  const mapBbox: [number, number, number, number] =
+    pinned.length > 0
+      ? (() => {
+          const lngs = pinned.map((e) => e.lng);
+          const lats = pinned.map((e) => e.lat);
+          // Pad the bounds a little so pins aren't flush against the edge.
+          const pad = 0.05;
+          return [
+            Math.min(...lngs) - pad,
+            Math.min(...lats) - pad,
+            Math.max(...lngs) + pad,
+            Math.max(...lats) + pad,
+          ];
+        })()
+      : state && isMalaysianState(state)
+        ? STATE_BBOX[state]
+        : MALAYSIA_BBOX;
 
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10">
@@ -163,17 +186,53 @@ async function SearchBody({ searchParams }: Search) {
         <h2 className="font-display text-xl font-bold tracking-tight">
           {s.mapTitle}
         </h2>
-        {/* No-dependency OpenStreetMap embed centred on the selected state
-            (or all of Malaysia). A richer interactive map with per-event pins
-            can replace this later; events.location (PostGIS) is ready. */}
+        {/* OpenStreetMap embed, no client JS dependency. When results have real
+            coordinates (events.lat/lng) the map is framed to their bounds and a
+            single result drops a precise marker; otherwise it falls back to the
+            selected state. A full multi-pin interactive map (Leaflet/MapLibre)
+            is the planned upgrade — see KIRO-NOTES "Deferred / incomplete". */}
         <div className="mt-4 overflow-hidden rounded-3xl border border-border">
           <iframe
             title={s.mapTitle}
             className="h-80 w-full"
             loading="lazy"
-            src={`https://www.openstreetmap.org/export/embed.html?bbox=${mapBbox.join(",")}&layer=mapnik`}
+            src={
+              pinned.length === 1
+                ? `https://www.openstreetmap.org/export/embed.html?bbox=${mapBbox.join(",")}&layer=mapnik&marker=${pinned[0].lat},${pinned[0].lng}`
+                : `https://www.openstreetmap.org/export/embed.html?bbox=${mapBbox.join(",")}&layer=mapnik`
+            }
           />
         </div>
+
+        {pinned.length > 1 ? (
+          <ul className="mt-4 flex flex-wrap gap-2">
+            {pinned.map((event) => (
+              <li key={event.slug}>
+                <a
+                  href={`https://www.openstreetmap.org/?mlat=${event.lat}&mlon=${event.lng}#map=15/${event.lat}/${event.lng}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 text-sm font-semibold hover:bg-surface-muted"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-4 w-4 text-primary"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M12 21s-6-5.3-6-10a6 6 0 0 1 12 0c0 4.7-6 10-6 10Z" />
+                    <circle cx="12" cy="11" r="2" />
+                  </svg>
+                  {event.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : null}
       </section>
     </main>
   );
