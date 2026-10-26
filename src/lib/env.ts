@@ -15,6 +15,9 @@ const serverSchema = z.object({
   NODE_ENV: z
     .enum(["development", "test", "production"])
     .default("development"),
+  // "on" shows "Continue with Google". Leave it off until the Google provider
+  // is set up in Supabase, or the button leads to an error page.
+  GOOGLE_SIGN_IN: z.enum(["on", "off"]).default("off"),
   NEXT_PUBLIC_SITE_URL: required.pipe(z.url()),
   NEXT_PUBLIC_SUPABASE_URL: required.pipe(z.url()),
   // Publishable (anon-level) key: safe in the browser, limited by RLS.

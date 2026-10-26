@@ -14,6 +14,13 @@ describe("parseEnv", () => {
     expect(env.NEXT_PUBLIC_SITE_URL).toBe("https://mylokalevent.my");
   });
 
+  it("keeps Google sign-in off unless switched on", () => {
+    expect(parseEnv(valid).GOOGLE_SIGN_IN).toBe("off");
+    expect(parseEnv({ ...valid, GOOGLE_SIGN_IN: "on" }).GOOGLE_SIGN_IN).toBe(
+      "on",
+    );
+  });
+
   it("rejects a missing variable", () => {
     expect(() => parseEnv({})).toThrow(/NEXT_PUBLIC_SITE_URL/);
   });
