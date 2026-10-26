@@ -35,8 +35,13 @@ Last updated: 2026-10-26.
 | #8  | BM / EN: locale in the URL, browser detection, BM fallback, switcher, parity test         | Merged               |
 | #9  | Google sign-in (PKCE) + privacy-consent step for new Google users                         | Merged (setup below) |
 | #10 | `npm run demo:users`: demo member / organiser / admin accounts                            | Merged               |
+| #11 | Kiro's branch: Claude merged `main` in and fixed review findings 1–5 (commits below)      | Open, Kiro's PR      |
+| #12 | This file                                                                                 | Open                 |
+| #13 | `GOOGLE_SIGN_IN` flag: Google button hidden until the provider is set up                  | Open                 |
 
-**Google sign-in is merged but not switched on yet.** Still to do, by the owner:
+**Google sign-in is merged but parked (owner, 2026-10-26: "keep it at bay"
+until there is time for the full setup).** PR #13 hides the button until
+`GOOGLE_SIGN_IN=on`. When the owner is ready:
 
 1. `npx supabase db push --linked` (applies `20261025130000_google_sign_in.sql`;
    without it the `/welcome` consent step fails).
@@ -44,7 +49,8 @@ Last updated: 2026-10-26.
    secret from Google Cloud (project "MyLokalEvent", client "MyLokalEvent web"),
    enable, save. If the secret was not kept, add a new secret on that client.
 3. Google Auth Platform → Audience → add test users (the app is in Testing mode).
-4. Try "Continue with Google" on localhost:3001.
+4. Set `GOOGLE_SIGN_IN=on` in `.env.local`, then try "Continue with Google" on
+   localhost:3001.
 
 **Hosting decision (owner, 2026-10-25):** Vercel runs the whole app (no Render
 like v1); Supabase stays for the database and auth. The Vercel project is
@@ -73,14 +79,38 @@ Supabase's `auth` and `storage` schemas (no Docker here either). The stubs are
 close to Supabase but not identical, so CI's `supabase test db` is still the
 final word.
 
-**Why CI shows nothing for the last 6 commits:** PR #11 has a **merge conflict
-with `main`** (since #9 merged), and GitHub does not run `pull_request` CI on a
-conflicted PR. Conflicts are only in `next.config.ts` (CSP `form-action` from
-#9 vs `frame-src` from #11: keep both lines) and
-`src/lib/supabase/database.types.ts` (keep both: `accept_privacy_notice` and
-the new tables/functions). Merge `main` into the branch, push, and CI runs.
+**Why CI showed nothing for 6 commits:** PR #11 had a **merge conflict with
+`main`** (since #9 merged), and GitHub does not run `pull_request` CI on a
+conflicted PR. **Resolved in `70ef4aa`** (merge commit, no history rewritten):
+`database.types.ts` keeps both sides' functions; the CSP keeps both
+`form-action` (from #9) and `frame-src` (from #11).
+
+**Kiro: pull before you continue.** `git pull origin feat/organisers` brings in
+the merge and the fixes below. If you have local commits, merge (don't rebase).
 
 ### Findings: fix before launch (ranked)
+
+**Findings 1–5 are FIXED on `feat/organisers` (2026-10-26)**, owner said go:
+
+| #   | Fix                                                                                                                                                                                                      | Commit    |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| 1   | Migration `20261026100000_review_guards.sql`: approved event content edit → `in_review`; no edits in `awaiting_payment`/`in_review`; verified organiser name/SSM edit → `pending`                        | `fe9855d` |
+| 2   | Webhook deletes the `stripe_events` row when `confirm_payment` fails, so Stripe's retry is processed                                                                                                     | `5114e4e` |
+| 3   | CSP `img-src` (and `connect-src`) allow `NEXT_PUBLIC_SUPABASE_URL`; `form-action` also allows `checkout.stripe.com` (a Server Action redirect to Stripe is a form-action navigation and was blocked too) | `70ef4aa` |
+| 4   | Photos go browser → Storage (`uploads/<event_id>/`, signed upload URL) → server re-encodes to `events/<event_id>/*.webp` and deletes the original. New storage policy: owner reads own folder            | `0007e9a` |
+| 5   | Events insert policy and `start_event_payment` require `is_verified_organiser`                                                                                                                           | `fe9855d` |
+
+Verified locally: pgTAP **95/95** (new `review_guards_test.sql`, 13 checks;
+5 of them fail on the old schema, so they test the fix), vitest 355, build,
+lint, typecheck. **Not verified:** the photo upload against a real Supabase
+Storage (no live project here). Test it once: create a draft with a 4–5 MB
+geotagged JPEG, check it shows on the event page and has no GPS in EXIF.
+
+**Product effect of fix 1 (owner can change this):** fixing a typo on a live
+event hides it until an admin re-approves. If that's too strict, the trigger
+can be limited to the date, venue and fee.
+
+The original findings, for the record:
 
 1. **Approved events can be edited with no re-review.**
    `20261026050000_events.sql`, policy "events: owner edits own while active".
@@ -174,6 +204,10 @@ solid.
 
 Newest first.
 
+- **2026-10-26: CSP blocked the Stripe Checkout redirect** (found while
+  resolving the merge, never hit at runtime). `form-action 'self'` also covers
+  a Server Action's redirect. Fix: allow `https://checkout.stripe.com`.
+
 - **2026-10-26: PR #11 shows no CI for its last 6 commits.** Cause: merge
   conflict with `main` (above). Not a code failure.
 - **2026-10-25: Vercel preview builds fail.** Cause: no env vars in Vercel; the
@@ -209,9 +243,12 @@ Newest first.
 
 ## Suggestions
 
-1. **Fix findings 1–5 before anyone pays.** They are small and I can do them in
-   one PR on top of `feat/organisers`, with pgTAP tests for each.
-2. **Merge `main` into `feat/organisers`** so CI runs again.
+1. **Fix findings 6–8 next** (price set by the caller, abandoned checkout
+   trapping the event, webhook payment-status edge cases). Done: 1–5.
+2. **A raw original can still be uploaded straight to `events/<id>/`** by an
+   organiser using the API with their own token (the storage insert policy
+   allows the whole event folder). Low risk (it's their own photo), but the
+   `events/` prefix could be made server-only with the service key.
 3. **Split future work into smaller PRs.** PR #11 is titled "task 2.1" but holds
    tasks 2–6 (56 files, +6.4k lines). Small PRs get real CI runs and reviews.
 4. **Regenerate `database.types.ts`** from the linked project
@@ -225,8 +262,9 @@ Newest first.
 
 ## Next steps (suggested order)
 
-1. Owner: Google provider setup + `db push` (above), then Vercel env vars.
-2. Merge `main` into `feat/organisers`; confirm CI green.
-3. Claude or Kiro: security fixes 1–8 with tests.
+1. Owner: `npx supabase db push --linked` once PR #11 merges (new migrations),
+   then Vercel env vars. Google is parked until the owner has time.
+2. Claude or Kiro: findings 6–8 with tests (1–5 done).
+3. Owner: real photo upload test (see fix 4 above).
 4. Smoke test the money path with Stripe test keys (`stripe listen`).
 5. PDPA export + account deletion (task 7.1), required for launch.
