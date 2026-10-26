@@ -173,6 +173,34 @@ export type Database = {
         Update: never;
         Relationships: [];
       };
+      saved_events: {
+        Row: {
+          user_id: string;
+          event_id: string;
+          remind: boolean;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          event_id: string;
+          remind?: boolean;
+        };
+        Update: { remind?: boolean };
+        Relationships: [];
+      };
+      follows: {
+        Row: {
+          user_id: string;
+          organiser_id: string;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          organiser_id: string;
+        };
+        Update: never;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {

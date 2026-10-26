@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
+import { FollowButton } from "@/components/follow-button";
 import { SiteHeader } from "@/components/site-header";
-import { getMessages } from "@/i18n/messages";
+import { getLocale, getMessages } from "@/i18n/messages";
+import { getCurrentUser } from "@/lib/auth";
+import { isFollowingOrganiser } from "@/lib/engagement";
 import { getVerifiedOrganiser } from "@/lib/organisers";
 
 type Params = { params: Promise<{ slug: string }> };
@@ -51,12 +54,16 @@ function VerifiedBadge({ label }: { label: string }) {
 }
 
 async function OrganiserBody({ slug }: { slug: string }) {
-  const [organiser, t] = await Promise.all([
+  const [organiser, t, locale, user] = await Promise.all([
     getVerifiedOrganiser(slug),
     getMessages(),
+    getLocale(),
+    getCurrentUser(),
   ]);
 
   if (!organiser) notFound();
+
+  const following = user ? await isFollowingOrganiser(organiser.id) : false;
 
   return (
     <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-12">
@@ -66,6 +73,17 @@ async function OrganiserBody({ slug }: { slug: string }) {
             {organiser.name}
           </h1>
           <VerifiedBadge label={t.organiser.verifiedBadge} />
+          <FollowButton
+            organiserId={organiser.id}
+            initialFollowing={following}
+            signedIn={Boolean(user)}
+            locale={locale}
+            labels={{
+              follow: t.engagement.follow,
+              following: t.engagement.following,
+              signIn: t.engagement.signInToSave,
+            }}
+          />
         </div>
         <dl className="mt-6 grid gap-4 sm:grid-cols-2">
           {organiser.state ? (

@@ -60,11 +60,21 @@ Last updated: 2026-10-26.
 - **Task 5 (Moderation/admin): 5.1 PARTIAL — branch `feat/organisers`.**
   - Admin event review queue at `/[locale]/admin/events` (approve/reject with
     reason via `set_event_status`, audited) — DONE. Admin organiser verify
-    (`/admin/organisers`) was done earlier. **Reason EMAILS to the organiser on
-    reject are NOT wired** (the status + reason are stored + audited only).
+    (`/admin/organisers`) was done earlier. Reason email to the organiser on
+    reject (and a "live" email on approve) IS now wired via the service client —
+    code DONE, unrun (no `RESEND_API_KEY`).
   - 5.2 reports / suspend / unpublish / manage categories, 5.3 revenue dashboard
     — NOT STARTED.
-- **Tasks 6–7: NOT STARTED** (engagement/reminders cron, launch/PDPA).
+- **Task 6 (Engagement): 6.1 DONE — branch `feat/organisers`.**
+  - 6.1 save events + follow organisers — DONE. Migration
+    `20261026090000_saves_follows.sql` (`saved_events`, `follows`, owner-only RLS)
+    - `saves_follows_test.sql` (10 pgTAP checks). `src/lib/engagement.ts` (reads),
+      `src/lib/engagement-actions.ts` (toggle save/follow/reminder). `SaveButton`
+      on the event page, `FollowButton` on the organiser page, saved-events list on
+      `/account`. A `remind` flag per save is stored for the 6.2 cron.
+  - 6.2 reminders / follower-notify / mark-ended CRON — NOT STARTED (needs the
+    email provider + a Supabase scheduled job).
+- **Task 7 (Launch/PDPA): NOT STARTED.**
 
 > **⚠ Verification gap this turn:** host memory was CRITICAL→TIGHT, so I ran only
 > typecheck + eslint + the message-parity test (all green). I did **NOT** run
@@ -281,6 +291,13 @@ leaflet react-leaflet` (or maplibre-gl), add a client `<Map>` component, add the
   eslint ONLY. **RUN `npm run build` and `supabase test db` before trusting it** —
   especially the new generated-column migration (the `::geometry` cast + `st_x/st_y`
   under the `extensions` schema have not been executed anywhere).
+- **Engagement 6.1 (save/follow) NOT build- or DB-tested** — host memory TIGHT, so
+  typecheck + eslint + message-parity only. The migration
+  `20261026090000_saves_follows.sql` and its `saves_follows_test.sql` have not run
+  in CI/Docker; the `SaveButton`/`FollowButton` and the `/account` saved list have
+  not been exercised in a browser. The new pages read cookies inside existing
+  `<Suspense>` boundaries (account) or on already-`instant=false` routes (event,
+  organiser), so prerender SHOULD be fine — but RUN `npm run build` to confirm.
 
 ### Host constraints during this work
 

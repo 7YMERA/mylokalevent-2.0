@@ -298,6 +298,17 @@
     "mapTitle": "Event locations",
     "mapEmpty": "Events with a pinned location will appear on the map."
   },
+  "engagement": {
+    "save": "Save",
+    "saved": "Saved",
+    "follow": "Follow",
+    "following": "Following",
+    "signInToSave": "Sign in to save",
+    "reminderOn": "Reminder on",
+    "reminderOff": "Reminder off",
+    "savedEvents": "Saved events",
+    "noSaved": "You haven't saved any events yet."
+  },
   "privacy": {
     "title": "Privacy notice",
     "draft": "Draft, to be reviewed before launch",
