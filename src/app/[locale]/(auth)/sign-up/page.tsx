@@ -5,6 +5,7 @@ import { GoogleButton, OrDivider } from "@/components/google-button";
 import { localePath } from "@/i18n/config";
 import { getLocale, getMessages } from "@/i18n/messages";
 import { pageMetadata } from "@/i18n/metadata";
+import { env } from "@/lib/env";
 
 import { SignUpForm } from "./sign-up-form";
 
@@ -21,12 +22,16 @@ export default async function SignUpPage() {
         {t.signUp.heading}
       </h1>
       <p className="mt-1 mb-6 text-muted-foreground">{t.signUp.lead}</p>
-      <GoogleButton
-        locale={locale}
-        label={t.google.continue}
-        pendingLabel={t.common.pleaseWait}
-      />
-      <OrDivider label={t.google.or} />
+      {env().GOOGLE_SIGN_IN === "on" && (
+        <>
+          <GoogleButton
+            locale={locale}
+            label={t.google.continue}
+            pendingLabel={t.common.pleaseWait}
+          />
+          <OrDivider label={t.google.or} />
+        </>
+      )}
       <SignUpForm
         locale={locale}
         t={{
