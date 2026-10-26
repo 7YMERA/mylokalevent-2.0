@@ -79,6 +79,11 @@ npx supabase link --project-ref <your-project-ref>
 npx supabase db push --linked
 ```
 
+Google sign-in needs an OAuth client (Web application) in Google Cloud with the
+redirect URI `https://<your-project-ref>.supabase.co/auth/v1/callback`, and its client
+ID and secret entered under Authentication → Sign In / Providers → Google in Supabase.
+The secret never goes in this repo.
+
 ## Demo accounts
 
 There are no seeded accounts with known passwords (v1 had them in the repo). To get

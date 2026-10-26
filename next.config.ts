@@ -13,7 +13,9 @@ const contentSecurityPolicy = [
   "connect-src 'self'",
   "object-src 'none'",
   "base-uri 'self'",
-  "form-action 'self'",
+  // Google sign-in posts a form whose response redirects to Supabase and then
+  // Google; browsers apply form-action to those redirects too.
+  `form-action 'self' ${process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""} https://accounts.google.com`,
   "frame-ancestors 'none'",
   "upgrade-insecure-requests",
 ].join("; ");
