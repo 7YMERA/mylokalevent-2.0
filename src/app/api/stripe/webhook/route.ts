@@ -62,6 +62,10 @@ export async function POST(request: NextRequest) {
         session_id: session.id,
       });
       if (error) {
+        // Forget the event id so Stripe's retry is processed instead of being
+        // dropped as a duplicate. confirm_payment is idempotent, so a retry
+        // after a partial failure is safe.
+        await supabase.from("stripe_events").delete().eq("id", event.id);
         return NextResponse.json({ error: "confirm failed" }, { status: 500 });
       }
 
