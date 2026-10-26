@@ -1,6 +1,14 @@
 "use client";
 
-import { useActionState } from "react";
+import { createClient } from "@supabase/supabase-js";
+import {
+  startTransition,
+  useActionState,
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+} from "react";
 
 import {
   FormAlert,
@@ -15,7 +23,43 @@ import { translateMessage } from "@/i18n/translate";
 import { MALAYSIAN_STATES } from "@/lib/geo";
 import type { FormState } from "@/lib/organiser-schemas";
 
-import { saveEventDraft } from "./actions";
+import {
+  finishImageUpload,
+  prepareImageUpload,
+  saveEventDraft,
+} from "./actions";
+
+const MAX_IMAGES = 4;
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+
+// Sends each photo straight to Storage with a one-time signed URL, then asks
+// the server to re-encode it. Returns the first error key, if any.
+async function uploadImages(
+  eventId: string,
+  files: File[],
+): Promise<string | undefined> {
+  const storage = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    { auth: { persistSession: false, autoRefreshToken: false } },
+  ).storage.from("event-images");
+
+  for (const [index, file] of files.slice(0, MAX_IMAGES).entries()) {
+    if (file.size > MAX_IMAGE_BYTES) return "imageTooLarge";
+    const ticket = await prepareImageUpload(eventId);
+    if ("error" in ticket) return ticket.error;
+    const { error } = await storage.uploadToSignedUrl(
+      ticket.path,
+      ticket.token,
+      file,
+      { contentType: file.type || "application/octet-stream" },
+    );
+    if (error) return "imageFailed";
+    const done = await finishImageUpload(eventId, ticket.path, index);
+    if (done.error) return done.error;
+  }
+  return undefined;
+}
 
 type CategoryOption = { value: string; label: string };
 
@@ -38,14 +82,46 @@ export function EventForm({ locale, categories, t }: Props) {
   const v = state.values ?? {};
   const f = t.form;
 
+  // Photos are held back from the form post and uploaded once the draft
+  // exists, so a large photo never hits the Server Action body limit.
+  const files = useRef<File[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string>();
+
+  useEffect(() => {
+    const eventId = state.eventId;
+    const pendingFiles = files.current;
+    if (!eventId || pendingFiles.length === 0) return;
+    files.current = [];
+    setUploading(true);
+    uploadImages(eventId, pendingFiles)
+      .then(setUploadError)
+      .catch(() => setUploadError("imageFailed"))
+      .finally(() => setUploading(false));
+  }, [state]);
+
+  function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    files.current = formData
+      .getAll("images")
+      .filter((item): item is File => item instanceof File && item.size > 0);
+    formData.delete("images");
+    setUploadError(undefined);
+    startTransition(() => action(formData));
+  }
+
+  const busy = pending || uploading;
+  const error = state.error ?? uploadError;
+
   return (
-    <form action={action} className="flex flex-col gap-5" noValidate>
+    <form onSubmit={onSubmit} className="flex flex-col gap-5" noValidate>
       <input type="hidden" name="locale" value={locale} />
 
-      {state.message && <FormAlert tone="success">{f.draftSaved}</FormAlert>}
-      {state.error && (
-        <FormAlert tone="danger">{message(state.error)}</FormAlert>
+      {state.message && !busy && (
+        <FormAlert tone="success">{f.draftSaved}</FormAlert>
       )}
+      {error && !busy && <FormAlert tone="danger">{message(error)}</FormAlert>}
 
       <FormField
         label={f.titleField}
@@ -145,7 +221,7 @@ export function EventForm({ locale, categories, t }: Props) {
         />
         <p className="text-sm text-muted-foreground">{f.imagesHint}</p>
       </div>
-      <SubmitButton pending={pending} pendingLabel={t.pleaseWait}>
+      <SubmitButton pending={busy} pendingLabel={t.pleaseWait}>
         {f.saveDraft}
       </SubmitButton>
     </form>

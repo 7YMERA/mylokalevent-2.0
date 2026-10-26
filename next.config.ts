@@ -12,7 +12,8 @@ const contentSecurityPolicy = [
   // Event photos are served from Supabase Storage through signed URLs.
   `img-src 'self' blob: data: ${supabaseUrl}`,
   "font-src 'self'",
-  "connect-src 'self'",
+  // The event form uploads photos straight to Supabase Storage.
+  `connect-src 'self' ${supabaseUrl}`,
   "object-src 'none'",
   "base-uri 'self'",
   // Server Actions that redirect (Google sign-in via Supabase, Stripe
