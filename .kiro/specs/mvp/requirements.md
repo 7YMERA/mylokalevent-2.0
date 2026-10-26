@@ -123,6 +123,7 @@ platform stays trustworthy.
 ## Out of scope for the MVP
 Ticketing and QR check-in, the credit wallet, the community feed and comments, banner ad
 campaigns, fresh-catch listings, fishing spot directory, native mobile apps.
+Ideas for after launch are tracked in [`../backlog.md`](../backlog.md).
 
 ## Open questions
 - Listing fee amount (v1 used RM10) and featured placement pricing.
