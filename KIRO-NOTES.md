@@ -19,6 +19,12 @@ re-discovering the same gotchas.
 **If you are Claude reading this: update it when you finish a slice**, the same
 way Kiro does — that keeps the baton good for the trip back.
 
+**Standing rule for this file (set by the owner):** log EVERY error hit and its
+fix, EVERY feature/task you could not complete and WHY (env limits, missing keys,
+unverifiable deps), what is proven vs only written, and concrete next steps —
+and commit that update WITH the work, not separately. The "CI error log" and
+"Deferred / incomplete" sections below are where ongoing entries go.
+
 > Working notes, not product docs. The source of truth for SCOPE is
 > `.kiro/specs/mvp/` (requirements.md, design.md, tasks.md). This file says
 > where we are and how this codebase actually works.
@@ -203,6 +209,66 @@ job in `.github/workflows/ci.yml`), so you can rely on the PR's green check.
 Read this before trusting any "done" above. I (Kiro) built this on the user's
 Windows machine through the Kiro Crew agent layer, under real constraints. Where
 I could not verify something myself, I say so — don't assume it's proven.
+
+### CI error log (every failure hit + its fix)
+
+Newest first. Keep appending here — the goal is that a repeat failure is a
+one-line lookup, not a re-investigation.
+
+- **2026-10-26 — `check` job (build) FAILED, then fixed.** `npm run build` errored
+  on `/[locale]/o/[slug]`: "encountered uncached or runtime data during
+  prerendering." Cause: Cache Components (see gotchas) — the page + its
+  `generateMetadata` read runtime/DB data outside `<Suspense>`. Fix: wrap the
+  body data read in `<Suspense>` AND add `export const instant = false` to the
+  DB-backed dynamic pages (`/o/[slug]`, `/events/[slug]`, `/events`,
+  `/organiser/events/[slug]/paid`). Commit `e420f7d`. Lint/typecheck did NOT catch
+  this — only `npm run build` does.
+- **2026-10-26 — `database` job (pgTAP) FAILED, then fixed.** `payments_test.sql`
+  failed 10/13: `function public.start_event_payment(unknown, unknown, integer,
+unknown, integer) does not exist`. Cause: the function declared its last param
+  `featured_days smallint`, but the test (and the TS RPC call) pass an `integer`
+  literal, and Postgres won't implicitly narrow `integer`→`smallint` for function
+  overload resolution. Tests 7–13 cascaded (no payment row created → `confirm_payment`
+  raised "payment not found"). Fix: change the param to `integer` in the signature
+  and both grant/revoke lines (the table COLUMN stays `smallint`, which is fine).
+  Commit `87213c9`. **Lesson: a pgTAP function call's argument types must match the
+  signature exactly, or cast them — `integer` vs `smallint` does not auto-resolve.**
+- **2026-10-26 — first `database` run FAILED (organisers_test.sql).** Early version
+  of the test tried to prove "member can't self-verify" with a direct
+  `update organisers set verification='verified'`, expecting a silent no-op — but
+  because `verification` isn't in the client UPDATE grant, it threw `42501` and
+  crashed the file (Bad plan: planned 16, ran 3). Fix: rewrote the checks to
+  respect the grant model and set the plan to 17. Commit `6c35ba9`.
+- **2026-10-26 — local tsc FAILED (events.ts).** `Property 'sort' does not exist on
+type 'string'` on the embedded `event_images`/`categories` joins — the
+  hand-written `database.types.ts` doesn't model relationships, so a joined select
+  is mistyped. Fix: cast the query result through a locally-declared row type
+  (and, for the search query, `as unknown as`). Will disappear once types are
+  regenerated from a running Supabase.
+- **2026-10-26 — local tsc FAILED (submit-button.tsx).** Wrong relative import
+  path to `submit-actions` (`./` vs `./events/`). Fixed.
+
+### Deferred / incomplete (features NOT fully built, and why)
+
+- **Interactive per-event pin map (task 3.4).** Shipped a no-dependency
+  OpenStreetMap `<iframe>` centred on the selected state instead. A real pinned
+  map needs a client map lib (MapLibre/Leaflet) + a tile provider + parsing
+  `events.location` (PostGIS) to lat/lng. Deferred because installing + building a
+  heavy map dep was unsafe under the critical-memory host and unverifiable here.
+- **Reject-reason email to organisers (task 5.1).** The admin event review queue
+  stores + audits the rejection reason, but does NOT email it to the organiser.
+  Not wired.
+- **Stripe payment path (task 4) — never executed.** No Stripe keys on this host;
+  code written to spec but unrun. Needs `stripe listen` + test cards.
+- **Receipt email (task 4.3) — never executed.** Resend integration written;
+  no `RESEND_API_KEY`/`EMAIL_FROM`, so it no-ops. Unrun.
+- **Image upload pipeline (`sharp`) — never executed.** No live Supabase to upload
+  against. Verify EXIF/GPS is actually stripped with a real geotagged photo.
+- **PDPA data export + account deletion (task 7.1), reminders cron (6.2), reports
+  / revenue dashboard (5.2/5.3), save/follow (6.1)** — NOT STARTED.
+- **`npm run build` not run on the final payments-fix commit** (`87213c9`) — host
+  memory was critical. The fix is DB-only (SQL), so build is unaffected, but the
+  full suite wasn't re-run locally after it.
 
 ### Host constraints during this work
 
