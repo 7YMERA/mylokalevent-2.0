@@ -23,7 +23,12 @@ export type Database = {
       };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      accept_privacy_notice: {
+        Args: { new_locale: "ms" | "en" };
+        Returns: undefined;
+      };
+    };
     Enums: {
       user_role: "member" | "organiser" | "admin";
       user_status: "active" | "suspended";
