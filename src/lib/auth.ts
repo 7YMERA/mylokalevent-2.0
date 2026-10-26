@@ -13,6 +13,8 @@ export type CurrentUser = {
   role: "member" | "organiser" | "admin";
   status: "active" | "suspended";
   locale: "ms" | "en";
+  // False for Google sign-ups until they accept the privacy notice.
+  consented: boolean;
 };
 
 // The one place that reads the session (Data Access Layer). getClaims()
@@ -26,7 +28,7 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("display_name, role, status, locale")
+    .select("display_name, role, status, locale, consented_at")
     .eq("id", claims.sub)
     .single();
   if (!profile) return null;
@@ -38,11 +40,14 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
     role: profile.role,
     status: profile.status,
     locale: profile.locale,
+    consented: profile.consented_at !== null,
   };
 }
 
+// For pages that need a signed-in user who has accepted the privacy notice.
 export async function requireUser(): Promise<CurrentUser> {
   const user = await getCurrentUser();
   if (!user) redirect(localePath(await getLocale(), "/sign-in"));
+  if (!user.consented) redirect(localePath(await getLocale(), "/welcome"));
   return user;
 }

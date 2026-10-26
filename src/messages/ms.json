@@ -81,9 +81,9 @@
     "signIn": "Log masuk"
   },
   "confirmFailed": {
-    "title": "Pautan tamat tempoh",
-    "heading": "Pautan itu tidak berfungsi",
-    "body": "Pautan pengesahan akan tamat tempoh dan hanya boleh digunakan sekali. Jika anda sudah mengesahkan akaun, log masuk sahaja. Jika belum, daftar semula untuk mendapatkan pautan baharu.",
+    "title": "Masalah log masuk",
+    "heading": "Tak berjaya",
+    "body": "Pautan pengesahan akan tamat tempoh dan hanya boleh digunakan sekali, dan log masuk Google mungkin dibatalkan atau tamat masa. Kalau dah ada akaun, log masuk sahaja. Kalau belum, daftar semula.",
     "signIn": "Log masuk",
     "signUp": "Daftar"
   },
@@ -320,5 +320,15 @@
     "whereBody": "Di pelayan Supabase di Singapura. Akses dihadkan supaya setiap pengguna hanya boleh melihat data peribadi mereka sendiri.",
     "rightsHeading": "Hak anda",
     "rightsBody": "Di bawah Akta Perlindungan Data Peribadi 2010, anda boleh meminta untuk melihat, membetulkan atau memadam data anda, dan menarik balik persetujuan pada bila-bila masa dengan menutup akaun anda."
+  },
+  "google": {
+    "continue": "Teruskan dengan Google",
+    "or": "atau"
+  },
+  "welcome": {
+    "title": "Satu langkah lagi",
+    "heading": "Satu langkah lagi",
+    "lead": "Selamat datang ke MyLokalEvent, {name}. Sebelum mula, sila baca dan setuju dengan notis privasi kami.",
+    "submit": "Teruskan"
   }
 }

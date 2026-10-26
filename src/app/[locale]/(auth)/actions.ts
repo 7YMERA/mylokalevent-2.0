@@ -86,3 +86,36 @@ export async function signOut(formData: FormData) {
   await supabase.auth.signOut();
   redirect(localePath(formLocale(formData)));
 }
+
+export async function signInWithGoogle(formData: FormData) {
+  const locale = formLocale(formData);
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    // Same landing route as the email link; it exchanges the code for a
+    // session. New Google users then accept the privacy notice on /welcome.
+    options: { redirectTo: `${env().NEXT_PUBLIC_SITE_URL}/auth/confirm` },
+  });
+
+  redirect(
+    data.url && !error ? data.url : localePath(locale, "/confirm-failed"),
+  );
+}
+
+export async function acceptPrivacyNotice(
+  _prev: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const locale = formLocale(formData);
+  if (formData.get("consent") !== "on") {
+    return { fieldErrors: { consent: "consentRequired" } };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("accept_privacy_notice", {
+    new_locale: locale,
+  });
+  if (error) return { error: "generic" };
+
+  redirect(localePath(locale, "/account"));
+}

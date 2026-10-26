@@ -81,9 +81,9 @@
     "signIn": "Sign in"
   },
   "confirmFailed": {
-    "title": "Link expired",
-    "heading": "That link didn't work",
-    "body": "Confirmation links expire and can only be used once. If you already confirmed, just sign in. Otherwise, sign up again for a fresh link.",
+    "title": "Sign-in problem",
+    "heading": "That didn't work",
+    "body": "Confirmation links expire and can only be used once, and Google sign-in can be cancelled or time out. If you already have an account, just sign in. Otherwise, sign up again.",
     "signIn": "Sign in",
     "signUp": "Sign up"
   },
@@ -320,5 +320,15 @@
     "whereBody": "On Supabase servers in Singapore. Access is restricted so each user can only see their own personal data.",
     "rightsHeading": "Your rights",
     "rightsBody": "Under Malaysia's Personal Data Protection Act 2010 you can ask to see, correct or delete your data, and withdraw consent at any time by closing your account."
+  },
+  "google": {
+    "continue": "Continue with Google",
+    "or": "or"
+  },
+  "welcome": {
+    "title": "One last step",
+    "heading": "One last step",
+    "lead": "Welcome to MyLokalEvent, {name}. Before you start, please read and accept our privacy notice.",
+    "submit": "Continue"
   }
 }
