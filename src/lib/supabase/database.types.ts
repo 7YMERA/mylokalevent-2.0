@@ -240,6 +240,10 @@ export type Database = {
         Args: { session_id: string };
         Returns: undefined;
       };
+      accept_privacy_notice: {
+        Args: { new_locale: "ms" | "en" };
+        Returns: undefined;
+      };
     };
     Enums: {
       user_role: "member" | "organiser" | "admin";
