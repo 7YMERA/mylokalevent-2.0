@@ -12,12 +12,12 @@ they merge, and note who is taking a task (Kiro or Claude) to avoid overlap.
   - [x] 1.6 CI: typecheck, lint, tests, secret scanning; security headers and CSP (baseline CSP; tighten later)
   - _Requirements: 1, 8, 9_
 - [ ] 2. Organisers
-  - [ ] 2.1 `organisers` table, RLS, apply-to-organise form
-  - [ ] 2.2 Public organiser profile page
-  - [ ] 2.3 Admin verification flow with audit log
+  - [ ] 2.1 `organisers` table, RLS, apply-to-organise form (table + RLS DONE by Kiro; apply FORM still to do)
+  - [x] 2.2 Public organiser profile page (Kiro, branch feat/organisers)
+  - [x] 2.3 Admin verification flow with audit log (Kiro, branch feat/organisers)
   - _Requirements: 2, 7.4_
 - [ ] 3. Events
-  - [ ] 3.1 `categories`, `events`, `event_images` tables with RLS and seed categories
+  - [x] 3.1 `categories`, `events`, `event_images` tables with RLS and seed categories (Kiro, branch feat/organisers)
   - [ ] 3.2 Event form with draft saving and safe image upload
   - [ ] 3.3 Server-rendered event page with Open Graph, JSON-LD, directions, calendar, WhatsApp share
   - [ ] 3.4 Search, filters and map view
