@@ -21,12 +21,51 @@ export type Database = {
         };
         Relationships: [];
       };
+      organisers: {
+        Row: {
+          id: string;
+          slug: string;
+          name: string;
+          phone: string | null;
+          state: string | null;
+          ssm_number: string | null;
+          verification: "none" | "pending" | "verified" | "rejected";
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id: string;
+          slug: string;
+          name: string;
+          phone?: string | null;
+          state?: string | null;
+          ssm_number?: string | null;
+        };
+        Update: {
+          slug?: string;
+          name?: string;
+          phone?: string | null;
+          state?: string | null;
+          ssm_number?: string | null;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      set_organiser_verification: {
+        Args: {
+          target: string;
+          new_verification: "none" | "pending" | "verified" | "rejected";
+          reason: string;
+        };
+        Returns: undefined;
+      };
+    };
     Enums: {
       user_role: "member" | "organiser" | "admin";
       user_status: "active" | "suspended";
+      organiser_verification: "none" | "pending" | "verified" | "rejected";
     };
     CompositeTypes: Record<string, never>;
   };

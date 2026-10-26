@@ -119,6 +119,44 @@
     "signOut": "Sign out",
     "loading": "Loading your account…"
   },
+  "organiser": {
+    "notFound": "Organiser not found",
+    "notFoundBody": "This organiser page isn't available. It may not exist yet, or it hasn't been verified.",
+    "verifiedBadge": "Verified organiser",
+    "eventsHeading": "Events",
+    "noEvents": "No events yet. Check back soon.",
+    "contact": "Contact",
+    "state": "State"
+  },
+  "admin": {
+    "organisers": {
+      "title": "Organiser review",
+      "heading": "Organiser review queue",
+      "lead": "Approve or reject organisers who have applied to be verified.",
+      "empty": "Nothing waiting for review.",
+      "columnName": "Organiser",
+      "columnState": "State",
+      "columnSsm": "SSM number",
+      "columnStatus": "Status",
+      "columnActions": "Decision",
+      "noSsm": "Not provided",
+      "approve": "Verify",
+      "reject": "Reject",
+      "reasonLabel": "Reason",
+      "reasonPlaceholder": "A short note for the audit log",
+      "statuses": {
+        "none": "Applied",
+        "pending": "Pending",
+        "verified": "Verified",
+        "rejected": "Rejected"
+      },
+      "notAdmin": "Only admins can review organisers.",
+      "reasonRequired": "Enter a reason before deciding.",
+      "actionFailed": "That didn't work. Please try again.",
+      "verifiedToast": "Organiser verified.",
+      "rejectedToast": "Organiser rejected."
+    }
+  },
   "privacy": {
     "title": "Privacy notice",
     "draft": "Draft, to be reviewed before launch",

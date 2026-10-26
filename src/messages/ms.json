@@ -119,6 +119,44 @@
     "signOut": "Log keluar",
     "loading": "Memuatkan akaun anda…"
   },
+  "organiser": {
+    "notFound": "Penganjur tidak dijumpai",
+    "notFoundBody": "Halaman penganjur ini tidak tersedia. Ia mungkin belum wujud, atau belum disahkan.",
+    "verifiedBadge": "Penganjur disahkan",
+    "eventsHeading": "Acara",
+    "noEvents": "Belum ada acara. Sila semak semula kemudian.",
+    "contact": "Hubungi",
+    "state": "Negeri"
+  },
+  "admin": {
+    "organisers": {
+      "title": "Semakan penganjur",
+      "heading": "Senarai semakan penganjur",
+      "lead": "Sahkan atau tolak penganjur yang memohon untuk disahkan.",
+      "empty": "Tiada yang menunggu semakan.",
+      "columnName": "Penganjur",
+      "columnState": "Negeri",
+      "columnSsm": "Nombor SSM",
+      "columnStatus": "Status",
+      "columnActions": "Keputusan",
+      "noSsm": "Tidak diberikan",
+      "approve": "Sahkan",
+      "reject": "Tolak",
+      "reasonLabel": "Sebab",
+      "reasonPlaceholder": "Nota ringkas untuk log audit",
+      "statuses": {
+        "none": "Memohon",
+        "pending": "Menunggu",
+        "verified": "Disahkan",
+        "rejected": "Ditolak"
+      },
+      "notAdmin": "Hanya pentadbir boleh menyemak penganjur.",
+      "reasonRequired": "Masukkan sebab sebelum membuat keputusan.",
+      "actionFailed": "Tidak berjaya. Sila cuba lagi.",
+      "verifiedToast": "Penganjur disahkan.",
+      "rejectedToast": "Penganjur ditolak."
+    }
+  },
   "privacy": {
     "title": "Notis privasi",
     "draft": "Draf, akan disemak sebelum pelancaran",
