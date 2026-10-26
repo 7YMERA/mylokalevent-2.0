@@ -33,7 +33,7 @@ they merge, and note who is taking a task (Kiro or Claude) to avoid overlap.
   - [ ] 5.3 Revenue and events dashboard; audit log viewer
   - _Requirements: 3.5, 7_
 - [ ] 6. Engagement
-  - [ ] 6.1 Save events and follow organisers
+  - [x] 6.1 Save events and follow organisers (Kiro, branch feat/organisers)
   - [ ] 6.2 Scheduled job: reminders, follower notifications, mark ended events
   - _Requirements: 3.6, 5_
 - [ ] 7. Launch readiness

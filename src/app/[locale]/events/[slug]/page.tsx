@@ -4,10 +4,13 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import { CategoryBadge } from "@/components/category-badge";
+import { SaveButton } from "@/components/save-button";
 import { SiteHeader } from "@/components/site-header";
 import { formatEventDate } from "@/i18n/format";
 import { localePath } from "@/i18n/config";
 import { getLocale, getMessages } from "@/i18n/messages";
+import { getCurrentUser } from "@/lib/auth";
+import { isEventSaved } from "@/lib/engagement";
 import { env } from "@/lib/env";
 import { getApprovedEvent, signedImageUrl } from "@/lib/events";
 
@@ -64,13 +67,16 @@ function calendarUrl(
 }
 
 async function EventBody({ slug }: { slug: string }) {
-  const [event, locale, t] = await Promise.all([
+  const [event, locale, t, user] = await Promise.all([
     getApprovedEvent(slug),
     getLocale(),
     getMessages(),
+    getCurrentUser(),
   ]);
 
   if (!event) notFound();
+
+  const saved = user ? await isEventSaved(event.id) : false;
 
   const heroPath = event.imagePaths[0];
   const heroUrl = heroPath ? await signedImageUrl(heroPath) : null;
@@ -182,6 +188,17 @@ async function EventBody({ slug }: { slug: string }) {
         >
           {t.eventPage.share}
         </a>
+        <SaveButton
+          eventId={event.id}
+          initialSaved={saved}
+          signedIn={Boolean(user)}
+          locale={locale}
+          labels={{
+            save: t.engagement.save,
+            saved: t.engagement.saved,
+            signIn: t.engagement.signInToSave,
+          }}
+        />
       </div>
 
       <div className="mt-10 whitespace-pre-line leading-relaxed">

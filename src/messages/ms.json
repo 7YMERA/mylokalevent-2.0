@@ -298,6 +298,17 @@
     "mapTitle": "Lokasi acara",
     "mapEmpty": "Acara dengan lokasi yang ditanda akan muncul di peta."
   },
+  "engagement": {
+    "save": "Simpan",
+    "saved": "Disimpan",
+    "follow": "Ikut",
+    "following": "Mengikuti",
+    "signInToSave": "Log masuk untuk simpan",
+    "reminderOn": "Peringatan hidup",
+    "reminderOff": "Peringatan mati",
+    "savedEvents": "Acara disimpan",
+    "noSaved": "Anda belum menyimpan sebarang acara."
+  },
   "privacy": {
     "title": "Notis privasi",
     "draft": "Draf, akan disemak sebelum pelancaran",
