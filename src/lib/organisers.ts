@@ -19,6 +19,25 @@ export type PendingOrganiser = {
   verification: "none" | "pending" | "verified" | "rejected";
 };
 
+// The current user's own organiser row, or null if they haven't applied.
+// RLS lets a user read their own row at any verification state.
+export async function getMyOrganiser(): Promise<{
+  verification: "none" | "pending" | "verified" | "rejected";
+} | null> {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getClaims();
+  const uid = data?.claims?.sub;
+  if (!uid) return null;
+
+  const { data: row } = await supabase
+    .from("organisers")
+    .select("verification")
+    .eq("id", uid)
+    .maybeSingle();
+
+  return row ? { verification: row.verification } : null;
+}
+
 // A verified organiser by slug, or null. RLS only ever returns a verified
 // row to an anonymous reader, so a non-verified slug reads as not-found.
 export async function getVerifiedOrganiser(
