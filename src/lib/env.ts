@@ -19,6 +19,13 @@ const serverSchema = z.object({
   NEXT_PUBLIC_SUPABASE_URL: required.pipe(z.url()),
   // Publishable (anon-level) key: safe in the browser, limited by RLS.
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: required,
+  // Server-only, bypasses RLS. Used by the Stripe webhook and cron only.
+  SUPABASE_SECRET_KEY: z.string().trim().optional(),
+  // Payments (task 4). Optional so the app boots without Stripe configured,
+  // but the payment flow refuses to run until all three are set.
+  STRIPE_SECRET_KEY: z.string().trim().optional(),
+  STRIPE_WEBHOOK_SECRET: z.string().trim().optional(),
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().trim().optional(),
 });
 
 export type Env = z.infer<typeof serverSchema>;

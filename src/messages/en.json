@@ -126,6 +126,7 @@
     "venueTooLong": "Keep the venue under 160 characters.",
     "feeInvalid": "Enter a valid amount.",
     "notOrganiser": "You need a verified organiser account to do this.",
+    "paymentsUnavailable": "Payments aren't set up yet. Please try again later.",
     "imageTooLarge": "Each image must be 5 MB or smaller.",
     "imageWrongType": "Only JPEG, PNG or WebP images are allowed.",
     "imageFailed": "That image couldn't be processed. Try another.",
@@ -235,6 +236,50 @@
     "addToCalendar": "Add to calendar",
     "share": "Share on WhatsApp",
     "shareText": "Check out this event on MyLokalEvent: {title}"
+  },
+  "dashboard": {
+    "title": "My events",
+    "heading": "My events",
+    "lead": "Create events, track their status, and buy featured placement.",
+    "newEvent": "Create event",
+    "empty": "You haven't created any events yet.",
+    "startsLabel": "Starts",
+    "view": "View",
+    "submitForReview": "Submit & pay listing fee",
+    "listingFeeNote": "Listing fee RM{fee}. Paid once, before review.",
+    "rejectedReason": "Rejected: {reason}",
+    "buyFeatured": "Feature for {days} days — RM{fee}",
+    "statuses": {
+      "draft": "Draft",
+      "awaiting_payment": "Awaiting payment",
+      "in_review": "In review",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "unpublished": "Unpublished"
+    }
+  },
+  "paid": {
+    "title": "Payment received",
+    "heading": "Thank you — payment received",
+    "body": "Your event is now in review. We'll email you when an admin has looked at it.",
+    "note": "If the status below still says awaiting payment, give it a moment — it updates when the payment is confirmed.",
+    "backToDashboard": "Back to my events"
+  },
+  "search": {
+    "title": "Find events",
+    "heading": "Find events",
+    "keyword": "Search",
+    "keywordPlaceholder": "Event name or place",
+    "state": "State",
+    "category": "Category",
+    "anyState": "Any state",
+    "anyCategory": "Any category",
+    "free": "Free events only",
+    "apply": "Search",
+    "resultsCount": "{count} events",
+    "noResults": "No events match your search yet. Try widening the filters.",
+    "mapTitle": "Event locations",
+    "mapEmpty": "Events with a pinned location will appear on the map."
   },
   "privacy": {
     "title": "Privacy notice",

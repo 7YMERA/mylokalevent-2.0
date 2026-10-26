@@ -126,6 +126,7 @@
     "venueTooLong": "Lokasi maksimum 160 aksara.",
     "feeInvalid": "Masukkan jumlah yang sah.",
     "notOrganiser": "Anda perlukan akaun penganjur yang disahkan untuk berbuat demikian.",
+    "paymentsUnavailable": "Pembayaran belum disediakan. Sila cuba lagi kemudian.",
     "imageTooLarge": "Setiap imej mestilah 5 MB atau kurang.",
     "imageWrongType": "Hanya imej JPEG, PNG atau WebP dibenarkan.",
     "imageFailed": "Imej itu tidak dapat diproses. Cuba yang lain.",
@@ -235,6 +236,50 @@
     "addToCalendar": "Tambah ke kalendar",
     "share": "Kongsi di WhatsApp",
     "shareText": "Lihat acara ini di MyLokalEvent: {title}"
+  },
+  "dashboard": {
+    "title": "Acara saya",
+    "heading": "Acara saya",
+    "lead": "Cipta acara, pantau statusnya, dan beli penempatan pilihan.",
+    "newEvent": "Cipta acara",
+    "empty": "Anda belum mencipta sebarang acara.",
+    "startsLabel": "Bermula",
+    "view": "Lihat",
+    "submitForReview": "Hantar & bayar yuran",
+    "listingFeeNote": "Yuran penyenaraian RM{fee}. Dibayar sekali, sebelum semakan.",
+    "rejectedReason": "Ditolak: {reason}",
+    "buyFeatured": "Jadikan pilihan {days} hari — RM{fee}",
+    "statuses": {
+      "draft": "Draf",
+      "awaiting_payment": "Menunggu bayaran",
+      "in_review": "Dalam semakan",
+      "approved": "Diluluskan",
+      "rejected": "Ditolak",
+      "unpublished": "Tidak diterbitkan"
+    }
+  },
+  "paid": {
+    "title": "Bayaran diterima",
+    "heading": "Terima kasih — bayaran diterima",
+    "body": "Acara anda kini dalam semakan. Kami akan e-mel anda apabila pentadbir menyemaknya.",
+    "note": "Jika status di bawah masih menunjukkan menunggu bayaran, tunggu sebentar — ia dikemas kini apabila bayaran disahkan.",
+    "backToDashboard": "Kembali ke acara saya"
+  },
+  "search": {
+    "title": "Cari acara",
+    "heading": "Cari acara",
+    "keyword": "Cari",
+    "keywordPlaceholder": "Nama acara atau lokasi",
+    "state": "Negeri",
+    "category": "Kategori",
+    "anyState": "Semua negeri",
+    "anyCategory": "Semua kategori",
+    "free": "Acara percuma sahaja",
+    "apply": "Cari",
+    "resultsCount": "{count} acara",
+    "noResults": "Tiada acara sepadan dengan carian anda. Cuba luaskan penapis.",
+    "mapTitle": "Lokasi acara",
+    "mapEmpty": "Acara dengan lokasi yang ditanda akan muncul di peta."
   },
   "privacy": {
     "title": "Notis privasi",

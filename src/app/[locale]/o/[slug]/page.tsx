@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import { SiteHeader } from "@/components/site-header";
 import { getMessages } from "@/i18n/messages";
 import { getVerifiedOrganiser } from "@/lib/organisers";
 
 type Params = { params: Promise<{ slug: string }> };
+
+// DB-backed per-slug page: metadata reads the organiser row (runtime data),
+// so this route is dynamic, not statically prerendered.
+export const instant = false;
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
@@ -45,8 +50,7 @@ function VerifiedBadge({ label }: { label: string }) {
   );
 }
 
-export default async function OrganiserPage({ params }: Params) {
-  const { slug } = await params;
+async function OrganiserBody({ slug }: { slug: string }) {
   const [organiser, t] = await Promise.all([
     getVerifiedOrganiser(slug),
     getMessages(),
@@ -55,48 +59,57 @@ export default async function OrganiserPage({ params }: Params) {
   if (!organiser) notFound();
 
   return (
+    <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-12">
+      <div className="rounded-3xl border border-border bg-surface p-6 sm:p-8">
+        <div className="flex flex-wrap items-center gap-3">
+          <h1 className="font-display text-3xl font-extrabold tracking-tight">
+            {organiser.name}
+          </h1>
+          <VerifiedBadge label={t.organiser.verifiedBadge} />
+        </div>
+        <dl className="mt-6 grid gap-4 sm:grid-cols-2">
+          {organiser.state ? (
+            <div>
+              <dt className="text-sm text-muted-foreground">
+                {t.organiser.state}
+              </dt>
+              <dd className="mt-1 font-semibold">{organiser.state}</dd>
+            </div>
+          ) : null}
+          {organiser.phone ? (
+            <div>
+              <dt className="text-sm text-muted-foreground">
+                {t.organiser.contact}
+              </dt>
+              <dd className="mt-1 font-semibold break-all">
+                {organiser.phone}
+              </dd>
+            </div>
+          ) : null}
+        </dl>
+      </div>
+
+      <section className="mt-10">
+        <h2 className="font-display text-xl font-bold tracking-tight">
+          {t.organiser.eventsHeading}
+        </h2>
+        {/* Events arrive in task 3. Until then the list is empty. */}
+        <p className="mt-4 rounded-3xl border border-dashed border-border bg-surface-muted p-8 text-center text-muted-foreground">
+          {t.organiser.noEvents}
+        </p>
+      </section>
+    </main>
+  );
+}
+
+export default async function OrganiserPage({ params }: Params) {
+  const { slug } = await params;
+  return (
     <>
       <SiteHeader />
-      <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-12">
-        <div className="rounded-3xl border border-border bg-surface p-6 sm:p-8">
-          <div className="flex flex-wrap items-center gap-3">
-            <h1 className="font-display text-3xl font-extrabold tracking-tight">
-              {organiser.name}
-            </h1>
-            <VerifiedBadge label={t.organiser.verifiedBadge} />
-          </div>
-          <dl className="mt-6 grid gap-4 sm:grid-cols-2">
-            {organiser.state ? (
-              <div>
-                <dt className="text-sm text-muted-foreground">
-                  {t.organiser.state}
-                </dt>
-                <dd className="mt-1 font-semibold">{organiser.state}</dd>
-              </div>
-            ) : null}
-            {organiser.phone ? (
-              <div>
-                <dt className="text-sm text-muted-foreground">
-                  {t.organiser.contact}
-                </dt>
-                <dd className="mt-1 font-semibold break-all">
-                  {organiser.phone}
-                </dd>
-              </div>
-            ) : null}
-          </dl>
-        </div>
-
-        <section className="mt-10">
-          <h2 className="font-display text-xl font-bold tracking-tight">
-            {t.organiser.eventsHeading}
-          </h2>
-          {/* Events arrive in task 3. Until then the list is empty. */}
-          <p className="mt-4 rounded-3xl border border-dashed border-border bg-surface-muted p-8 text-center text-muted-foreground">
-            {t.organiser.noEvents}
-          </p>
-        </section>
-      </main>
+      <Suspense fallback={<div className="flex-1" />}>
+        <OrganiserBody slug={slug} />
+      </Suspense>
     </>
   );
 }

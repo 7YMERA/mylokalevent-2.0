@@ -97,6 +97,116 @@ export type Category = {
   nameEn: string;
 };
 
+export type EventSearchResult = {
+  slug: string;
+  title: string;
+  categorySlug: "competition" | "market" | "pond" | "community";
+  startsAt: string;
+  state: string;
+  district: string;
+  venue: string;
+  feeMyr: number;
+};
+
+export type EventSearchFilters = {
+  keyword?: string;
+  state?: string;
+  categorySlug?: string;
+  freeOnly?: boolean;
+};
+
+// Approved, upcoming events matching the filters, soonest first. All reads go
+// through RLS, which only returns approved events to the public.
+export async function searchApprovedEvents(
+  filters: EventSearchFilters,
+): Promise<EventSearchResult[]> {
+  const supabase = await createClient();
+  let query = supabase
+    .from("events")
+    .select(
+      "slug, title, starts_at, state, district, venue, fee_myr, status, category_id, categories(slug)",
+    )
+    .eq("status", "approved")
+    .order("starts_at", { ascending: true })
+    .limit(60);
+
+  if (filters.state) query = query.eq("state", filters.state);
+  if (filters.freeOnly) query = query.eq("fee_myr", 0);
+  if (filters.keyword) {
+    // Match the keyword in the title or the venue.
+    const term = `%${filters.keyword}%`;
+    query = query.or(`title.ilike.${term},venue.ilike.${term}`);
+  }
+
+  const { data } = await query;
+  let rows = (data ?? []) as unknown as Array<{
+    slug: string;
+    title: string;
+    starts_at: string;
+    state: string;
+    district: string;
+    venue: string;
+    fee_myr: number;
+    categories: { slug: string } | { slug: string }[] | null;
+  }>;
+
+  const categorySlugOf = (row: (typeof rows)[number]) =>
+    (Array.isArray(row.categories) ? row.categories[0] : row.categories)?.slug;
+
+  if (filters.categorySlug) {
+    rows = rows.filter((row) => categorySlugOf(row) === filters.categorySlug);
+  }
+
+  return rows.map((row) => ({
+    slug: row.slug,
+    title: row.title,
+    categorySlug: categorySlugOf(row) as EventSearchResult["categorySlug"],
+    startsAt: row.starts_at,
+    state: row.state,
+    district: row.district,
+    venue: row.venue,
+    feeMyr: row.fee_myr,
+  }));
+}
+
+export type MyEvent = {
+  id: string;
+  slug: string;
+  title: string;
+  status:
+    | "draft"
+    | "awaiting_payment"
+    | "in_review"
+    | "approved"
+    | "rejected"
+    | "unpublished";
+  startsAt: string;
+  rejectionReason: string | null;
+};
+
+// The current organiser's own events (any status), newest first.
+export async function listMyEvents(): Promise<MyEvent[]> {
+  const supabase = await createClient();
+  const { data: claims } = await supabase.auth.getClaims();
+  const uid = claims?.claims?.sub;
+  if (!uid) return [];
+
+  const { data } = await supabase
+    .from("events")
+    .select("id, slug, title, status, starts_at, rejection_reason")
+    .eq("organiser_id", uid)
+    .order("created_at", { ascending: false });
+
+  return (data ?? []).map((row) => ({
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    status: row.status,
+    startsAt: row.starts_at,
+    rejectionReason: row.rejection_reason,
+  }));
+}
+
 // Active categories for the event form's category picker.
 export async function listActiveCategories(): Promise<Category[]> {
   const supabase = await createClient();
