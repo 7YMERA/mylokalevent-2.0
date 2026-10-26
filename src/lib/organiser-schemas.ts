@@ -81,4 +81,6 @@ export type FormState = {
   fieldErrors?: Partial<Record<string, string>>;
   message?: string;
   values?: Record<string, string>;
+  // Set by saveEventDraft so the form can upload photos to the new draft.
+  eventId?: string;
 };
