@@ -56,7 +56,7 @@ create function public.start_event_payment(
   session_id text,
   amount integer,
   purpose public.payment_purpose,
-  featured_days smallint default 0
+  featured_days integer default 0
 )
 returns void
 language plpgsql
@@ -100,10 +100,10 @@ end;
 $$;
 
 revoke all on function
-  public.start_event_payment(uuid, text, integer, public.payment_purpose, smallint)
+  public.start_event_payment(uuid, text, integer, public.payment_purpose, integer)
   from public, anon;
 grant execute on function
-  public.start_event_payment(uuid, text, integer, public.payment_purpose, smallint)
+  public.start_event_payment(uuid, text, integer, public.payment_purpose, integer)
   to authenticated;
 
 -- Mark a Checkout session paid and apply its effect, in one transaction. Only
