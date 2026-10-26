@@ -2,7 +2,7 @@
 -- Run with: npx supabase test db
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(16);
+select plan(17);
 
 -- Three users: an admin, and two members who will apply to be organisers.
 insert into auth.users (id, email, raw_user_meta_data) values
@@ -25,22 +25,29 @@ select is(
   (select verification::text from public.organisers where id = '00000000-0000-0000-0000-00000000000b'),
   'none', 'a new organiser starts unverified');
 
--- Ali cannot self-verify, directly or by editing the column
+-- Siti (acting as herself) cannot apply as already-verified: verification is
+-- not in the insert column grant, so naming it is refused outright.
+set local request.jwt.claims = '{"sub": "00000000-0000-0000-0000-00000000000c", "role": "authenticated"}';
 select throws_ok(
   $$insert into public.organisers (id, slug, name, verification)
-    values ('00000000-0000-0000-0000-00000000000b', 'x', 'X', 'verified')$$,
-  null, null, 'a member cannot apply as already-verified');
+    values ('00000000-0000-0000-0000-00000000000c', 'siti-verified', 'Siti', 'verified')$$,
+  '42501', null, 'a member cannot apply as already-verified');
+set local request.jwt.claims = '{"sub": "00000000-0000-0000-0000-00000000000b", "role": "authenticated"}';
 
-update public.organisers set verification = 'verified'
-  where id = '00000000-0000-0000-0000-00000000000b';
-select is(
-  (select verification::text from public.organisers where id = '00000000-0000-0000-0000-00000000000b'),
-  'none', 'a member cannot self-verify by editing the column');
+-- The verification column is not granted to clients, so a direct write to it
+-- is refused outright. (Proven by the grant, not by RLS.)
+select throws_ok(
+  $$update public.organisers set verification = 'verified'
+    where id = '00000000-0000-0000-0000-00000000000b'$$,
+  '42501', null, 'a member cannot write the verification column');
 
--- Ali can edit their own public fields
+-- Ali can edit their own granted fields, and verification stays untouched
 select lives_ok(
   $$update public.organisers set name = 'Ali Pancing Club' where id = '00000000-0000-0000-0000-00000000000b'$$,
   'an organiser can edit their own details');
+select is(
+  (select verification::text from public.organisers where id = '00000000-0000-0000-0000-00000000000b'),
+  'none', 'editing details does not change verification');
 
 -- Ali cannot apply on someone else's behalf
 select throws_ok(
