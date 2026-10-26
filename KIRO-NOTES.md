@@ -42,16 +42,32 @@ Last updated: 2026-10-26.
     lib; `events.location` (PostGIS point) is ready for it.
 - **Organiser dashboard** (`/[locale]/organiser`) — DONE. Lists my events with
   status, create link, submit-&-pay button, rejection reasons.
-- **Task 4 (Payments): 4.1 + 4.2 DONE (code), 4.3 PARTIAL — branch `feat/organisers`.**
+- **Task 4 (Payments): 4.1 + 4.2 + 4.3 DONE (code) — branch `feat/organisers`.**
   - 4.1 `payments` + `stripe_events` tables, `start_event_payment` +
     `confirm_payment` (atomic, idempotent, service-role-only) — DONE.
-  - 4.2 Stripe Checkout for the listing fee + signed idempotent webhook at
-    `/api/stripe/webhook` — CODE DONE, but **never run** (needs Stripe keys).
-  - 4.3 featured placement — DB supports it (`start_event_payment` purpose
-    'featured'); **no purchase UI, no receipt email yet**.
-- **Tasks 5–7: NOT STARTED** (moderation/admin dashboard, engagement, launch).
-  Admin verify (2.3) and event approve/reject function (3.1) exist; the broader
-  admin dashboard, reports, revenue, reminders cron, and PDPA export/delete do not.
+  - 4.2 Stripe Checkout (listing fee) + signed idempotent webhook at
+    `/api/stripe/webhook` — CODE DONE, **never run** (needs Stripe keys).
+  - 4.3 featured placement purchase UI (`FeaturedButton` on approved events in
+    the dashboard, `buyFeaturedPlacement` action) — DONE. Receipt email via
+    Resend (`src/lib/email.ts`, sent from the webhook after confirm) — DONE but
+    **never run** (needs `RESEND_API_KEY`/`EMAIL_FROM`; no-ops safely if unset).
+- **Task 5 (Moderation/admin): 5.1 PARTIAL — branch `feat/organisers`.**
+  - Admin event review queue at `/[locale]/admin/events` (approve/reject with
+    reason via `set_event_status`, audited) — DONE. Admin organiser verify
+    (`/admin/organisers`) was done earlier. **Reason EMAILS to the organiser on
+    reject are NOT wired** (the status + reason are stored + audited only).
+  - 5.2 reports / suspend / unpublish / manage categories, 5.3 revenue dashboard
+    — NOT STARTED.
+- **Tasks 6–7: NOT STARTED** (engagement/reminders cron, launch/PDPA).
+
+> **⚠ Verification gap this turn:** host memory was CRITICAL→TIGHT, so I ran only
+> typecheck + eslint + the message-parity test (all green). I did **NOT** run
+> `npm run build` or the full vitest suite. Given Cache Components (see gotchas),
+> **a page could still fail to prerender even though tsc/lint pass** — so RUN
+> `npm run build` before trusting the new pages (admin events queue, the search
+> page's new OSM map, the dashboard featured button). The map adds an
+> `<iframe>` to openstreetmap.org and a matching `frame-src` in the CSP
+> (`next.config.ts`) — verify the CSP didn't break other embeds.
 
 ## Product decisions locked (confirm before building payments)
 

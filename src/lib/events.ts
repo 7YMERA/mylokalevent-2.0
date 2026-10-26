@@ -91,6 +91,57 @@ export async function getApprovedEvent(
   };
 }
 
+// Events awaiting an admin decision (in_review), oldest first. RLS returns all
+// events to an admin; the page also guards on role.
+export async function listEventsInReview(): Promise<
+  Array<{
+    id: string;
+    slug: string;
+    title: string;
+    state: string;
+    district: string;
+    venue: string;
+    startsAt: string;
+    organiserName: string | null;
+  }>
+> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("events")
+    .select(
+      "id, slug, title, state, district, venue, starts_at, status, organisers(name)",
+    )
+    .eq("status", "in_review")
+    .order("created_at", { ascending: true });
+
+  const rows = (data ?? []) as unknown as Array<{
+    id: string;
+    slug: string;
+    title: string;
+    state: string;
+    district: string;
+    venue: string;
+    starts_at: string;
+    organisers: { name: string } | { name: string }[] | null;
+  }>;
+
+  return rows.map((row) => {
+    const org = Array.isArray(row.organisers)
+      ? row.organisers[0]
+      : row.organisers;
+    return {
+      id: row.id,
+      slug: row.slug,
+      title: row.title,
+      state: row.state,
+      district: row.district,
+      venue: row.venue,
+      startsAt: row.starts_at,
+      organiserName: org?.name ?? null,
+    };
+  });
+}
+
 export type Category = {
   slug: string;
   nameMs: string;

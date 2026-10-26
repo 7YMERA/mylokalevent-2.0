@@ -156,6 +156,23 @@
     "state": "State"
   },
   "admin": {
+    "events": {
+      "title": "Event review",
+      "heading": "Event review queue",
+      "lead": "Approve or reject events that organisers have paid to list.",
+      "empty": "Nothing waiting for review.",
+      "by": "By",
+      "when": "Starts",
+      "where": "Where",
+      "approve": "Approve",
+      "reject": "Reject",
+      "reasonLabel": "Rejection reason",
+      "reasonPlaceholder": "Required when rejecting",
+      "view": "Preview",
+      "notAdmin": "Only admins can review events.",
+      "reasonRequired": "Enter a reason to reject.",
+      "actionFailed": "That didn't work. Please try again."
+    },
     "organisers": {
       "title": "Organiser review",
       "heading": "Organiser review queue",

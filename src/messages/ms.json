@@ -156,6 +156,23 @@
     "state": "Negeri"
   },
   "admin": {
+    "events": {
+      "title": "Semakan acara",
+      "heading": "Senarai semakan acara",
+      "lead": "Luluskan atau tolak acara yang penganjur telah bayar untuk disenaraikan.",
+      "empty": "Tiada yang menunggu semakan.",
+      "by": "Oleh",
+      "when": "Bermula",
+      "where": "Lokasi",
+      "approve": "Luluskan",
+      "reject": "Tolak",
+      "reasonLabel": "Sebab penolakan",
+      "reasonPlaceholder": "Diperlukan apabila menolak",
+      "view": "Pratonton",
+      "notAdmin": "Hanya pentadbir boleh menyemak acara.",
+      "reasonRequired": "Masukkan sebab untuk menolak.",
+      "actionFailed": "Tidak berjaya. Sila cuba lagi."
+    },
     "organisers": {
       "title": "Semakan penganjur",
       "heading": "Senarai semakan penganjur",

@@ -25,10 +25,10 @@ they merge, and note who is taking a task (Kiro or Claude) to avoid overlap.
 - [ ] 4. Payments
   - [x] 4.1 `payments` and `stripe_events` tables; `confirm_payment` function (Kiro, branch feat/organisers)
   - [x] 4.2 Stripe Checkout for listing fee; signed, idempotent webhook route (Kiro — code DONE, untested without Stripe keys)
-  - [ ] 4.3 Featured placement purchase; receipts by email (DB supports featured via start_event_payment; NO purchase UI and NO receipt email yet)
+  - [x] 4.3 Featured placement purchase; receipts by email (Kiro — featured purchase UI DONE; receipt email via Resend DONE but untested/no key)
   - _Requirements: 6_
 - [ ] 5. Moderation and admin
-  - [ ] 5.1 Review queue with approve or reject and reason emails
+  - [~] 5.1 Review queue with approve or reject and reason emails (Kiro — event review queue + approve/reject DONE; reason EMAILS to organiser not wired yet)
   - [ ] 5.2 Reports, suspend user, unpublish event, manage categories
   - [ ] 5.3 Revenue and events dashboard; audit log viewer
   - _Requirements: 3.5, 7_

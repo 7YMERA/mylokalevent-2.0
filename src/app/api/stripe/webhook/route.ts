@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
+import { paymentReceiptEmail, sendEmail } from "@/lib/email";
 import { env } from "@/lib/env";
 import { getStripe } from "@/lib/stripe";
 import { createServiceClient } from "@/lib/supabase/service";
@@ -62,6 +63,37 @@ export async function POST(request: NextRequest) {
       });
       if (error) {
         return NextResponse.json({ error: "confirm failed" }, { status: 500 });
+      }
+
+      // Send a receipt. A missing/failing email must NOT fail the webhook —
+      // the payment is already confirmed in the DB (the source of truth).
+      try {
+        const { data: pay } = await supabase
+          .from("payments")
+          .select("user_id, purpose, amount_myr, event_id")
+          .eq("stripe_session_id", session.id)
+          .single();
+        if (pay) {
+          const [{ data: userRes }, { data: ev }] = await Promise.all([
+            supabase.auth.admin.getUserById(pay.user_id),
+            supabase
+              .from("events")
+              .select("title")
+              .eq("id", pay.event_id)
+              .single(),
+          ]);
+          const to = userRes?.user?.email;
+          if (to) {
+            const receipt = paymentReceiptEmail({
+              purpose: pay.purpose,
+              amountMyr: pay.amount_myr,
+              eventTitle: ev?.title ?? "your event",
+            });
+            await sendEmail({ to, ...receipt });
+          }
+        }
+      } catch (emailError) {
+        console.error("[webhook] receipt email failed", emailError);
       }
     }
   }

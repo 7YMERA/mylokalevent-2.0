@@ -11,8 +11,13 @@ import { pageMetadata } from "@/i18n/metadata";
 import { requireUser } from "@/lib/auth";
 import { listMyEvents } from "@/lib/events";
 import { getMyOrganiser } from "@/lib/organisers";
-import { LISTING_FEE_MYR } from "@/lib/pricing";
+import {
+  LISTING_FEE_MYR,
+  FEATURED_FEE_MYR,
+  FEATURED_DAYS,
+} from "@/lib/pricing";
 
+import { FeaturedButton } from "./featured-button";
 import { SubmitButton } from "./submit-button";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -96,12 +101,28 @@ async function Dashboard() {
 
               <div className="mt-4 flex flex-wrap items-center gap-4">
                 {event.status === "approved" ? (
-                  <Link
-                    href={localePath(locale, `/events/${event.slug}`)}
-                    className="text-sm font-semibold text-primary underline"
-                  >
-                    {d.view}
-                  </Link>
+                  <>
+                    <Link
+                      href={localePath(locale, `/events/${event.slug}`)}
+                      className="text-sm font-semibold text-primary underline"
+                    >
+                      {d.view}
+                    </Link>
+                    <FeaturedButton
+                      eventId={event.id}
+                      locale={locale}
+                      label={format(d.buyFeatured, {
+                        days: FEATURED_DAYS,
+                        fee: FEATURED_FEE_MYR,
+                      })}
+                      pendingLabel={t.common.pleaseWait}
+                      errorLabels={{
+                        generic: t.messages.generic,
+                        notOrganiser: t.messages.notOrganiser,
+                        paymentsUnavailable: t.messages.paymentsUnavailable,
+                      }}
+                    />
+                  </>
                 ) : null}
 
                 {event.status === "draft" || event.status === "rejected" ? (
