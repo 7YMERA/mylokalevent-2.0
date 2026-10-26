@@ -71,13 +71,20 @@ npx supabase start      # local Supabase stack
 npx supabase test db    # run the database tests
 ```
 
-To apply migrations to the hosted project (one-time `login` and `link`):
+Migrations reach the hosted project automatically: when a pull request that
+adds one is merged, the **Deploy database** workflow (`.github/workflows/deploy-db.yml`)
+runs `supabase db push`. It needs three repository secrets (Settings → Secrets and
+variables → Actions), and skips with a warning until they exist:
 
-```bash
-npx supabase login
-npx supabase link --project-ref <your-project-ref>
-npx supabase db push --linked
-```
+| Secret                  | Where to get it                                                 |
+| ----------------------- | --------------------------------------------------------------- |
+| `SUPABASE_ACCESS_TOKEN` | Supabase → Account → Access Tokens → Generate new token         |
+| `SUPABASE_DB_PASSWORD`  | The database password (Project Settings → Database to reset it) |
+| `SUPABASE_PROJECT_ID`   | The project ref, the `xxxx` in `https://xxxx.supabase.co`       |
+
+To run it by hand (for example after adding the secrets), open Actions → Deploy
+database → Run workflow. From a machine with the CLI, `npx supabase db push --linked`
+does the same.
 
 Google sign-in needs an OAuth client (Web application) in Google Cloud with the
 redirect URI `https://<your-project-ref>.supabase.co/auth/v1/callback`, and its client
