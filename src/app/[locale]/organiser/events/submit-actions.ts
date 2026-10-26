@@ -5,7 +5,12 @@ import { redirect } from "next/navigation";
 import { localePath } from "@/i18n/config";
 import { formLocale } from "@/lib/auth-schemas";
 import { getCurrentUser } from "@/lib/auth";
-import { LISTING_FEE_MYR, toStripeAmount } from "@/lib/pricing";
+import {
+  LISTING_FEE_MYR,
+  FEATURED_FEE_MYR,
+  FEATURED_DAYS,
+  toStripeAmount,
+} from "@/lib/pricing";
 import { env } from "@/lib/env";
 import { getStripe, paymentsConfigured } from "@/lib/stripe";
 import { createClient } from "@/lib/supabase/server";
@@ -75,6 +80,73 @@ export async function submitEventForReview(
       amount: LISTING_FEE_MYR,
       purpose: "listing",
       featured_days: 0,
+    });
+    if (error) return { error: "generic" };
+  } catch {
+    return { error: "generic" };
+  }
+
+  if (!checkoutUrl) return { error: "generic" };
+  redirect(checkoutUrl);
+}
+
+// Buy featured placement for an APPROVED event. Same Checkout + webhook flow;
+// confirm_payment extends featured_until by FEATURED_DAYS when it's paid.
+export async function buyFeaturedPlacement(
+  _prev: SubmitState,
+  formData: FormData,
+): Promise<SubmitState> {
+  const eventId = formData.get("eventId");
+  const locale = formLocale(formData);
+  if (typeof eventId !== "string" || !eventId) return { error: "generic" };
+
+  if (!paymentsConfigured()) return { error: "paymentsUnavailable" };
+  const stripe = getStripe();
+  if (!stripe) return { error: "paymentsUnavailable" };
+
+  const user = await getCurrentUser();
+  if (!user) return { error: "notOrganiser" };
+
+  const supabase = await createClient();
+  const { data: event } = await supabase
+    .from("events")
+    .select("id, slug, title, organiser_id, status")
+    .eq("id", eventId)
+    .single();
+  if (!event || event.organiser_id !== user.id)
+    return { error: "notOrganiser" };
+  if (event.status !== "approved") return { error: "generic" };
+
+  const base = env().NEXT_PUBLIC_SITE_URL;
+  let checkoutUrl: string | null = null;
+  try {
+    const session = await stripe.checkout.sessions.create({
+      mode: "payment",
+      payment_method_types: ["card", "fpx", "grabpay"],
+      line_items: [
+        {
+          quantity: 1,
+          price_data: {
+            currency: "myr",
+            unit_amount: toStripeAmount(FEATURED_FEE_MYR),
+            product_data: {
+              name: `Featured placement (${FEATURED_DAYS} days): ${event.title}`,
+            },
+          },
+        },
+      ],
+      metadata: { event_id: event.id, purpose: "featured" },
+      success_url: `${base}${localePath(locale, `/organiser/events/${event.slug}/paid`)}`,
+      cancel_url: `${base}${localePath(locale, "/organiser")}`,
+    });
+    checkoutUrl = session.url;
+
+    const { error } = await supabase.rpc("start_event_payment", {
+      target_event: event.id,
+      session_id: session.id,
+      amount: FEATURED_FEE_MYR,
+      purpose: "featured",
+      featured_days: FEATURED_DAYS,
     });
     if (error) return { error: "generic" };
   } catch {

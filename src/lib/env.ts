@@ -26,6 +26,10 @@ const serverSchema = z.object({
   STRIPE_SECRET_KEY: z.string().trim().optional(),
   STRIPE_WEBHOOK_SECRET: z.string().trim().optional(),
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().trim().optional(),
+  // Transactional email (receipts, task 4.4 / 6.4). Optional: emails are
+  // skipped (with a server log) when unset, so nothing else breaks.
+  RESEND_API_KEY: z.string().trim().optional(),
+  EMAIL_FROM: z.string().trim().optional(),
 });
 
 export type Env = z.infer<typeof serverSchema>;

@@ -9,7 +9,12 @@ import { formatEventDate } from "@/i18n/format";
 import { getLocale, getMessages } from "@/i18n/messages";
 import { pageMetadata } from "@/i18n/metadata";
 import { listActiveCategories, searchApprovedEvents } from "@/lib/events";
-import { MALAYSIAN_STATES } from "@/lib/geo";
+import {
+  isMalaysianState,
+  MALAYSIAN_STATES,
+  MALAYSIA_BBOX,
+  STATE_BBOX,
+} from "@/lib/geo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getMessages();
@@ -47,6 +52,9 @@ async function SearchBody({ searchParams }: Search) {
     freeOnly,
   });
   const s = t.search;
+
+  const mapBbox =
+    state && isMalaysianState(state) ? STATE_BBOX[state] : MALAYSIA_BBOX;
 
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10">
@@ -155,12 +163,17 @@ async function SearchBody({ searchParams }: Search) {
         <h2 className="font-display text-xl font-bold tracking-tight">
           {s.mapTitle}
         </h2>
-        {/* Interactive PostGIS map is deferred (needs a tile provider +
-              client map lib). Until then, show a note. events.location is
-              already stored, so the map can be dropped in here later. */}
-        <p className="mt-4 rounded-3xl border border-dashed border-border bg-surface-muted p-8 text-center text-muted-foreground">
-          {s.mapEmpty}
-        </p>
+        {/* No-dependency OpenStreetMap embed centred on the selected state
+            (or all of Malaysia). A richer interactive map with per-event pins
+            can replace this later; events.location (PostGIS) is ready. */}
+        <div className="mt-4 overflow-hidden rounded-3xl border border-border">
+          <iframe
+            title={s.mapTitle}
+            className="h-80 w-full"
+            loading="lazy"
+            src={`https://www.openstreetmap.org/export/embed.html?bbox=${mapBbox.join(",")}&layer=mapnik`}
+          />
+        </div>
       </section>
     </main>
   );
