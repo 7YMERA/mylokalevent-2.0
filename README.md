@@ -82,7 +82,8 @@ npx supabase db push --linked
 Google sign-in needs an OAuth client (Web application) in Google Cloud with the
 redirect URI `https://<your-project-ref>.supabase.co/auth/v1/callback`, and its client
 ID and secret entered under Authentication → Sign In / Providers → Google in Supabase.
-The secret never goes in this repo.
+The secret never goes in this repo. Then set `GOOGLE_SIGN_IN=on` in `.env.local` (and in
+Vercel) to show the "Continue with Google" button; it stays hidden until then.
 
 ## Demo accounts
 
