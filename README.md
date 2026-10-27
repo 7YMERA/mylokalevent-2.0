@@ -112,7 +112,10 @@ improvement over the original project.
 
 Development is a joint effort between the author, working in Kiro, and Claude, working
 through pull requests. Kiro specs in `.kiro/specs/` are the shared source of truth for
-requirements, design and tasks.
+requirements, design and tasks. Each assistant keeps a handoff log in
+[`docs/notes/`](docs/notes/): what changed, what was verified, problems hit and
+suggestions. The [wiki](https://github.com/7YMERA/mylokalevent-2.0/wiki) has the
+project story, architecture and roadmap.
 
 ## Copyright
 

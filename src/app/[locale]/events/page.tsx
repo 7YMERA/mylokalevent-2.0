@@ -190,7 +190,7 @@ async function SearchBody({ searchParams }: Search) {
             coordinates (events.lat/lng) the map is framed to their bounds and a
             single result drops a precise marker; otherwise it falls back to the
             selected state. A full multi-pin interactive map (Leaflet/MapLibre)
-            is the planned upgrade — see KIRO-NOTES "Deferred / incomplete". */}
+            is the planned upgrade — see docs/notes/KIRO-NOTES.md "Deferred / incomplete". */}
         <div className="mt-4 overflow-hidden rounded-3xl border border-border">
           <iframe
             title={s.mapTitle}
