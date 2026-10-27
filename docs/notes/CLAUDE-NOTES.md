@@ -42,7 +42,7 @@ Last updated: 2026-10-27 (CI fixes).
 | #15 | Logo: wau bulan mark in the header, favicon, Apple touch icon, `docs/brand/`              | Open                 |
 | #16 | Notes moved to `docs/notes/`; GitHub wiki set up with portfolio pages                     | Open                 |
 | #17 | Launch page ("Apa itu MyLokalEvent?") on the homepage; built on #15 and #16               | Merged               |
-| —   | Pre-commit formatting hook, `sharp` 0.35.5, Actions v6, README live link                  | This PR              |
+| #20 | Pre-commit hook, `sharp` 0.35.5, Actions v6, README live link, payment fixes 6–8          | This PR              |
 
 **Notes moved (2026-10-27):** `KIRO-NOTES.md` and `CLAUDE-NOTES.md` now live in
 `docs/notes/` instead of the repo root. Kiro's steering file
