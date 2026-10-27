@@ -10,7 +10,7 @@ adds an entry to the log at the bottom.
 | ---------------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | Frontend         | Static Bootstrap 5 pages, vanilla JS SPA                                    | Next.js 16, React, TypeScript (strict), Tailwind CSS                                                 |
 | Rendering        | Client-side only; search engines and WhatsApp previews see an empty page    | Server-rendered and statically generated pages                                                       |
-| Brand            | Text-only name                                                              | Wau bulan logo in both themes, theme-aware favicon and app icon                                      |
+| Brand            | Stock Bootstrap "water" icon beside the name; no favicon                    | Wau bulan logo in both themes, theme-aware favicon and app icon                                      |
 | Styling          | Bootstrap defaults, one blue hue for almost everything                      | Design tokens: ocean teal, sunset coral and a distinct colour per event category                     |
 | Dark mode        | None                                                                        | Light, dark and "match device", switchable, no flash on load                                         |
 | Language         | English only                                                                | Bahasa Melayu and English on every page, with a switcher; language in the URL for search and sharing |
@@ -86,7 +86,8 @@ Newest first. Link the pull request for each entry.
 
 ### 2026-10-27: Logo ([PR #15](https://github.com/7YMERA/mylokalevent-2.0/pull/15))
 
-- **Before:** no logo; the browser tab showed the default Next.js icon.
+- **Before:** no logo of its own. The navbar showed the stock Bootstrap Icons "water"
+  glyph next to the name in white, and the site had no favicon.
 - **After:** a wau bulan (moon kite) mark, tilted in flight, beside the wordmark in the
   header, plus a favicon that follows the browser's light or dark setting and an Apple
   touch icon. It is drawn in the app's own colour tokens and contrast-checked in both
