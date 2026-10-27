@@ -45,8 +45,13 @@ Last updated: 2026-10-27.
 `docs/notes/` instead of the repo root. Kiro's steering file
 `.kiro/steering/structure.md` says so, so Kiro picks up the new path. Polished
 portfolio pages (project story, architecture, tech stack, roadmap) are on the
-[GitHub wiki](https://github.com/7YMERA/mylokalevent-2.0/wiki); these notes and
-`docs/v1-vs-v2.md` stay in the repo so they are reviewed in PRs next to the code.
+[GitHub wiki](https://github.com/7YMERA/mylokalevent-v2/wiki). Their source is
+`docs/wiki/`, and `.github/workflows/wiki.yml` copies it to the wiki when it
+changes on `main`, so wiki edits go through PRs too. Claude's cloud session
+can't push to the wiki repo directly (the git proxy only allows the main repo),
+which is why the workflow exists. Edit `docs/wiki/`, never the wiki web editor:
+the next publish overwrites it. Keep the Roadmap page in step with
+`.kiro/specs/mvp/tasks.md`.
 
 **Google sign-in is merged but parked (owner, 2026-10-26: "keep it at bay"
 until there is time for the full setup).** PR #13 hides the button until

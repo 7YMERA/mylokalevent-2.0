@@ -18,11 +18,13 @@ docs/
   v1-vs-v2.md        portfolio before/after record and changelog
   screenshots/       v1 and v2 screenshots used by v1-vs-v2.md and the wiki
   notes/             handoff logs: KIRO-NOTES.md (Kiro) and CLAUDE-NOTES.md (Claude)
+  wiki/              source of the GitHub wiki; published by .github/workflows/wiki.yml on merge
 .env.example         every environment variable, with placeholder values
 ```
 
 ## Conventions
 - Handoff notes live in `docs/notes/`: Kiro updates `docs/notes/KIRO-NOTES.md`, Claude updates `docs/notes/CLAUDE-NOTES.md`. Do not recreate them in the repo root.
+- Edit wiki pages in `docs/wiki/`, not in the GitHub wiki editor: the publish workflow overwrites the wiki from `main`.
 - One Kiro spec per feature in `.kiro/specs/<feature>/`.
 - Database changes only through migrations in `supabase/migrations/`.
 - Pull requests are small and focused; both Kiro and Claude work through PRs to `main`.
