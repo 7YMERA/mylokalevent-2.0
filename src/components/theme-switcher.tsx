@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useLayoutEffect, useSyncExternalStore } from "react";
 
 type Theme = "system" | "light" | "dark";
 
@@ -33,6 +33,11 @@ function readTheme(): Theme {
   return value === "light" || value === "dark" ? value : "system";
 }
 
+function savedTheme(): Theme {
+  const match = document.cookie.match(/(?:^|; )theme=(light|dark)(?:;|$)/);
+  return match ? (match[1] as Theme) : "system";
+}
+
 function setTheme(theme: Theme) {
   const root = document.documentElement;
   if (theme === "system") {
@@ -48,6 +53,16 @@ function setTheme(theme: Theme) {
 function subscribe(notify: () => void) {
   listeners.add(notify);
   return () => listeners.delete(notify);
+}
+
+// Switching language swaps the root layout, and React clears the attributes on
+// <html> when it does, so data-theme is lost. ThemeScript only runs on a full
+// page load, so this puts the saved theme back after each layout mount.
+export function ThemeSync() {
+  useLayoutEffect(() => {
+    setTheme(savedTheme());
+  }, []);
+  return null;
 }
 
 function ThemeIcon({ theme }: { theme: Theme }) {

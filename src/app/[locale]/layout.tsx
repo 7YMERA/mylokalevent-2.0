@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Bricolage_Grotesque } from "next/font/google";
 
 import { ThemeScript } from "@/components/theme-script";
+import { ThemeSync } from "@/components/theme-switcher";
 import { locales } from "@/i18n/config";
 import { getLocale, getMessages } from "@/i18n/messages";
 import { env } from "@/lib/env";
@@ -48,7 +49,10 @@ export default async function RootLayout({
       <head>
         <ThemeScript />
       </head>
-      <body className="flex min-h-full flex-col font-sans">{children}</body>
+      <body className="flex min-h-full flex-col font-sans">
+        <ThemeSync />
+        {children}
+      </body>
     </html>
   );
 }
