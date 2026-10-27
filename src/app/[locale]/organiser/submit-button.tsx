@@ -23,6 +23,7 @@ export function SubmitButton({
     generic: string;
     notOrganiser: string;
     paymentsUnavailable: string;
+    paymentProcessing: string;
   };
 }) {
   const [state, action, pending] = useActionState<SubmitState, FormData>(
@@ -33,11 +34,13 @@ export function SubmitButton({
   const errorText =
     state.error === "paymentsUnavailable"
       ? errorLabels.paymentsUnavailable
-      : state.error === "notOrganiser"
-        ? errorLabels.notOrganiser
-        : state.error
-          ? errorLabels.generic
-          : undefined;
+      : state.error === "paymentProcessing"
+        ? errorLabels.paymentProcessing
+        : state.error === "notOrganiser"
+          ? errorLabels.notOrganiser
+          : state.error
+            ? errorLabels.generic
+            : undefined;
 
   return (
     <form action={action} className="flex flex-col items-start gap-2">

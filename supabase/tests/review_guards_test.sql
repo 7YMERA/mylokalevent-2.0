@@ -99,13 +99,13 @@ from public.categories c where c.slug = 'market';
 set local role authenticated;
 set local request.jwt.claims = '{"sub": "00000000-0000-0000-0000-00000000000c", "role": "authenticated"}';
 select throws_ok(
-  $$select public.start_event_payment('00000000-0000-0000-0000-0000000000e4', 'cs_test_siti', 10, 'listing', 0)$$,
+  $$select public.start_event_payment('00000000-0000-0000-0000-0000000000e4', 'cs_test_siti', 'listing')$$,
   '42501', null, 'an unverified organiser cannot start a payment');
 
 -- Ali can still pay for his draft.
 set local request.jwt.claims = '{"sub": "00000000-0000-0000-0000-00000000000b", "role": "authenticated"}';
 select lives_ok(
-  $$select public.start_event_payment('00000000-0000-0000-0000-0000000000e3', 'cs_test_ali', 10, 'listing', 0)$$,
+  $$select public.start_event_payment('00000000-0000-0000-0000-0000000000e3', 'cs_test_ali', 'listing')$$,
   'a verified organiser can start a payment');
 
 -- A verified organiser changing their phone stays verified...

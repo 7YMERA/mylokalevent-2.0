@@ -125,17 +125,24 @@ async function Dashboard() {
                   </>
                 ) : null}
 
-                {event.status === "draft" || event.status === "rejected" ? (
+                {event.status === "draft" ||
+                event.status === "rejected" ||
+                event.status === "awaiting_payment" ? (
                   <div>
                     <SubmitButton
                       eventId={event.id}
                       locale={locale}
-                      label={d.submitForReview}
+                      label={
+                        event.status === "awaiting_payment"
+                          ? d.continuePayment
+                          : d.submitForReview
+                      }
                       pendingLabel={t.common.pleaseWait}
                       errorLabels={{
                         generic: t.messages.generic,
                         notOrganiser: t.messages.notOrganiser,
                         paymentsUnavailable: t.messages.paymentsUnavailable,
+                        paymentProcessing: t.messages.paymentProcessing,
                       }}
                     />
                     <p className="mt-1 text-xs text-muted-foreground">
