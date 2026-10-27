@@ -19,7 +19,7 @@ error hit and its fix, every limitation, and every suggestion, newest first.
 > Working notes, not product docs. Scope lives in `.kiro/specs/mvp/`. The
 > portfolio before/after log lives in `docs/v1-vs-v2.md`.
 
-Last updated: 2026-10-26.
+Last updated: 2026-10-27.
 
 ## Where we are (Claude's side)
 
@@ -35,9 +35,18 @@ Last updated: 2026-10-26.
 | #8  | BM / EN: locale in the URL, browser detection, BM fallback, switcher, parity test         | Merged               |
 | #9  | Google sign-in (PKCE) + privacy-consent step for new Google users                         | Merged (setup below) |
 | #10 | `npm run demo:users`: demo member / organiser / admin accounts                            | Merged               |
-| #11 | Kiro's branch: Claude merged `main` in and fixed review findings 1–5 (commits below)      | Open, Kiro's PR      |
-| #12 | This file                                                                                 | Open                 |
-| #13 | `GOOGLE_SIGN_IN` flag: Google button hidden until the provider is set up                  | Open                 |
+| #11 | Kiro's branch: Claude merged `main` in and fixed review findings 1–5 (commits below)      | Merged               |
+| #12 | This file                                                                                 | Merged               |
+| #13 | `GOOGLE_SIGN_IN` flag: Google button hidden until the provider is set up                  | Merged               |
+| #14 | GitHub Action pushes Supabase migrations on merge; Vercel deploys from `main` only        | Merged               |
+| —   | Notes moved to `docs/notes/`; GitHub wiki set up with portfolio pages                     | This PR              |
+
+**Notes moved (2026-10-27):** `KIRO-NOTES.md` and `CLAUDE-NOTES.md` now live in
+`docs/notes/` instead of the repo root. Kiro's steering file
+`.kiro/steering/structure.md` says so, so Kiro picks up the new path. Polished
+portfolio pages (project story, architecture, tech stack, roadmap) are on the
+[GitHub wiki](https://github.com/7YMERA/mylokalevent-2.0/wiki); these notes and
+`docs/v1-vs-v2.md` stay in the repo so they are reviewed in PRs next to the code.
 
 **Google sign-in is merged but parked (owner, 2026-10-26: "keep it at bay"
 until there is time for the full setup).** PR #13 hides the button until
