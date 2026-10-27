@@ -43,6 +43,7 @@ These close out the MVP and come before any new features. Most are small.
 ## After launch — phased roadmap
 
 ### Phase 1 — make organisers faster and events richer
+
 - **AI-assisted listings.** An organiser uploads their event poster and the form
   fills itself, each field coloured by how confident the model is. Nothing is
   published without the organiser checking it.
@@ -55,6 +56,7 @@ These close out the MVP and come before any new features. Most are small.
   that reach everyone who saved the event.
 
 ### Phase 2 — ticketing and attendance
+
 - **Ticketing.** Paid and free tickets with a per-ticket fee, capacity limits,
   and a waitlist.
 - **QR check-in.** A scannable ticket and an organiser check-in screen for the
@@ -63,6 +65,7 @@ These close out the MVP and come before any new features. Most are small.
   a schedule.
 
 ### Phase 3 — community and trust
+
 - **A moderation team.** A moderator role and a shared review queue with
   round-robin assignment, so review does not depend on one admin.
 - **Reviews and ratings.** Attendees rate an event afterwards; an organiser's
@@ -71,6 +74,7 @@ These close out the MVP and come before any new features. Most are small.
   and an audit trail for every decision.
 
 ### Phase 4 — reach and retention
+
 - **Installable mobile web app.** Add-to-home-screen, offline event pages, and
   push notifications for reminders.
 - **"Near me" discovery.** Sort and filter by distance using the map.
