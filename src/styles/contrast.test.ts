@@ -65,7 +65,12 @@ const textPairs: [string, string][] = [
 ];
 
 // Non-text UI that must meet WCAG AA for components (3:1).
-const uiPairs: [string, string][] = surfaces.map((s) => ["ring", s]);
+const uiPairs: [string, string][] = [
+  ...surfaces.map((s): [string, string] => ["ring", s]),
+  // The logo sits on the page background in the header.
+  ["logo-wing", "background"],
+  ["logo-tail", "background"],
+];
 
 describe.each([
   ["light", light],
