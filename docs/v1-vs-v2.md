@@ -10,6 +10,8 @@ adds an entry to the log at the bottom.
 | ---------------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | Frontend         | Static Bootstrap 5 pages, vanilla JS SPA                                    | Next.js 16, React, TypeScript (strict), Tailwind CSS                                                 |
 | Rendering        | Client-side only; search engines and WhatsApp previews see an empty page    | Server-rendered and statically generated pages                                                       |
+| Homepage         | A banner and an event grid; nothing explains who the site is for            | A launch page: who it's for, how it works, features, what's shipped, and a sign-up call to action    |
+| Brand            | Stock Bootstrap "water" icon beside the name; no favicon                    | Wau bulan logo in both themes, theme-aware favicon and app icon                                      |
 | Styling          | Bootstrap defaults, one blue hue for almost everything                      | Design tokens: ocean teal, sunset coral and a distinct colour per event category                     |
 | Dark mode        | None                                                                        | Light, dark and "match device", switchable, no flash on load                                         |
 | Language         | English only                                                                | Bahasa Melayu and English on every page, with a switcher; language in the URL for search and sharing |
@@ -27,6 +29,9 @@ The v1 screenshots were taken from the original frontend code, run locally with 
 sample events as v2 so the comparison is like for like. v1 had no dark mode.
 
 ### Home page, desktop
+
+The v2 home is now the launch page ("Apa itu MyLokalEvent?"). Desktop shots are in BM,
+the light mobile shot is in English.
 
 | v1                                          | v2 light                                                 | v2 dark                                                |
 | ------------------------------------------- | -------------------------------------------------------- | ------------------------------------------------------ |
@@ -82,6 +87,29 @@ language.
 ## Improvement log
 
 Newest first. Link the pull request for each entry.
+
+### 2026-10-27: Launch page on the homepage
+
+- **Before:** v1's home page went straight from a banner to an event grid. A first-time
+  visitor had to guess what the site was, who it was for, and how to list an event.
+- **After:** the homepage explains MyLokalEvent in one screen, then covers who it's for (people
+  going to events and organisers), the three steps for each, six features, the fishing-first
+  plan with the event types that come next, a shipped / in progress / planned list, and a
+  sign-up call to action. Header links jump to each section. Every line is in casual BM and
+  English, and it uses only design tokens, so both themes pass the contrast tests.
+- **Why it matters:** organisers and visitors can tell what the product does before signing up,
+  and the page doubles as the pitch for the portfolio.
+
+### 2026-10-27: Logo ([PR #15](https://github.com/7YMERA/mylokalevent-2.0/pull/15))
+
+- **Before:** no logo of its own. The navbar showed the stock Bootstrap Icons "water"
+  glyph next to the name in white, and the site had no favicon.
+- **After:** a wau bulan (moon kite) mark, tilted in flight, beside the wordmark in the
+  header, plus a favicon that follows the browser's light or dark setting and an Apple
+  touch icon. It is drawn in the app's own colour tokens and contrast-checked in both
+  themes. The kite says "Malaysian and festive" without tying the brand to fishing.
+
+![Header with the new logo, light and dark](brand/header-preview.png)
 
 ### 2026-10-25: Google sign-in
 
