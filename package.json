@@ -11,7 +11,8 @@
     "test": "vitest run",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "demo:users": "node --env-file=.env.local scripts/demo-users.mjs"
+    "demo:users": "node --env-file=.env.local scripts/demo-users.mjs",
+    "prepare": "husky"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -20,7 +21,7 @@
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "server-only": "^0.0.1",
-    "sharp": "0.34.4",
+    "sharp": "0.35.5",
     "stripe": "19.1.0",
     "zod": "^4.6.7"
   },
@@ -31,6 +32,8 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.3",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
     "prettier": "^3.9.10",
     "tailwindcss": "^4",
     "typescript": "^5",
@@ -38,5 +41,8 @@
   },
   "engines": {
     "node": ">=22"
+  },
+  "lint-staged": {
+    "*": "prettier --write --ignore-unknown"
   }
 }

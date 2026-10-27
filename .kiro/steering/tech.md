@@ -29,6 +29,8 @@
 - No seeded accounts or demo passwords outside local development.
 
 ## Quality
-- TypeScript strict mode, ESLint, Prettier.
+- TypeScript strict mode, ESLint, Prettier. A pre-commit hook (Husky + lint-staged)
+  formats staged files; if hooks are skipped, run `npm run format` before committing,
+  or CI's `format:check` fails.
 - Tests: unit tests for logic, tests for RLS policies, Playwright for key user flows.
 - CI on every pull request: typecheck, lint, tests, secret scanning.

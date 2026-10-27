@@ -17,9 +17,36 @@ import { createClient } from "@/lib/supabase/server";
 
 export type SubmitState = { error?: string };
 
+type Supabase = Awaited<ReturnType<typeof createClient>>;
+type Stripe = NonNullable<ReturnType<typeof getStripe>>;
+
+// Before a new listing checkout, close the organiser's earlier unfinished
+// ones so only one can be paid. Returns false if an earlier session has
+// already been paid and is waiting on the webhook: paying again would charge
+// twice.
+async function closeOpenListingSessions(
+  supabase: Supabase,
+  stripe: Stripe,
+  eventId: string,
+): Promise<boolean> {
+  const { data: pending } = await supabase
+    .from("payments")
+    .select("stripe_session_id")
+    .eq("event_id", eventId)
+    .eq("purpose", "listing")
+    .eq("status", "pending");
+  for (const { stripe_session_id: id } of pending ?? []) {
+    const session = await stripe.checkout.sessions.retrieve(id);
+    if (session.status === "complete") return false;
+    if (session.status === "open") await stripe.checkout.sessions.expire(id);
+  }
+  return true;
+}
+
 // Submit a draft event for review: create a Stripe Checkout session for the
 // listing fee, record a pending payment + move the event to awaiting_payment,
-// then send the organiser to Stripe. The event only becomes `in_review` when
+// then send the organiser to Stripe. An event already awaiting payment (the
+// organiser left Stripe without paying) can start a fresh session. The event only becomes `in_review` when
 // the signed webhook later calls confirm_payment — never here.
 export async function submitEventForReview(
   _prev: SubmitState,
@@ -45,13 +72,21 @@ export async function submitEventForReview(
     .single();
   if (!event || event.organiser_id !== user.id)
     return { error: "notOrganiser" };
-  if (event.status !== "draft" && event.status !== "rejected") {
+  if (
+    event.status !== "draft" &&
+    event.status !== "rejected" &&
+    event.status !== "awaiting_payment"
+  ) {
     return { error: "generic" };
   }
 
   const base = env().NEXT_PUBLIC_SITE_URL;
   let checkoutUrl: string | null = null;
   try {
+    if (!(await closeOpenListingSessions(supabase, stripe, event.id))) {
+      return { error: "paymentProcessing" };
+    }
+
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       // FPX and GrabPay are enabled on the Stripe account (dashboard), not here;
@@ -73,13 +108,12 @@ export async function submitEventForReview(
     });
     checkoutUrl = session.url;
 
-    // Record the pending payment and move the event to awaiting_payment.
+    // Record the pending payment and move the event to awaiting_payment. The
+    // database sets the price; the webhook checks Stripe charged it.
     const { error } = await supabase.rpc("start_event_payment", {
       target_event: event.id,
       session_id: session.id,
-      amount: LISTING_FEE_MYR,
       purpose: "listing",
-      featured_days: 0,
     });
     if (error) return { error: "generic" };
   } catch {
@@ -144,9 +178,7 @@ export async function buyFeaturedPlacement(
     const { error } = await supabase.rpc("start_event_payment", {
       target_event: event.id,
       session_id: session.id,
-      amount: FEATURED_FEE_MYR,
       purpose: "featured",
-      featured_days: FEATURED_DAYS,
     });
     if (error) return { error: "generic" };
   } catch {

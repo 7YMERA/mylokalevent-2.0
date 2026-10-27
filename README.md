@@ -3,7 +3,11 @@
 A platform for discovering, promoting and running local events in Malaysia, built
 properly this time: secure, reliable and ready for real users and real payments.
 
-> **Status:** early planning. There is no working app in this repo yet.
+**Live site: [mylokalevent.vercel.app](https://mylokalevent.vercel.app)**
+
+> **Status:** MVP in progress. Accounts, BM/EN, organisers, events, search and the
+> admin review queue are built; payments are built but not yet tested with live keys.
+> The [roadmap](https://github.com/7YMERA/mylokalevent-v2/wiki/Roadmap) has the rest.
 
 ## The goal
 
@@ -34,12 +38,11 @@ fresh rebuild that keeps the idea and leaves the shortcuts behind.
 
 ## What's next
 
-1. **Define 2.0.** Agree on who it serves, how it makes money and the first feature
-   set, written up as Kiro specs in `.kiro/specs/`.
-2. **Lay the foundation.** Choose the stack, set up authentication with database-level
-   access rules, CI, and a security baseline from day one.
-3. **Build the MVP.** Event discovery and event pages, verified organiser accounts,
-   and payments or ticketing.
+1. **Define 2.0.** Done: specs in `.kiro/specs/`.
+2. **Lay the foundation.** Done: Next.js, Supabase Auth with database-level
+   access rules, CI and a security baseline.
+3. **Build the MVP.** Event discovery, event pages and verified organisers are done;
+   payments, reminders and the rest of moderation are next.
 4. **Prepare for launch.** PDPA compliance, a security review, and a closed beta with
    a few real organisers.
 
@@ -56,6 +59,9 @@ npm install
 cp .env.example .env.local   # then fill in real values
 npm run dev                  # http://localhost:3000
 ```
+
+`npm install` also sets up a pre-commit hook (Husky + lint-staged) that runs Prettier
+on the files you commit, so the formatting check in CI doesn't fail on them.
 
 Before opening a pull request, run the same checks CI runs:
 
