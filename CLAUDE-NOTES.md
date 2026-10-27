@@ -19,7 +19,7 @@ error hit and its fix, every limitation, and every suggestion, newest first.
 > Working notes, not product docs. Scope lives in `.kiro/specs/mvp/`. The
 > portfolio before/after log lives in `docs/v1-vs-v2.md`.
 
-Last updated: 2026-10-26.
+Last updated: 2026-10-27.
 
 ## Where we are (Claude's side)
 
@@ -38,6 +38,7 @@ Last updated: 2026-10-26.
 | #11 | Kiro's branch: Claude merged `main` in and fixed review findings 1–5 (commits below)      | Open, Kiro's PR      |
 | #12 | This file                                                                                 | Open                 |
 | #13 | `GOOGLE_SIGN_IN` flag: Google button hidden until the provider is set up                  | Open                 |
+| #15 | Logo: wau bulan mark in the header, favicon, Apple touch icon, `docs/brand/`              | Open                 |
 
 **Google sign-in is merged but parked (owner, 2026-10-26: "keep it at bay"
 until there is time for the full setup).** PR #13 hides the button until
@@ -59,6 +60,26 @@ connected but every build fails until these env vars exist in Vercel
 `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_SITE_URL`. Then add the
 `*.vercel.app` URL to Supabase redirect URLs and to the Google client's
 JavaScript origins.
+
+## Logo (2026-10-27)
+
+The owner picked a **wau bulan** (moon kite) from four concepts (pin, bunga raya,
+"M" app tile, wau), then asked for it tilted in flight with a string. Why a wau:
+it is Malaysian and festive without being about fishing, so it still fits when
+the app grows past fishing.
+
+- `src/components/logo-mark.tsx` is the mark used in the header. Its colours are
+  the `--logo-*` tokens in `globals.css` (light and dark), and the contrast
+  test checks wing and tail against the background (3:1).
+- `src/app/icon.svg` is the favicon. It follows the browser's light/dark setting
+  through a media query inside the SVG, drops the thin spine, and thickens the
+  string so it holds up at 16 px. It replaces the default `favicon.ico`.
+- `src/app/apple-icon.png` (180 px) is the light mark on the sand background,
+  rendered from `docs/brand/wau-light.svg`.
+- `docs/brand/` has fixed-colour SVGs for light and dark backgrounds (README,
+  social posts, slides) and a header preview.
+- If you change the shape, change it in all four places: the component,
+  `icon.svg` and both `docs/brand` SVGs share the same path data.
 
 ## Review of `feat/organisers` (Kiro's tasks 2–6, PR #11), 2026-10-26
 
@@ -204,6 +225,9 @@ solid.
 
 Newest first.
 
+- **2026-10-27: header overflowed at 360 px after adding the logo** (26 px too
+  wide, caught by a local check before pushing). Fix: under 380 px the header
+  shows the mark only; the wordmark stays for screen readers (`sr-only`).
 - **2026-10-26: CSP blocked the Stripe Checkout redirect** (found while
   resolving the merge, never hit at runtime). `form-action 'self'` also covers
   a Server Action's redirect. Fix: allow `https://checkout.stripe.com`.

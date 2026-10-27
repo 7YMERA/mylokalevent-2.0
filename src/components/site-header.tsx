@@ -6,6 +6,7 @@ import { getLocale, getMessages } from "@/i18n/messages";
 
 import { AuthStatus } from "./auth-status";
 import { LanguageSwitcher } from "./language-switcher";
+import { LogoMark } from "./logo-mark";
 import { ThemeSwitcher } from "./theme-switcher";
 
 export async function SiteHeader() {
@@ -17,9 +18,13 @@ export async function SiteHeader() {
         <Link
           href={localePath(locale)}
           aria-label={t.header.home}
-          className="shrink-0 font-display text-base font-bold tracking-tight sm:text-lg"
+          className="flex shrink-0 items-center gap-2 font-display text-base font-bold tracking-tight sm:text-lg"
         >
-          MyLokal<span className="text-primary">Event</span>
+          <LogoMark className="size-7 sm:size-8" />
+          {/* Narrow phones (under 380px) show the mark alone so the header fits. */}
+          <span className="max-[379px]:sr-only">
+            MyLokal<span className="text-primary">Event</span>
+          </span>
         </Link>
         <div className="flex items-center gap-1.5 sm:gap-3">
           <LanguageSwitcher current={locale} label={t.header.language} />

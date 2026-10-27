@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <style>
+    .s { stroke: #4a5a66 } .h { fill: #d18a12 } .w { fill: #0b6e79 } .b { fill: #0b4f6c } .t { fill: #e4572e }
+    @media (prefers-color-scheme: dark) {
+      .s { stroke: #9db0bd } .h { fill: #f6c56b } .w { fill: #4fd1c5 } .b { fill: #2aa7b8 } .t { fill: #ff9a76 }
+    }
+  </style>
+  <path d="M31.2 46.5C26 53 16.5 50.5 4.5 59.5" fill="none" class="s" stroke-width="2.5" stroke-linecap="round"/>
+  <g transform="translate(37 25.5) rotate(16) scale(0.86) translate(-32 -30)">
+    <path class="h" d="M32 4.5c-2.6 2.6-3.4 5.6-1.3 8.6h2.6c2.1-3 1.3-6-1.3-8.6Z"/>
+    <path class="w" d="M32 13C22 13 10.5 17 5 26.5c9.5-.6 19.5 1.8 27 8.5 7.5-6.7 17.5-9.1 27-8.5C53.5 17 42 13 32 13Z"/>
+    <path class="b" d="M32 35l-2.2 9.5h4.4Z"/>
+    <path class="t" d="M12 43.5c5.5 15 34.5 15 40 0-7 7.2-33 7.2-40 0Z"/>
+  </g>
+</svg>
