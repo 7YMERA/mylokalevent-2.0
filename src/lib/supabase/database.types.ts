@@ -226,17 +226,27 @@ export type Database = {
         };
         Returns: undefined;
       };
+      payment_price: {
+        Args: { purpose: "listing" | "featured" };
+        Returns: { amount_myr: number; featured_days: number };
+      };
       start_event_payment: {
         Args: {
           target_event: string;
           session_id: string;
-          amount: number;
           purpose: "listing" | "featured";
-          featured_days?: number;
         };
-        Returns: undefined;
+        Returns: number;
       };
       confirm_payment: {
+        Args: {
+          session_id: string;
+          amount_total: number;
+          paid_currency: string;
+        };
+        Returns: boolean;
+      };
+      expire_payment: {
         Args: { session_id: string };
         Returns: undefined;
       };

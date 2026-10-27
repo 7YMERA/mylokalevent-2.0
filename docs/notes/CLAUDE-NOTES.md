@@ -158,6 +158,33 @@ the merge and the fixes below. If you have local commits, merge (don't rebase).
 
 ### Findings: fix before launch (ranked)
 
+**Findings 6–8 are FIXED (2026-10-27)** in migration
+`20261027100000_payment_fixes.sql` and the webhook:
+
+- **6:** `payment_price(purpose)` holds the prices (RM10 listing, RM20 for 7
+  featured days; `src/lib/pricing.ts` must match). `start_event_payment` now
+  takes `(event, session, purpose)`, sets the amount itself and returns it.
+  `confirm_payment(session, amount_total, currency)` refuses a charge that
+  isn't the stored amount in MYR: the payment becomes `failed`, the mismatch is
+  audited, the event doesn't move, and the webhook answers 200 (a retry
+  wouldn't help; an admin refunds).
+- **7:** a listing can be paid again from `awaiting_payment` ("Continue
+  payment" on the dashboard). The server action expires the earlier open
+  Stripe session first, and refuses if one is already complete but not yet
+  confirmed (`paymentProcessing`), so nobody pays twice. `expire_payment`,
+  called on `checkout.session.expired` and `async_payment_failed`, marks the
+  payment failed and sends the event back to `draft`.
+- **8:** only `payment_status === "paid"` is confirmed on
+  `checkout.session.completed`; `async_payment_succeeded` confirms delayed
+  methods.
+
+Verified with `supabase test db` in Docker (111/111; `payments_test.sql` now
+has 29 checks), plus lint, typecheck, vitest and build. **Not verified:** a real
+Stripe round trip. Add `checkout.session.expired`,
+`checkout.session.async_payment_succeeded` and
+`checkout.session.async_payment_failed` to the webhook endpoint's events in the
+Stripe dashboard.
+
 **Findings 1–5 are FIXED on `feat/organisers` (2026-10-26)**, owner said go:
 
 | #   | Fix                                                                                                                                                                                                      | Commit    |
@@ -323,8 +350,8 @@ Newest first.
 
 ## Suggestions
 
-1. **Fix findings 6–8 next** (price set by the caller, abandoned checkout
-   trapping the event, webhook payment-status edge cases). Done: 1–5.
+1. ~~Fix findings 6–8~~ Done (2026-10-27), as were 1–5. Next: smoke-test
+   the money path with Stripe test keys.
 2. **A raw original can still be uploaded straight to `events/<id>/`** by an
    organiser using the API with their own token (the storage insert policy
    allows the whole event folder). Low risk (it's their own photo), but the
@@ -344,7 +371,7 @@ Newest first.
 
 1. Owner: `npx supabase db push --linked` once PR #11 merges (new migrations),
    then Vercel env vars. Google is parked until the owner has time.
-2. Claude or Kiro: findings 6–8 with tests (1–5 done).
+2. ~~Findings 6–8 with tests~~ Done (2026-10-27).
 3. Owner: real photo upload test (see fix 4 above).
 4. Smoke test the money path with Stripe test keys (`stripe listen`).
 5. PDPA export + account deletion (task 7.1), required for launch.
