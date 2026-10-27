@@ -19,7 +19,7 @@ error hit and its fix, every limitation, and every suggestion, newest first.
 > Working notes, not product docs. Scope lives in `.kiro/specs/mvp/`. The
 > portfolio before/after log lives in `docs/v1-vs-v2.md`.
 
-Last updated: 2026-10-27.
+Last updated: 2026-10-27 (CI fixes).
 
 ## Where we are (Claude's side)
 
@@ -41,7 +41,8 @@ Last updated: 2026-10-27.
 | #14 | GitHub Action pushes Supabase migrations on merge; Vercel deploys from `main` only        | Merged               |
 | #15 | Logo: wau bulan mark in the header, favicon, Apple touch icon, `docs/brand/`              | Open                 |
 | #16 | Notes moved to `docs/notes/`; GitHub wiki set up with portfolio pages                     | Open                 |
-| —   | Launch page ("Apa itu MyLokalEvent?") on the homepage; built on #15 and #16               | This PR              |
+| #17 | Launch page ("Apa itu MyLokalEvent?") on the homepage; built on #15 and #16               | Merged               |
+| —   | Pre-commit formatting hook, `sharp` 0.35.5, Actions v6, README live link                  | This PR              |
 
 **Notes moved (2026-10-27):** `KIRO-NOTES.md` and `CLAUDE-NOTES.md` now live in
 `docs/notes/` instead of the repo root. Kiro's steering file
@@ -271,6 +272,15 @@ solid.
 
 Newest first.
 
+- **2026-10-27: PR #19 (Kiro, `docs/wiki-roadmap`) failed `format:check`.**
+  Prettier wanted a blank line after each `### Phase N` heading in
+  `docs/wiki/Roadmap.md`; the owner got failed-run emails. Fix: formatted the
+  file on that branch (`b676cd9`). Prevention: `npm install` now sets up a
+  Husky pre-commit hook that runs `lint-staged` (Prettier on staged files), and
+  `.kiro/steering/tech.md` says so. Same PR: `sharp` 0.34.4 → 0.35.5 (high
+  `npm audit` advisory in libvips/libheif/librsvg; checked that rotate, resize,
+  WebP and EXIF stripping still work) and `actions/checkout`/`setup-node` v4 →
+  v6 (v4 ran on the deprecated Node 20).
 - **2026-10-27: header overflowed at 360 px after adding the logo** (26 px too
   wide, caught by a local check before pushing). Fix: under 380 px the header
   shows the mark only; the wordmark stays for screen readers (`sr-only`).
