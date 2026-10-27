@@ -41,7 +41,8 @@ Last updated: 2026-10-27.
 | #14 | GitHub Action pushes Supabase migrations on merge; Vercel deploys from `main` only        | Merged               |
 | #15 | Logo: wau bulan mark in the header, favicon, Apple touch icon, `docs/brand/`              | Open                 |
 | #16 | Notes moved to `docs/notes/`; GitHub wiki set up with portfolio pages                     | Open                 |
-| —   | Launch page ("Apa itu MyLokalEvent?") on the homepage; built on #15 and #16               | This PR              |
+| #17 | Launch page ("Apa itu MyLokalEvent?") on the homepage; built on #15 and #16               | Merged               |
+| —   | Fix: chosen light/dark theme kept when switching BM / EN                                  | This PR              |
 
 **Notes moved (2026-10-27):** `KIRO-NOTES.md` and `CLAUDE-NOTES.md` now live in
 `docs/notes/` instead of the repo root. Kiro's steering file
@@ -75,6 +76,36 @@ connected but every build fails until these env vars exist in Vercel
 `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_SITE_URL`. Then add the
 `*.vercel.app` URL to Supabase redirect URLs and to the Google client's
 JavaScript origins.
+
+## Theme kept when switching language (2026-10-27)
+
+The owner reported that switching between `/ms` and `/en` reset the colour
+theme to "match device". Reproduced on the live site with Playwright: after
+picking Dark, a language switch left `data-theme` missing from `<html>` while
+the `theme=dark` cookie was still there, so a reload brought Dark back.
+
+- **Cause:** `src/app/[locale]/layout.tsx` is the root layout, and its
+  `locale` param changes on a language switch, so React remounts it. React
+  clears the attributes on `<html>` when it does, and `ThemeScript` (the
+  inline script in `<head>`) only runs on a full page load, so nothing put
+  `data-theme` back.
+- **Fix:** `ThemeSync` in `src/components/theme-switcher.tsx`, rendered at the
+  top of `<body>`. On each layout mount it reads the `theme` cookie in a layout
+  effect (before paint, so no flash) and applies it through `setTheme`, which
+  also tells the switcher to show the right option. `ThemeScript` stays for the
+  first paint of a full load.
+- **Verified:** lint, typecheck and 429 unit tests pass. Playwright against
+  `next dev`, `/ms` → `/en` → `/ms` → reload: Dark picked on a light-mode
+  device stays Dark, Light picked on a dark-mode device stays Light, and
+  "match device" stays on the device setting. The switcher shows the right
+  option after each switch. No colour tokens changed, so the contrast test
+  still covers both themes.
+- **Local dev gotcha:** `next dev` and `next build` refuse to start with the
+  `.env.example` placeholders (`your-...`). For UI checks without Supabase,
+  any non-placeholder URL and key in `.env.local` will do.
+- **Watch for:** the same remount happens on any navigation that changes a root
+  param. Anything else that sets attributes on `<html>` from client code needs
+  the same treatment.
 
 ## Launch page (2026-10-27)
 
