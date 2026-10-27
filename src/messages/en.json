@@ -26,19 +26,84 @@
     "community": "Community"
   },
   "home": {
-    "eyebrow": "Local events, close to you",
-    "title": "Find fishing competitions, coastal markets and local events across Malaysia.",
-    "lead": "Starting with Terengganu, Kelantan and Sabah. One place to discover what's on.",
+    "nav": {
+      "audience": "Who it's for",
+      "how": "How it works",
+      "why": "Why us",
+      "roadmap": "What's new"
+    },
+    "eyebrow": "What is MyLokalEvent?",
+    "title": "Every local event, in one place.",
+    "lead": "Fishing competitions, fishermen's markets and community events from verified organisers. We're starting with fishing, then every kind of event.",
     "comingSoon": "Coming soon",
-    "browse": "Browse by category",
-    "upcoming": "Upcoming events",
+    "findEvents": "Find events",
+    "listEvent": "List your event",
     "sampleListings": "Sample listings",
     "everySunday": "Every Sunday, {time}",
-    "blurbs": {
-      "competition": "Shore, boat and kayak tournaments with prizes.",
-      "market": "Fresh catch straight from the jetty.",
-      "pond": "Ponds and sessions for a relaxed day out.",
-      "community": "Clean-ups, festivals and gatherings."
+    "audience": {
+      "eyebrow": "Who it's for",
+      "title": "For people who go, and people who organise.",
+      "visitors": {
+        "title": "Going to events",
+        "body": "Anglers, families, or anyone looking for something to do this weekend.",
+        "points": {
+          "1": "Search by state, category or free events",
+          "2": "Save events and follow organisers",
+          "3": "Know who's running it"
+        }
+      },
+      "organisers": {
+        "title": "Organisers",
+        "body": "Fishing clubs, fishermen's cooperatives, pond operators and community groups.",
+        "points": {
+          "1": "Apply once, verify with SSM",
+          "2": "One event form, with photos and a map",
+          "3": "Pay for listings the Malaysian way"
+        },
+        "cta": "Apply to organise"
+      }
+    },
+    "how": {
+      "eyebrow": "How it works",
+      "title": "Just three steps.",
+      "visitors": {
+        "title": "If you're going",
+        "steps": {
+          "1": {
+            "title": "Find",
+            "body": "Filter by state, category or free events."
+          },
+          "2": {
+            "title": "Save and share",
+            "body": "Save it, then send it to the group on WhatsApp."
+          },
+          "3": {
+            "title": "Go",
+            "body": "Follow the map straight there."
+          }
+        }
+      },
+      "organisers": {
+        "title": "If you're organising",
+        "steps": {
+          "1": {
+            "title": "Apply",
+            "body": "Fill in your organiser profile and SSM number."
+          },
+          "2": {
+            "title": "Get verified",
+            "body": "An admin checks and verifies your account."
+          },
+          "3": {
+            "title": "List",
+            "body": "Submit your event. Once it's reviewed, it goes live."
+          }
+        }
+      }
+    },
+    "why": {
+      "eyebrow": "Why MyLokalEvent",
+      "title": "Built for local events in Malaysia."
     },
     "features": {
       "verified": {
@@ -52,7 +117,77 @@
       "sharing": {
         "title": "Built for sharing",
         "body": "Every event page previews nicely on WhatsApp, with directions and add-to-calendar."
+      },
+      "bilingual": {
+        "title": "BM and English",
+        "body": "Use BM or English, and switch any time."
+      },
+      "follow": {
+        "title": "Save and follow",
+        "body": "Save the events you like and follow your favourite organisers."
+      },
+      "directions": {
+        "title": "Straight to the spot",
+        "body": "Every event has a map, so no more asking the way to the jetty."
       }
+    },
+    "growth": {
+      "eyebrow": "Starting with fishing",
+      "title": "Fishing first. Then everything else.",
+      "lead": "We're starting with a community we know. The platform is ready for other kinds of events.",
+      "next": "Up next",
+      "nextTypes": {
+        "1": "Night markets",
+        "2": "Runs and sports",
+        "3": "Festivals and concerts",
+        "4": "Workshops and classes"
+      }
+    },
+    "blurbs": {
+      "competition": "Shore, boat and kayak tournaments with prizes.",
+      "market": "Fresh catch straight from the jetty.",
+      "pond": "Ponds and sessions for a relaxed day out.",
+      "community": "Clean-ups, festivals and gatherings."
+    },
+    "roadmap": {
+      "eyebrow": "What's new",
+      "title": "What's done, and what's next.",
+      "status": {
+        "shipped": "Shipped",
+        "progress": "In progress",
+        "planned": "Planned"
+      },
+      "items": {
+        "verification": {
+          "title": "Organiser verification",
+          "body": "Admins verify organisers, and every decision is recorded."
+        },
+        "search": {
+          "title": "Event search",
+          "body": "Search by keyword, state and category, with a map."
+        },
+        "follow": {
+          "title": "Save and follow",
+          "body": "Save events and follow your favourite organisers."
+        },
+        "reminders": {
+          "title": "Reminders",
+          "body": "A heads-up before an event you saved starts."
+        },
+        "poster": {
+          "title": "Listings from a poster",
+          "body": "Upload a poster and the event form fills itself. The organiser checks it before it goes live."
+        },
+        "types": {
+          "title": "More event types",
+          "body": "Night markets, runs, festivals and more."
+        }
+      }
+    },
+    "cta": {
+      "title": "Got an event to share?",
+      "body": "Sign up for free, then apply to organise.",
+      "signUp": "Sign up free"
     }
   },
   "fields": {

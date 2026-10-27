@@ -19,7 +19,7 @@ error hit and its fix, every limitation, and every suggestion, newest first.
 > Working notes, not product docs. Scope lives in `.kiro/specs/mvp/`. The
 > portfolio before/after log lives in `docs/v1-vs-v2.md`.
 
-Last updated: 2026-10-26.
+Last updated: 2026-10-27.
 
 ## Where we are (Claude's side)
 
@@ -35,9 +35,25 @@ Last updated: 2026-10-26.
 | #8  | BM / EN: locale in the URL, browser detection, BM fallback, switcher, parity test         | Merged               |
 | #9  | Google sign-in (PKCE) + privacy-consent step for new Google users                         | Merged (setup below) |
 | #10 | `npm run demo:users`: demo member / organiser / admin accounts                            | Merged               |
-| #11 | Kiro's branch: Claude merged `main` in and fixed review findings 1–5 (commits below)      | Open, Kiro's PR      |
-| #12 | This file                                                                                 | Open                 |
-| #13 | `GOOGLE_SIGN_IN` flag: Google button hidden until the provider is set up                  | Open                 |
+| #11 | Kiro's branch: Claude merged `main` in and fixed review findings 1–5 (commits below)      | Merged               |
+| #12 | This file                                                                                 | Merged               |
+| #13 | `GOOGLE_SIGN_IN` flag: Google button hidden until the provider is set up                  | Merged               |
+| #14 | GitHub Action pushes Supabase migrations on merge; Vercel deploys from `main` only        | Merged               |
+| #15 | Logo: wau bulan mark in the header, favicon, Apple touch icon, `docs/brand/`              | Open                 |
+| #16 | Notes moved to `docs/notes/`; GitHub wiki set up with portfolio pages                     | Open                 |
+| —   | Launch page ("Apa itu MyLokalEvent?") on the homepage; built on #15 and #16               | This PR              |
+
+**Notes moved (2026-10-27):** `KIRO-NOTES.md` and `CLAUDE-NOTES.md` now live in
+`docs/notes/` instead of the repo root. Kiro's steering file
+`.kiro/steering/structure.md` says so, so Kiro picks up the new path. Polished
+portfolio pages (project story, architecture, tech stack, roadmap) are on the
+[GitHub wiki](https://github.com/7YMERA/mylokalevent-v2/wiki). Their source is
+`docs/wiki/`, and `.github/workflows/wiki.yml` copies it to the wiki when it
+changes on `main`, so wiki edits go through PRs too. Claude's cloud session
+can't push to the wiki repo directly (the git proxy only allows the main repo),
+which is why the workflow exists. Edit `docs/wiki/`, never the wiki web editor:
+the next publish overwrites it. Keep the Roadmap page in step with
+`.kiro/specs/mvp/tasks.md`.
 
 **Google sign-in is merged but parked (owner, 2026-10-26: "keep it at bay"
 until there is time for the full setup).** PR #13 hides the button until
@@ -59,6 +75,57 @@ connected but every build fails until these env vars exist in Vercel
 `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_SITE_URL`. Then add the
 `*.vercel.app` URL to Supabase redirect URLs and to the Google client's
 JavaScript origins.
+
+## Launch page (2026-10-27)
+
+The owner asked for a "what is MyLokalEvent" marketing page like the TaskMatch
+v2 landing page, and chose to make it **the homepage** (`/ms`, `/en`) rather
+than a separate About page. Event browsing stays at `/events`.
+
+- **Sections, in order:** hero (pitch, _Cari acara_ / _Senaraikan acara_, two
+  sample event cards, logo chip), _Untuk siapa_, _Cara guna_ (3 steps for
+  visitors, 3 for organisers), _Kenapa MyLokalEvent_ (6 features), _Mula dengan
+  memancing_ (category tiles + "next" event types), _Apa yang baru_ (roadmap),
+  CTA band. Anchor ids are language-neutral: `#audience`, `#how`, `#why`,
+  `#roadmap`.
+- **Header:** `SiteHeader` takes an optional `links` prop for in-page anchors,
+  shown at `lg` and up. Other pages pass nothing and look the same as before.
+- **Copy:** all strings are under `home.*` in `src/messages/{ms,en}.json`.
+  Lists are objects keyed `"1"`, `"2"`, `"3"` (not arrays) so the BM/EN parity
+  test's `flatten` and the JSON types keep working; the page reads them with
+  `Object.values`. Removed keys: `home.browse`, `home.upcoming`.
+- **Keep the roadmap honest:** the _Apa yang baru_ list is hard-coded in
+  `src/app/[locale]/page.tsx` (`roadmap`). When reminders ship or poster import
+  starts, move the item's status there and in `docs/wiki/Roadmap.md`.
+- **Colours:** only existing tokens and pairs the contrast test already
+  covers. The logo sits on a `bg-surface` chip because the teal wing on the
+  teal hero gradient is below 3:1.
+- **Verified:** lint, typecheck and 429 unit tests pass. Screenshots taken
+  with Playwright against `next dev` (light/dark, desktop/mobile, BM/EN), no
+  horizontal scroll at 390 px. They replace the v2 home shots in
+  `docs/v1-vs-v2.md`, still compared against v1.
+- **Not done:** the sample event cards are still static. Swap them for the
+  latest approved events once there are real listings.
+
+## Logo (2026-10-27)
+
+The owner picked a **wau bulan** (moon kite) from four concepts (pin, bunga raya,
+"M" app tile, wau), then asked for it tilted in flight with a string. Why a wau:
+it is Malaysian and festive without being about fishing, so it still fits when
+the app grows past fishing.
+
+- `src/components/logo-mark.tsx` is the mark used in the header. Its colours are
+  the `--logo-*` tokens in `globals.css` (light and dark), and the contrast
+  test checks wing and tail against the background (3:1).
+- `src/app/icon.svg` is the favicon. It follows the browser's light/dark setting
+  through a media query inside the SVG, drops the thin spine, and thickens the
+  string so it holds up at 16 px. It replaces the default `favicon.ico`.
+- `src/app/apple-icon.png` (180 px) is the light mark on the sand background,
+  rendered from `docs/brand/wau-light.svg`.
+- `docs/brand/` has fixed-colour SVGs for light and dark backgrounds (README,
+  social posts, slides) and a header preview.
+- If you change the shape, change it in all four places: the component,
+  `icon.svg` and both `docs/brand` SVGs share the same path data.
 
 ## Review of `feat/organisers` (Kiro's tasks 2–6, PR #11), 2026-10-26
 
@@ -204,6 +271,9 @@ solid.
 
 Newest first.
 
+- **2026-10-27: header overflowed at 360 px after adding the logo** (26 px too
+  wide, caught by a local check before pushing). Fix: under 380 px the header
+  shows the mark only; the wordmark stays for screen readers (`sr-only`).
 - **2026-10-26: CSP blocked the Stripe Checkout redirect** (found while
   resolving the merge, never hit at runtime). `form-action 'self'` also covers
   a Server Action's redirect. Fix: allow `https://checkout.stripe.com`.

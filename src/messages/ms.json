@@ -26,19 +26,84 @@
     "community": "Komuniti"
   },
   "home": {
-    "eyebrow": "Acara tempatan, dekat dengan anda",
-    "title": "Cari pertandingan memancing, pasar basah dan acara tempatan di seluruh Malaysia.",
-    "lead": "Bermula di Terengganu, Kelantan dan Sabah. Satu tempat untuk mengetahui acara terkini.",
+    "nav": {
+      "audience": "Untuk siapa",
+      "how": "Cara guna",
+      "why": "Kenapa kami",
+      "roadmap": "Apa yang baru"
+    },
+    "eyebrow": "Apa itu MyLokalEvent?",
+    "title": "Semua acara lokal, satu tempat.",
+    "lead": "Pertandingan memancing, pasar nelayan dan acara komuniti dari penganjur yang disahkan. Kita mula dengan memancing, lepas ni semua jenis acara.",
     "comingSoon": "Akan datang",
-    "browse": "Layari mengikut kategori",
-    "upcoming": "Acara akan datang",
+    "findEvents": "Cari acara",
+    "listEvent": "Senaraikan acara",
     "sampleListings": "Contoh senarai",
     "everySunday": "Setiap Ahad, {time}",
-    "blurbs": {
-      "competition": "Kejohanan dari pantai, bot dan kayak dengan hadiah menarik.",
-      "market": "Hasil laut segar terus dari jeti.",
-      "pond": "Kolam dan sesi memancing untuk hari yang santai.",
-      "community": "Gotong-royong, pesta dan perhimpunan."
+    "audience": {
+      "eyebrow": "Untuk siapa",
+      "title": "Untuk yang pergi, dan yang anjur.",
+      "visitors": {
+        "title": "Pengunjung",
+        "body": "Kaki pancing, keluarga, atau sesiapa yang cari benda nak buat hujung minggu.",
+        "points": {
+          "1": "Cari ikut negeri, kategori atau acara percuma",
+          "2": "Simpan acara dan ikut penganjur",
+          "3": "Tahu siapa yang anjur"
+        }
+      },
+      "organisers": {
+        "title": "Penganjur",
+        "body": "Kelab memancing, koperasi nelayan, pengusaha kolam dan persatuan komuniti.",
+        "points": {
+          "1": "Mohon sekali, sahkan dengan SSM",
+          "2": "Satu borang acara, lengkap dengan gambar dan peta",
+          "3": "Bayar penyenaraian cara Lokal"
+        },
+        "cta": "Mohon jadi penganjur"
+      }
+    },
+    "how": {
+      "eyebrow": "Cara guna",
+      "title": "Tiga langkah je.",
+      "visitors": {
+        "title": "Kalau nak pergi",
+        "steps": {
+          "1": {
+            "title": "Cari",
+            "body": "Tapis ikut negeri, kategori atau acara percuma."
+          },
+          "2": {
+            "title": "Simpan dan kongsi",
+            "body": "Simpan acaranya, hantar ke geng dalam WhatsApp."
+          },
+          "3": {
+            "title": "Pergi",
+            "body": "Ikut peta terus ke lokasi."
+          }
+        }
+      },
+      "organisers": {
+        "title": "Kalau nak anjur",
+        "steps": {
+          "1": {
+            "title": "Mohon",
+            "body": "Isi profil penganjur dan nombor SSM."
+          },
+          "2": {
+            "title": "Disahkan",
+            "body": "Admin semak dan sahkan akaun anda."
+          },
+          "3": {
+            "title": "Senaraikan",
+            "body": "Hantar acara. Lepas disemak, terus naik."
+          }
+        }
+      }
+    },
+    "why": {
+      "eyebrow": "Kenapa MyLokalEvent",
+      "title": "Dibina untuk acara lokal Malaysia."
     },
     "features": {
       "verified": {
@@ -52,7 +117,77 @@
       "sharing": {
         "title": "Senang nak dikongsi",
         "body": "Setiap halaman acara dipaparkan dengan kemas di WhatsApp, lengkap dengan arah ke lokasi dan tambah ke kalendar."
+      },
+      "bilingual": {
+        "title": "BM dan English",
+        "body": "Guna BM atau English, tukar bila-bila masa."
+      },
+      "follow": {
+        "title": "Simpan dan ikut",
+        "body": "Simpan acara yang berkenan dan ikut penganjur kegemaran anda."
+      },
+      "directions": {
+        "title": "Terus ke lokasi",
+        "body": "Setiap acara ada peta, tak payah tanya jalan ke jeti."
       }
+    },
+    "growth": {
+      "eyebrow": "Mula dengan memancing",
+      "title": "Memancing dulu. Lepas tu, semua acara.",
+      "lead": "Kita mula dengan komuniti yang kita kenal. Platform ni dah sedia untuk jenis acara lain.",
+      "next": "Seterusnya",
+      "nextTypes": {
+        "1": "Pasar malam",
+        "2": "Larian dan sukan",
+        "3": "Pesta dan konsert",
+        "4": "Bengkel dan kelas"
+      }
+    },
+    "blurbs": {
+      "competition": "Kejohanan dari pantai, bot dan kayak dengan hadiah menarik.",
+      "market": "Hasil laut segar terus dari jeti.",
+      "pond": "Kolam dan sesi memancing untuk hari yang santai.",
+      "community": "Gotong-royong, pesta dan perhimpunan."
+    },
+    "roadmap": {
+      "eyebrow": "Apa yang baru",
+      "title": "Yang dah siap, dan yang seterusnya.",
+      "status": {
+        "shipped": "Dah siap",
+        "progress": "Tengah buat",
+        "planned": "Dirancang"
+      },
+      "items": {
+        "verification": {
+          "title": "Pengesahan penganjur",
+          "body": "Admin sahkan penganjur, dan setiap keputusan direkod."
+        },
+        "search": {
+          "title": "Cari acara",
+          "body": "Cari ikut kata kunci, negeri dan kategori, dengan peta."
+        },
+        "follow": {
+          "title": "Simpan dan ikut",
+          "body": "Simpan acara dan ikut penganjur kegemaran."
+        },
+        "reminders": {
+          "title": "Peringatan",
+          "body": "Notifikasi sebelum acara yang anda simpan bermula."
+        },
+        "poster": {
+          "title": "Borang terisi dari poster",
+          "body": "Muat naik poster, borang acara terisi sendiri. Penganjur semak dulu sebelum terbit."
+        },
+        "types": {
+          "title": "Lebih banyak jenis acara",
+          "body": "Pasar malam, larian, pesta dan banyak lagi."
+        }
+      }
+    },
+    "cta": {
+      "title": "Ada acara nak dikongsi?",
+      "body": "Buka akaun percuma, lepas tu mohon jadi penganjur.",
+      "signUp": "Daftar percuma"
     }
   },
   "fields": {

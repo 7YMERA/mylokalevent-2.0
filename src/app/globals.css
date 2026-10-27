@@ -50,6 +50,13 @@
   --cat-pond-soft: #d9f4ea;
   --cat-community: #5b3fb5;
   --cat-community-soft: #ece7fb;
+
+  /* Logo: the wau bulan mark (src/components/logo-mark.tsx) */
+  --logo-wing: #0b6e79;
+  --logo-body: #0b4f6c;
+  --logo-tail: #e4572e;
+  --logo-head: #d18a12;
+  --logo-string: #4a5a66;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -88,6 +95,12 @@
     --cat-pond-soft: #0e2f26;
     --cat-community: #c4b5fd;
     --cat-community-soft: #241c44;
+
+    --logo-wing: #4fd1c5;
+    --logo-body: #2aa7b8;
+    --logo-tail: #ff9a76;
+    --logo-head: #f6c56b;
+    --logo-string: #9db0bd;
   }
 }
 
@@ -126,6 +139,12 @@
   --cat-pond-soft: #0e2f26;
   --cat-community: #c4b5fd;
   --cat-community-soft: #241c44;
+
+  --logo-wing: #4fd1c5;
+  --logo-body: #2aa7b8;
+  --logo-tail: #ff9a76;
+  --logo-head: #f6c56b;
+  --logo-string: #9db0bd;
 }
 
 @theme inline {
