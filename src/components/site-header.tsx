@@ -9,7 +9,10 @@ import { LanguageSwitcher } from "./language-switcher";
 import { LogoMark } from "./logo-mark";
 import { ThemeSwitcher } from "./theme-switcher";
 
-export async function SiteHeader() {
+// Optional in-page links (the homepage passes its section anchors).
+export type HeaderLink = { href: string; label: string };
+
+export async function SiteHeader({ links = [] }: { links?: HeaderLink[] }) {
   const [locale, t] = await Promise.all([getLocale(), getMessages()]);
 
   return (
@@ -26,6 +29,19 @@ export async function SiteHeader() {
             MyLokal<span className="text-primary">Event</span>
           </span>
         </Link>
+        {links.length > 0 && (
+          <nav className="hidden items-center gap-1 lg:flex">
+            {links.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:bg-surface-muted hover:text-foreground"
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+        )}
         <div className="flex items-center gap-1.5 sm:gap-3">
           <LanguageSwitcher current={locale} label={t.header.language} />
           <ThemeSwitcher

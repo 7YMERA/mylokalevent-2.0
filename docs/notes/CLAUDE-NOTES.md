@@ -41,6 +41,7 @@ Last updated: 2026-10-27.
 | #14 | GitHub Action pushes Supabase migrations on merge; Vercel deploys from `main` only        | Merged               |
 | #15 | Logo: wau bulan mark in the header, favicon, Apple touch icon, `docs/brand/`              | Open                 |
 | #16 | Notes moved to `docs/notes/`; GitHub wiki set up with portfolio pages                     | Open                 |
+| —   | Launch page ("Apa itu MyLokalEvent?") on the homepage; built on #15 and #16               | This PR              |
 
 **Notes moved (2026-10-27):** `KIRO-NOTES.md` and `CLAUDE-NOTES.md` now live in
 `docs/notes/` instead of the repo root. Kiro's steering file
@@ -74,6 +75,37 @@ connected but every build fails until these env vars exist in Vercel
 `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_SITE_URL`. Then add the
 `*.vercel.app` URL to Supabase redirect URLs and to the Google client's
 JavaScript origins.
+
+## Launch page (2026-10-27)
+
+The owner asked for a "what is MyLokalEvent" marketing page like the TaskMatch
+v2 landing page, and chose to make it **the homepage** (`/ms`, `/en`) rather
+than a separate About page. Event browsing stays at `/events`.
+
+- **Sections, in order:** hero (pitch, _Cari acara_ / _Senaraikan acara_, two
+  sample event cards, logo chip), _Untuk siapa_, _Cara guna_ (3 steps for
+  visitors, 3 for organisers), _Kenapa MyLokalEvent_ (6 features), _Mula dengan
+  memancing_ (category tiles + "next" event types), _Apa yang baru_ (roadmap),
+  CTA band. Anchor ids are language-neutral: `#audience`, `#how`, `#why`,
+  `#roadmap`.
+- **Header:** `SiteHeader` takes an optional `links` prop for in-page anchors,
+  shown at `lg` and up. Other pages pass nothing and look the same as before.
+- **Copy:** all strings are under `home.*` in `src/messages/{ms,en}.json`.
+  Lists are objects keyed `"1"`, `"2"`, `"3"` (not arrays) so the BM/EN parity
+  test's `flatten` and the JSON types keep working; the page reads them with
+  `Object.values`. Removed keys: `home.browse`, `home.upcoming`.
+- **Keep the roadmap honest:** the _Apa yang baru_ list is hard-coded in
+  `src/app/[locale]/page.tsx` (`roadmap`). When reminders ship or poster import
+  starts, move the item's status there and in `docs/wiki/Roadmap.md`.
+- **Colours:** only existing tokens and pairs the contrast test already
+  covers. The logo sits on a `bg-surface` chip because the teal wing on the
+  teal hero gradient is below 3:1.
+- **Verified:** lint, typecheck and 429 unit tests pass. Screenshots taken
+  with Playwright against `next dev` (light/dark, desktop/mobile, BM/EN), no
+  horizontal scroll at 390 px. They replace the v2 home shots in
+  `docs/v1-vs-v2.md`, still compared against v1.
+- **Not done:** the sample event cards are still static. Swap them for the
+  latest approved events once there are real listings.
 
 ## Logo (2026-10-27)
 
