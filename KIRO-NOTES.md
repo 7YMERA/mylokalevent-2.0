@@ -435,6 +435,18 @@ These are the money-path holes; fix before any real payment goes through.
   is the organiser themselves so risk is low, but escape it anyway.
 - **"Free resubmit once" isn't implemented** — a rejected event pays again to
   resubmit. Decide: free resubmit, or by design.
+- **Admins can approve an event in ANY status**, including unpaid drafts.
+  `set_event_status` should require `status = 'in_review'` before
+  approve/reject.
+- **Organiser phone + SSM number are PUBLIC** for verified organisers
+  (whole-row select grant). PDPA concern. _Fix:_ either say so in the privacy
+  notice, or expose a view without `ssm_number`/`phone`.
+- **WhatsApp/OG preview has no image** — against our "shareable" principle. A
+  1-hour signed URL would expire anyway. _Fix:_ a generated `opengraph-image.tsx`
+  route, or a public thumbnail bucket.
+- **A raw original can still be uploaded** straight to `events/<id>/` via the
+  API with the organiser's own token (low risk — their own photo — but the
+  `events/` prefix could be made server-key-only).
 
 ### P1 — reconcile my branch with main (housekeeping)
 `feat/organisers` still has `KIRO-NOTES.md` at the repo ROOT; `main` moved it to
@@ -455,11 +467,26 @@ conflicts on merge.
 - **Seed a few approved demo events** so the live `/events` page shows listings
   instead of "0 acara".
 
-### Before trusting any of the above on the live site
-The Stripe money path, the `sharp` upload pipeline, the receipt/decision emails,
-and the generated-column migration were all written but NEVER executed here (no
-Stripe keys, no Resend key, no Docker/local Supabase this session). Smoke-test
-each against the real hosted Supabase + Stripe test keys before launch.
+### Verification status — UPDATED: Claude closed most of the gap
+Claude re-ran everything on a 15 GB cloud box (commit `237bfa7` + after fixes):
+full `npm run build` (every new page prerenders with Cache Components), vitest
+**355**, and pgTAP **95/95** across all test files — including the never-run
+PostGIS `event_coordinates` and `saves_follows` migrations, which apply cleanly.
+So the "written but unrun" worry is largely closed. Still NOT executed anywhere:
+the Stripe money path, the `sharp` upload against a REAL Supabase Storage, and
+the receipt/decision emails (no keys). CI's `supabase test db` remains the final
+word over Claude's local `auth`/`storage` stubs. Smoke-test the money + upload +
+email paths against the hosted project before launch.
+
+### Process suggestions from Claude (worth doing)
+- **Smaller PRs.** PR #11 was titled "task 2.1" but held tasks 2–6 (56 files,
+  +6.4k lines). Small PRs get real CI runs + reviews.
+- **Turn on branch protection** requiring CI green, so a red/conflicted PR can't
+  be merged by accident.
+- **Regenerate `database.types.ts`** from the linked project
+  (`supabase gen types typescript --linked`) to drop the hand-written casts.
+- **When pulling Claude's branch work: merge, don't rebase** (Claude's note).
+  A rebase of your own unpushed local commits is fine; don't rebase shared history.
 
 ---
 
