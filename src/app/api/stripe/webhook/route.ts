@@ -5,9 +5,76 @@ import { env } from "@/lib/env";
 import { getStripe } from "@/lib/stripe";
 import { createServiceClient } from "@/lib/supabase/service";
 
+type ServiceClient = NonNullable<ReturnType<typeof createServiceClient>>;
+type CheckoutSession = {
+  id: string;
+  payment_status?: string;
+  amount_total?: number | null;
+  currency?: string | null;
+};
+
+// Forget the event id so Stripe's retry is processed instead of being dropped
+// as a duplicate. The payment functions are idempotent, so a retry is safe.
+async function retryLater(
+  supabase: ServiceClient,
+  eventId: string,
+  error: string,
+) {
+  await supabase.from("stripe_events").delete().eq("id", eventId);
+  return NextResponse.json({ error }, { status: 500 });
+}
+
+async function confirm(
+  supabase: ServiceClient,
+  eventId: string,
+  session: CheckoutSession,
+) {
+  const { data: confirmed, error } = await supabase.rpc("confirm_payment", {
+    session_id: session.id,
+    amount_total: session.amount_total ?? -1,
+    paid_currency: session.currency ?? "",
+  });
+  if (error) return retryLater(supabase, eventId, "confirm failed");
+  if (!confirmed) {
+    // Stripe charged something other than the stored price. The payment is
+    // marked failed and audited; an admin refunds it. Retrying won't help.
+    console.error("[webhook] amount mismatch on session", session.id);
+    return NextResponse.json({ received: true, applied: false });
+  }
+
+  // Send a receipt. A missing/failing email must NOT fail the webhook — the
+  // payment is already confirmed in the DB (the source of truth).
+  try {
+    const { data: pay } = await supabase
+      .from("payments")
+      .select("user_id, purpose, amount_myr, event_id")
+      .eq("stripe_session_id", session.id)
+      .single();
+    if (pay) {
+      const [{ data: userRes }, { data: ev }] = await Promise.all([
+        supabase.auth.admin.getUserById(pay.user_id),
+        supabase.from("events").select("title").eq("id", pay.event_id).single(),
+      ]);
+      const to = userRes?.user?.email;
+      if (to) {
+        const receipt = paymentReceiptEmail({
+          purpose: pay.purpose,
+          amountMyr: pay.amount_myr,
+          eventTitle: ev?.title ?? "your event",
+        });
+        await sendEmail({ to, ...receipt });
+      }
+    }
+  } catch (emailError) {
+    console.error("[webhook] receipt email failed", emailError);
+  }
+  return NextResponse.json({ received: true });
+}
+
 // The ONLY place a payment is marked paid. Verifies the Stripe signature,
-// dedupes on the Stripe event id, then calls confirm_payment() with the
-// service role (the only caller allowed to run it).
+// dedupes on the Stripe event id, then calls confirm_payment() (paid) or
+// expire_payment() (expired / failed) with the service role, the only caller
+// allowed to run them.
 export async function POST(request: NextRequest) {
   const stripe = getStripe();
   const webhookSecret = env().STRIPE_WEBHOOK_SECRET;
@@ -49,56 +116,22 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  if (event.type === "checkout.session.completed") {
-    const session = event.data.object as {
-      id: string;
-      payment_status?: string;
-    };
-    if (
-      session.payment_status === "paid" ||
-      session.payment_status === undefined
-    ) {
-      const { error } = await supabase.rpc("confirm_payment", {
+  const session = event.data.object as CheckoutSession;
+  switch (event.type) {
+    case "checkout.session.completed":
+      // A delayed method (some bank transfers) completes as "unpaid" and
+      // reports later through async_payment_succeeded / _failed.
+      if (session.payment_status !== "paid") break;
+      return confirm(supabase, event.id, session);
+    case "checkout.session.async_payment_succeeded":
+      return confirm(supabase, event.id, session);
+    case "checkout.session.expired":
+    case "checkout.session.async_payment_failed": {
+      const { error } = await supabase.rpc("expire_payment", {
         session_id: session.id,
       });
-      if (error) {
-        // Forget the event id so Stripe's retry is processed instead of being
-        // dropped as a duplicate. confirm_payment is idempotent, so a retry
-        // after a partial failure is safe.
-        await supabase.from("stripe_events").delete().eq("id", event.id);
-        return NextResponse.json({ error: "confirm failed" }, { status: 500 });
-      }
-
-      // Send a receipt. A missing/failing email must NOT fail the webhook —
-      // the payment is already confirmed in the DB (the source of truth).
-      try {
-        const { data: pay } = await supabase
-          .from("payments")
-          .select("user_id, purpose, amount_myr, event_id")
-          .eq("stripe_session_id", session.id)
-          .single();
-        if (pay) {
-          const [{ data: userRes }, { data: ev }] = await Promise.all([
-            supabase.auth.admin.getUserById(pay.user_id),
-            supabase
-              .from("events")
-              .select("title")
-              .eq("id", pay.event_id)
-              .single(),
-          ]);
-          const to = userRes?.user?.email;
-          if (to) {
-            const receipt = paymentReceiptEmail({
-              purpose: pay.purpose,
-              amountMyr: pay.amount_myr,
-              eventTitle: ev?.title ?? "your event",
-            });
-            await sendEmail({ to, ...receipt });
-          }
-        }
-      } catch (emailError) {
-        console.error("[webhook] receipt email failed", emailError);
-      }
+      if (error) return retryLater(supabase, event.id, "expire failed");
+      break;
     }
   }
 

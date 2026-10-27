@@ -19,7 +19,7 @@ error hit and its fix, every limitation, and every suggestion, newest first.
 > Working notes, not product docs. Scope lives in `.kiro/specs/mvp/`. The
 > portfolio before/after log lives in `docs/v1-vs-v2.md`.
 
-Last updated: 2026-10-27.
+Last updated: 2026-10-27 (CI fixes).
 
 ## Where we are (Claude's side)
 
@@ -42,7 +42,8 @@ Last updated: 2026-10-27.
 | #15 | Logo: wau bulan mark in the header, favicon, Apple touch icon, `docs/brand/`              | Open                 |
 | #16 | Notes moved to `docs/notes/`; GitHub wiki set up with portfolio pages                     | Open                 |
 | #17 | Launch page ("Apa itu MyLokalEvent?") on the homepage; built on #15 and #16               | Merged               |
-| —   | Fix: chosen light/dark theme kept when switching BM / EN                                  | This PR              |
+| #18 | Fix: chosen light/dark theme kept when switching BM / EN                                  | Merged               |
+| #20 | Pre-commit hook, `sharp` 0.35.5, Actions v6, README live link, payment fixes 6–8          | This PR              |
 
 **Notes moved (2026-10-27):** `KIRO-NOTES.md` and `CLAUDE-NOTES.md` now live in
 `docs/notes/` instead of the repo root. Kiro's steering file
@@ -188,6 +189,33 @@ the merge and the fixes below. If you have local commits, merge (don't rebase).
 
 ### Findings: fix before launch (ranked)
 
+**Findings 6–8 are FIXED (2026-10-27)** in migration
+`20261027100000_payment_fixes.sql` and the webhook:
+
+- **6:** `payment_price(purpose)` holds the prices (RM10 listing, RM20 for 7
+  featured days; `src/lib/pricing.ts` must match). `start_event_payment` now
+  takes `(event, session, purpose)`, sets the amount itself and returns it.
+  `confirm_payment(session, amount_total, currency)` refuses a charge that
+  isn't the stored amount in MYR: the payment becomes `failed`, the mismatch is
+  audited, the event doesn't move, and the webhook answers 200 (a retry
+  wouldn't help; an admin refunds).
+- **7:** a listing can be paid again from `awaiting_payment` ("Continue
+  payment" on the dashboard). The server action expires the earlier open
+  Stripe session first, and refuses if one is already complete but not yet
+  confirmed (`paymentProcessing`), so nobody pays twice. `expire_payment`,
+  called on `checkout.session.expired` and `async_payment_failed`, marks the
+  payment failed and sends the event back to `draft`.
+- **8:** only `payment_status === "paid"` is confirmed on
+  `checkout.session.completed`; `async_payment_succeeded` confirms delayed
+  methods.
+
+Verified with `supabase test db` in Docker (111/111; `payments_test.sql` now
+has 29 checks), plus lint, typecheck, vitest and build. **Not verified:** a real
+Stripe round trip. Add `checkout.session.expired`,
+`checkout.session.async_payment_succeeded` and
+`checkout.session.async_payment_failed` to the webhook endpoint's events in the
+Stripe dashboard.
+
 **Findings 1–5 are FIXED on `feat/organisers` (2026-10-26)**, owner said go:
 
 | #   | Fix                                                                                                                                                                                                      | Commit    |
@@ -302,6 +330,15 @@ solid.
 
 Newest first.
 
+- **2026-10-27: PR #19 (Kiro, `docs/wiki-roadmap`) failed `format:check`.**
+  Prettier wanted a blank line after each `### Phase N` heading in
+  `docs/wiki/Roadmap.md`; the owner got failed-run emails. Fix: formatted the
+  file on that branch (`b676cd9`). Prevention: `npm install` now sets up a
+  Husky pre-commit hook that runs `lint-staged` (Prettier on staged files), and
+  `.kiro/steering/tech.md` says so. Same PR: `sharp` 0.34.4 → 0.35.5 (high
+  `npm audit` advisory in libvips/libheif/librsvg; checked that rotate, resize,
+  WebP and EXIF stripping still work) and `actions/checkout`/`setup-node` v4 →
+  v6 (v4 ran on the deprecated Node 20).
 - **2026-10-27: header overflowed at 360 px after adding the logo** (26 px too
   wide, caught by a local check before pushing). Fix: under 380 px the header
   shows the mark only; the wordmark stays for screen readers (`sr-only`).
@@ -344,8 +381,8 @@ Newest first.
 
 ## Suggestions
 
-1. **Fix findings 6–8 next** (price set by the caller, abandoned checkout
-   trapping the event, webhook payment-status edge cases). Done: 1–5.
+1. ~~Fix findings 6–8~~ Done (2026-10-27), as were 1–5. Next: smoke-test
+   the money path with Stripe test keys.
 2. **A raw original can still be uploaded straight to `events/<id>/`** by an
    organiser using the API with their own token (the storage insert policy
    allows the whole event folder). Low risk (it's their own photo), but the
@@ -365,7 +402,7 @@ Newest first.
 
 1. Owner: `npx supabase db push --linked` once PR #11 merges (new migrations),
    then Vercel env vars. Google is parked until the owner has time.
-2. Claude or Kiro: findings 6–8 with tests (1–5 done).
+2. ~~Findings 6–8 with tests~~ Done (2026-10-27).
 3. Owner: real photo upload test (see fix 4 above).
 4. Smoke test the money path with Stripe test keys (`stripe listen`).
 5. PDPA export + account deletion (task 7.1), required for launch.

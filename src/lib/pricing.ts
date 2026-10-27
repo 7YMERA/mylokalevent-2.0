@@ -1,6 +1,8 @@
 // Pricing for listings and featured placement. These are the locked launch
-// decisions; they live as data so they can change without a schema change.
-// Amounts are whole MYR (ringgit).
+// decisions.
+// Amounts are whole MYR (ringgit). The database has the same prices in
+// public.payment_price() and is the one that counts: the webhook refuses a
+// payment whose Stripe amount differs. Change both together.
 
 export const LISTING_FEE_MYR = 10;
 
