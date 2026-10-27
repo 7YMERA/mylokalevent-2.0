@@ -398,7 +398,72 @@ branch, confirm CI is green on 3.1, then run `supabase test db` locally once Doc
 is up to double-check the two migrations I could only CI-verify. After that, the
 `database.types.ts` regeneration above removes the main hand-maintenance risk.
 
-## Next steps (suggested order)
+## FOCUS NEXT — updated 2026-10-27 (supersedes the older list below)
+
+**Context change:** Claude merged `feat/organisers` into `main` (PR #11), fixed
+the CSP/Stripe-redirect and image `img-src` issues, and the app is now LIVE at
+https://mylokalevent.vercel.app/ (deploys from `main` only). Claude also MOVED
+the notes to `docs/notes/KIRO-NOTES.md` and `docs/notes/CLAUDE-NOTES.md`, and
+updated `.kiro/steering/structure.md` to match. See `docs/notes/CLAUDE-NOTES.md`
+on `main` for Claude's full review of our branch.
+
+So items 1–4 in the old list below are mostly DONE (branch merged + CI green,
+map shipped, 4.3 built, event review queue built). Real priorities now:
+
+### P0 — security findings Claude left for us (open, from CLAUDE-NOTES review)
+These are the money-path holes; fix before any real payment goes through.
+
+- **#6 — price/featured-days come from the CALLER.** `start_event_payment`
+  takes the amount + days as arguments, so a crafted request could pay RM0 or
+  buy featured for free. _Fix:_ compute amount + days INSIDE the function from
+  the `purpose` (use the locked constants / a `prices` table), and in the
+  webhook verify `session.amount_total` against the stored amount. Grant the
+  function to the service role only.
+- **#7 — an abandoned checkout traps the event.** An event stuck in
+  `awaiting_payment` can't be re-submitted. _Fix:_ allow re-submit from
+  `awaiting_payment` (reuse or expire the old session) and handle
+  `checkout.session.expired` to move it back to `draft`.
+- **#8 — webhook payment-status edge cases.** `payment_status === undefined` is
+  handled too loosely. _Fix:_ only confirm on an explicit `paid` status.
+
+### P1 — smaller bugs Claude flagged in my code
+- **Search breaks on commas.** `src/lib/events.ts` builds the `.or()` filter
+  from raw input, so `Marang, Terengganu` or a stray `)` breaks the filter
+  (can't bypass RLS, just breaks the search). _Fix:_ strip/escape `,()"` or
+  quote the value.
+- **Emails insert the event title as raw HTML** (`src/lib/email.ts`). Recipient
+  is the organiser themselves so risk is low, but escape it anyway.
+- **"Free resubmit once" isn't implemented** — a rejected event pays again to
+  resubmit. Decide: free resubmit, or by design.
+
+### P1 — reconcile my branch with main (housekeeping)
+`feat/organisers` still has `KIRO-NOTES.md` at the repo ROOT; `main` moved it to
+`docs/notes/`. Before more branch work: merge `main` in, delete the root copy,
+and continue editing `docs/notes/KIRO-NOTES.md` only. Otherwise every notes edit
+conflicts on merge.
+
+### P2 — features still genuinely missing
+- **Map still a static OSM embed, not a real pin map.** Coordinates are plumbed
+  (`events.lat/lng`); needs Leaflet/MapLibre + a tile host in CSP. Shelved for
+  RAM, finish steps in the Deferred section.
+- **Reminders cron (6.2)** — needs the email provider (Resend/Brevo, not wired)
+  + a scheduled job. The per-save `remind` flag already exists.
+- **Receipt + decision emails are WRITTEN but never executed** (no Resend key).
+- **PDPA data export + account deletion (task 7.1)** — REQUIRED for launch,
+  doesn't exist yet.
+- **Reports + revenue dashboard (task 5.2)** — not started.
+- **Seed a few approved demo events** so the live `/events` page shows listings
+  instead of "0 acara".
+
+### Before trusting any of the above on the live site
+The Stripe money path, the `sharp` upload pipeline, the receipt/decision emails,
+and the generated-column migration were all written but NEVER executed here (no
+Stripe keys, no Resend key, no Docker/local Supabase this session). Smoke-test
+each against the real hosted Supabase + Stripe test keys before launch.
+
+---
+
+## Next steps (suggested order) — OLDER list, kept for history
 
 1. **Push `feat/organisers` and confirm CI** — especially the `database` job for
    the events + storage + payments migrations, not yet CI-run.
