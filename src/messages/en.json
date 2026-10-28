@@ -9,7 +9,9 @@
     "theme": "Colour theme",
     "themeSystem": "Match device",
     "themeLight": "Light",
-    "themeDark": "Dark"
+    "themeDark": "Dark",
+    "explore": "Find events",
+    "about": "About"
   },
   "common": {
     "free": "Free",
@@ -188,6 +190,40 @@
       "title": "Got an event to share?",
       "body": "Sign up for free, then apply to organise.",
       "signUp": "Sign up free"
+    }
+  },
+  "feed": {
+    "title": "Local events, straight from the organisers.",
+    "lead": "See what's on this week. No sign-in needed.",
+    "about": "What is MyLokalEvent?",
+    "features": {
+      "verified": "Verified organisers",
+      "free": "Plenty of free events",
+      "share": "Share to WhatsApp",
+      "map": "Map to the venue"
+    },
+    "all": "All",
+    "filterLabel": "Filter by category",
+    "heading": "Upcoming events",
+    "seeAll": "Search & map",
+    "by": "by {name}",
+    "empty": "No events in this category yet. Try all events.",
+    "emptyAll": "No upcoming events yet. Check back soon!",
+    "join": {
+      "title": "Want to join in?",
+      "body": "Make a free account to like, comment, save events and follow organisers.",
+      "signUp": "Sign up free",
+      "signIn": "Have an account? Sign in"
+    },
+    "hello": {
+      "title": "Hi, {name}!",
+      "body": "Save the events you like and follow your favourite organisers.",
+      "account": "My account"
+    },
+    "organiser": {
+      "title": "Running an event?",
+      "body": "Clubs, cooperatives and fishing ponds can list their events here.",
+      "cta": "Become an organiser"
     }
   },
   "fields": {

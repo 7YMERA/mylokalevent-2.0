@@ -19,7 +19,7 @@ error hit and its fix, every limitation, and every suggestion, newest first.
 > Working notes, not product docs. Scope lives in `.kiro/specs/mvp/`. The
 > portfolio before/after log lives in `docs/v1-vs-v2.md`.
 
-Last updated: 2026-10-27 (CI fixes).
+Last updated: 2026-10-28 (open events feed on the homepage).
 
 ## Where we are (Claude's side)
 
@@ -39,11 +39,12 @@ Last updated: 2026-10-27 (CI fixes).
 | #12 | This file                                                                                 | Merged               |
 | #13 | `GOOGLE_SIGN_IN` flag: Google button hidden until the provider is set up                  | Merged               |
 | #14 | GitHub Action pushes Supabase migrations on merge; Vercel deploys from `main` only        | Merged               |
-| #15 | Logo: wau bulan mark in the header, favicon, Apple touch icon, `docs/brand/`              | Open                 |
-| #16 | Notes moved to `docs/notes/`; GitHub wiki set up with portfolio pages                     | Open                 |
+| #15 | Logo: wau bulan mark in the header, favicon, Apple touch icon, `docs/brand/`              | Merged               |
+| #16 | Notes moved to `docs/notes/`; GitHub wiki set up with portfolio pages                     | Merged               |
 | #17 | Launch page ("Apa itu MyLokalEvent?") on the homepage; built on #15 and #16               | Merged               |
 | #18 | Fix: chosen light/dark theme kept when switching BM / EN                                  | Merged               |
-| #20 | Pre-commit hook, `sharp` 0.35.5, Actions v6, README live link, payment fixes 6–8          | This PR              |
+| #20 | Pre-commit hook, `sharp` 0.35.5, Actions v6, README live link, payment fixes 6–8          | Merged               |
+| #21 | Homepage becomes an open events feed; launch page moved to `/about`                       | This PR              |
 
 **Notes moved (2026-10-27):** `KIRO-NOTES.md` and `CLAUDE-NOTES.md` now live in
 `docs/notes/` instead of the repo root. Kiro's steering file
@@ -77,6 +78,42 @@ connected but every build fails until these env vars exist in Vercel
 `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_SITE_URL`. Then add the
 `*.vercel.app` URL to Supabase redirect URLs and to the Google client's
 JavaScript origins.
+
+## Open events feed on the homepage (2026-10-28)
+
+The owner changed direction from the launch page: the app should work like
+social media. Anyone browses events and features without an account; liking,
+commenting or adding posts asks for one at that moment. This PR is step 1 of 5
+(feed → likes → comments → sign-in prompt + account menu → notes/screenshots).
+
+- **Homepage (`/ms`, `/en`):** short hero (title, one-line lead, four feature
+  pills, link to `/about`), then a feed of approved events that haven't ended
+  yet, soonest first, max 30, from `listFeedEvents()` in `src/lib/events.ts`.
+  Category chips are links (`?category=pond`), so they work without JS and
+  can be shared. Unknown category slugs fall back to "all". The category filter
+  uses an `!inner` join so it runs in the database before the limit.
+- **Side card:** signed out → "Nak join sekali?" with sign up / sign in;
+  signed in → "Hai, {name}!". It reads the session, so it sits in its own
+  `<Suspense>`; the feed reads `searchParams`, so it has its own too.
+- **Launch page:** moved unchanged to `src/app/[locale]/about/page.tsx`, with
+  the page title "Apa itu MyLokalEvent?". Its roadmap list is still hard-coded
+  there; keep it in step with `docs/wiki/Roadmap.md`.
+- **Owner decisions (2026-10-28):** "+ Add" is reserved for member community
+  posts (a later phase, now on the wiki roadmap). Adding events gets its own
+  entry in the account menu under the name, top right ("Tambah acara" for
+  organisers, "Jadi penganjur" for members)
+  so one button never shows role-dependent options.
+- **Copy:** new `feed.*` namespace plus `header.explore` / `header.about` in
+  both message files. Parity test passes.
+- **Verified:** lint, typecheck, 457 unit tests and `next build` pass.
+  Screenshots taken with Playwright against `next start`, BM/EN, light/dark,
+  1280 px and 390 px, no horizontal scroll.
+- **Screenshot data:** the live database has **no events yet**, so the shots
+  were taken against a small local mock of the Supabase REST API serving four
+  sample events (not committed; nothing was written to the real database).
+  On the live site the feed shows its empty state until organisers publish.
+- **Not done yet (next PRs):** likes, comments, the "sign in to continue"
+  sheet, and the account menu under the name.
 
 ## Theme kept when switching language (2026-10-27)
 
