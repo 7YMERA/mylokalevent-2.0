@@ -10,7 +10,7 @@ adds an entry to the log at the bottom.
 | ---------------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | Frontend         | Static Bootstrap 5 pages, vanilla JS SPA                                    | Next.js 16, React, TypeScript (strict), Tailwind CSS                                                 |
 | Rendering        | Client-side only; search engines and WhatsApp previews see an empty page    | Server-rendered and statically generated pages                                                       |
-| Homepage         | A banner and an event grid; nothing explains who the site is for            | A launch page: who it's for, how it works, features, what's shipped, and a sign-up call to action    |
+| Homepage         | A banner and an event grid; nothing explains who the site is for            | An open events feed anyone can browse, a one-line intro, and an About page that explains the product |
 | Brand            | Stock Bootstrap "water" icon beside the name; no favicon                    | Wau bulan logo in both themes, theme-aware favicon and app icon                                      |
 | Styling          | Bootstrap defaults, one blue hue for almost everything                      | Design tokens: ocean teal, sunset coral and a distinct colour per event category                     |
 | Dark mode        | None                                                                        | Light, dark and "match device", switchable, no flash on load                                         |
@@ -30,8 +30,10 @@ sample events as v2 so the comparison is like for like. v1 had no dark mode.
 
 ### Home page, desktop
 
-The v2 home is now the launch page ("Apa itu MyLokalEvent?"). Desktop shots are in BM,
-the light mobile shot is in English.
+The v2 home is now an open events feed, like a social app: anyone can scroll it without
+an account, and liking, commenting or saving asks you to sign in. The full "Apa itu
+MyLokalEvent?" pitch moved to `/about`. All home shots are in BM except the dark English
+mobile shot.
 
 | v1                                          | v2 light                                                 | v2 dark                                                |
 | ------------------------------------------- | -------------------------------------------------------- | ------------------------------------------------------ |
@@ -42,6 +44,10 @@ the light mobile shot is in English.
 | v1                                                 | v2 light                                                       | v2 dark                                                      |
 | -------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------ |
 | ![v1 home, mobile](screenshots/v1/home-mobile.png) | ![v2 home, mobile light](screenshots/v2/home-light-mobile.png) | ![v2 home, mobile dark](screenshots/v2/home-dark-mobile.png) |
+
+### About page (the former launch page)
+
+![v2 about page](screenshots/v2/about-light-desktop.png)
 
 ### Design system
 
@@ -87,6 +93,19 @@ language.
 ## Improvement log
 
 Newest first. Link the pull request for each entry.
+
+### 2026-10-28: Open events feed on the homepage
+
+- **Before:** v1 opened on a banner and a grid, and the browse page and its event
+  details needed a JavaScript app to load before anything showed.
+- **After:** the homepage is a feed of real upcoming events, soonest first, with category
+  chips (Semua, Pertandingan, Pasar, Kolam, Komuniti), the organiser on every card, and a
+  short intro with four feature pills. Nobody needs an account to browse. A side card invites
+  signed-out visitors to join (like, comment, save, follow) and greets signed-in members
+  instead. Organisers get their own "Jadi penganjur" card rather than a crowded "+" button.
+  The marketing pitch lives on at `/about`.
+- **Why it matters:** visitors see events in the first second, the way a social app works,
+  and only meet a sign-in step when they want to take part.
 
 ### 2026-10-27: Launch page on the homepage
 

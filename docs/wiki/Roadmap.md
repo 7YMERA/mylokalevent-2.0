@@ -70,6 +70,9 @@ These close out the MVP and come before any new features. Most are small.
   round-robin assignment, so review does not depend on one admin.
 - **Reviews and ratings.** Attendees rate an event afterwards; an organiser's
   track record shows on their page.
+- **Community posts.** Members share catches and trip reports (text and photos)
+  in the feed through a "+ Add" button, with reporting and moderation. Adding
+  events stays a separate organiser entry so "+ Add" never turns into a menu.
 - **Reports and safety.** Let anyone report an event or organiser, with a queue
   and an audit trail for every decision.
 

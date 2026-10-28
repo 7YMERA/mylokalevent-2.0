@@ -226,6 +226,78 @@ export async function searchApprovedEvents(
   }));
 }
 
+export type FeedEvent = {
+  slug: string;
+  title: string;
+  categorySlug: EventSearchResult["categorySlug"];
+  startsAt: string;
+  state: string;
+  district: string;
+  venue: string;
+  feeMyr: number;
+  organiser: { slug: string; name: string } | null;
+};
+
+// The homepage feed: approved events that haven't ended yet, soonest first,
+// optionally one category. Public read through RLS, so it works signed out.
+export async function listFeedEvents(
+  categorySlug?: string,
+): Promise<FeedEvent[]> {
+  const supabase = await createClient();
+  // Keep today's events in the feed until the day is over (Malaysian time).
+  const startOfToday = new Date(
+    `${new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kuala_Lumpur" })}T00:00:00+08:00`,
+  ).toISOString();
+
+  // An inner join lets the category filter run in the database, so the limit
+  // applies to matching events only.
+  let query = supabase
+    .from("events")
+    .select(
+      `slug, title, starts_at, state, district, venue, fee_myr, status,
+       categories${categorySlug ? "!inner" : ""}(slug), organisers(slug, name)`,
+    )
+    .eq("status", "approved")
+    .gte("starts_at", startOfToday)
+    .order("starts_at", { ascending: true })
+    .limit(30);
+  if (categorySlug) query = query.eq("categories.slug", categorySlug);
+
+  const { data } = await query;
+
+  const one = <T>(value: T | T[] | null) =>
+    Array.isArray(value) ? value[0] : value;
+  const rows = (data ?? []) as unknown as Array<{
+    slug: string;
+    title: string;
+    starts_at: string;
+    state: string;
+    district: string;
+    venue: string;
+    fee_myr: number;
+    categories: { slug: string } | { slug: string }[] | null;
+    organisers:
+      { slug: string; name: string } | { slug: string; name: string }[] | null;
+  }>;
+
+  return rows.map((row) => {
+    const organiser = one(row.organisers);
+    return {
+      slug: row.slug,
+      title: row.title,
+      categorySlug: one(row.categories)?.slug as FeedEvent["categorySlug"],
+      startsAt: row.starts_at,
+      state: row.state,
+      district: row.district,
+      venue: row.venue,
+      feeMyr: row.fee_myr,
+      organiser: organiser
+        ? { slug: organiser.slug, name: organiser.name }
+        : null,
+    };
+  });
+}
+
 export type MyEvent = {
   id: string;
   slug: string;
