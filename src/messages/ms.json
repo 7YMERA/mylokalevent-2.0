@@ -9,7 +9,9 @@
     "theme": "Tema warna",
     "themeSystem": "Ikut peranti",
     "themeLight": "Cerah",
-    "themeDark": "Gelap"
+    "themeDark": "Gelap",
+    "explore": "Cari acara",
+    "about": "Tentang"
   },
   "common": {
     "free": "Percuma",
@@ -188,6 +190,40 @@
       "title": "Ada acara nak dikongsi?",
       "body": "Buka akaun percuma, lepas tu mohon jadi penganjur.",
       "signUp": "Daftar percuma"
+    }
+  },
+  "feed": {
+    "title": "Acara lokal, terus dari penganjur.",
+    "lead": "Tengok apa yang jadi minggu ni. Tak payah log masuk pun.",
+    "about": "Apa itu MyLokalEvent?",
+    "features": {
+      "verified": "Penganjur disahkan",
+      "free": "Banyak yang percuma",
+      "share": "Kongsi ke WhatsApp",
+      "map": "Peta terus ke lokasi"
+    },
+    "all": "Semua",
+    "filterLabel": "Tapis ikut kategori",
+    "heading": "Acara akan datang",
+    "seeAll": "Cari & peta",
+    "by": "oleh {name}",
+    "empty": "Belum ada acara dalam kategori ni. Cuba tengok semua dulu.",
+    "emptyAll": "Belum ada acara akan datang. Nanti singgah lagi ya!",
+    "join": {
+      "title": "Nak join sekali?",
+      "body": "Buat akaun percuma untuk like, komen, simpan acara dan ikut penganjur.",
+      "signUp": "Daftar percuma",
+      "signIn": "Dah ada akaun? Log masuk"
+    },
+    "hello": {
+      "title": "Hai, {name}!",
+      "body": "Simpan acara yang best dan ikut penganjur kegemaran.",
+      "account": "Akaun saya"
+    },
+    "organiser": {
+      "title": "Anjur acara?",
+      "body": "Kelab, koperasi atau kolam pancing boleh senaraikan acara di sini.",
+      "cta": "Jadi penganjur"
     }
   },
   "fields": {
