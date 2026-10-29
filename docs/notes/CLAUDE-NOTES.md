@@ -98,9 +98,6 @@ The owner asked for design MCP servers in the repo, with no UI change.
   (no `components.json` yet). Kiro does not read `.mcp.json`; it uses
   `.kiro/settings/mcp.json`, so Kiro needs a copy of these entries to use them.
   `@latest` means versions can change between sessions; pin them if one breaks.
-- **CI fix:** `main` failed `format:check` on `src/lib/events.ts` (two union
-  types Prettier wants on separate lines, from #21). Reformatted here; no code
-  change.
 - **Suggestion:** anything taken from shadcn/ui or Magic UI should be restyled
   with our design tokens and contrast-checked in light and dark before it ships.
 

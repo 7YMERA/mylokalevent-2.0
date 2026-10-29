@@ -54,9 +54,7 @@ export async function getApprovedEvent(
     status: string;
     categories: { slug: string } | { slug: string }[] | null;
     organisers:
-      | { slug: string; name: string }
-      | { slug: string; name: string }[]
-      | null;
+      { slug: string; name: string } | { slug: string; name: string }[] | null;
     event_images: { storage_path: string; position: number }[] | null;
   };
   const data = raw as Joined | null;
@@ -279,9 +277,7 @@ export async function listFeedEvents(
     fee_myr: number;
     categories: { slug: string } | { slug: string }[] | null;
     organisers:
-      | { slug: string; name: string }
-      | { slug: string; name: string }[]
-      | null;
+      { slug: string; name: string } | { slug: string; name: string }[] | null;
   }>;
 
   return rows.map((row) => {
