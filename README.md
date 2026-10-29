@@ -124,6 +124,25 @@ suggestions. The [wiki](https://github.com/7YMERA/mylokalevent-v2/wiki) has the
 project story, architecture and roadmap; its pages are edited in
 [`docs/wiki/`](docs/wiki/) and published on merge.
 
+## MCP servers for AI assistants
+
+[`.mcp.json`](.mcp.json) at the repo root lists four
+[MCP](https://modelcontextprotocol.io) servers. Claude Code (and other assistants
+that read a project `.mcp.json`) loads them automatically when a session starts in
+this repo; it asks once before it trusts project servers. Kiro reads its own
+`.kiro/settings/mcp.json` instead, so Kiro needs the same entries there to use them.
+Each runs through `npx`, so there is nothing to install, and none of them needs a
+secret in this repo.
+
+| Server       | What it's for                                                                                                                                                                                                                                                                        |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `shadcn`     | Browse, search and add [shadcn/ui](https://ui.shadcn.com) components from the registry. The repo has no `components.json` yet, so it only becomes useful once shadcn/ui is set up here; components still have to be mapped to our design tokens so light and dark mode keep working. |
+| `magicui`    | Look up [Magic UI](https://magicui.design) animated components and effects (and their code) for marketing and feed pages.                                                                                                                                                            |
+| `playwright` | Drive a headless browser in a fresh, isolated profile: open the dev server, click through pages, check layouts and take screenshots (for example the before/after screenshots in `docs/`).                                                                                           |
+| `context7`   | Pull current, version-specific library docs (Next.js 16, Supabase, Tailwind 4 and so on) into the session, so the assistant doesn't rely on outdated training data. Works without a key; an optional Context7 API key raises the rate limit and stays outside the repo.              |
+
+Adding these servers changes no app code or UI; they are developer tools only.
+
 ## Copyright
 
 This repository is public so the work can be seen, but no open source license is

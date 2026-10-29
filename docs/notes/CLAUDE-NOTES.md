@@ -19,7 +19,7 @@ error hit and its fix, every limitation, and every suggestion, newest first.
 > Working notes, not product docs. Scope lives in `.kiro/specs/mvp/`. The
 > portfolio before/after log lives in `docs/v1-vs-v2.md`.
 
-Last updated: 2026-10-28 (open events feed on the homepage).
+Last updated: 2026-10-29 (design MCP servers in `.mcp.json`).
 
 ## Where we are (Claude's side)
 
@@ -44,7 +44,8 @@ Last updated: 2026-10-28 (open events feed on the homepage).
 | #17 | Launch page ("Apa itu MyLokalEvent?") on the homepage; built on #15 and #16               | Merged               |
 | #18 | Fix: chosen light/dark theme kept when switching BM / EN                                  | Merged               |
 | #20 | Pre-commit hook, `sharp` 0.35.5, Actions v6, README live link, payment fixes 6–8          | Merged               |
-| #21 | Homepage becomes an open events feed; launch page moved to `/about`                       | This PR              |
+| #21 | Homepage becomes an open events feed; launch page moved to `/about`                       | Merged               |
+| #22 | `.mcp.json`: shadcn, Magic UI, Playwright and Context7 MCP servers (no app or UI change)  | This PR              |
 
 **Notes moved (2026-10-27):** `KIRO-NOTES.md` and `CLAUDE-NOTES.md` now live in
 `docs/notes/` instead of the repo root. Kiro's steering file
@@ -78,6 +79,30 @@ connected but every build fails until these env vars exist in Vercel
 `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_SITE_URL`. Then add the
 `*.vercel.app` URL to Supabase redirect URLs and to the Google client's
 JavaScript origins.
+
+## Design MCP servers (2026-10-29)
+
+The owner asked for design MCP servers in the repo, with no UI change.
+
+- **`.mcp.json` (repo root):** `shadcn` (`npx -y shadcn@latest mcp`), `magicui`
+  (`npx -y @magicuidesign/mcp@latest`), `playwright`
+  (`npx -y @playwright/mcp@latest --headless --isolated`) and `context7`
+  (`npx -y @upstash/context7-mcp@latest`). No env vars or keys, so nothing secret
+  in this public repo. README has a new "MCP servers for AI assistants" section on
+  what each one is for.
+- **Verified:** each command was started in the cloud container and answered an
+  MCP `initialize` request (shadcn 1.0.0, Magic UI 1.0.4, Playwright 1.64 alpha,
+  Context7 4.4.4). Not verified: loading them inside a Claude Code session on the
+  owner's laptop (Claude Code asks to trust project servers on first use).
+- **Limitations:** `shadcn` has little to work with until shadcn/ui is set up
+  (no `components.json` yet). Kiro does not read `.mcp.json`; it uses
+  `.kiro/settings/mcp.json`, so Kiro needs a copy of these entries to use them.
+  `@latest` means versions can change between sessions; pin them if one breaks.
+- **CI fix:** `main` failed `format:check` on `src/lib/events.ts` (two union
+  types Prettier wants on separate lines, from #21). Reformatted here; no code
+  change.
+- **Suggestion:** anything taken from shadcn/ui or Magic UI should be restyled
+  with our design tokens and contrast-checked in light and dark before it ships.
 
 ## Open events feed on the homepage (2026-10-28)
 
